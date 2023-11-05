@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartHome.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace SmartHome.Data
 {
     public class DatabaseContext : DbContext
     {
+        public DbSet<UserEntity> Users { get; set; }
+
         public DatabaseContext(DbContextOptions options) : base(options)
         {
 
