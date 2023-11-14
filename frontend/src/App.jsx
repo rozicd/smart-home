@@ -1,14 +1,14 @@
 import "./App.css";
-import BasicButton from "./Components/BasicComponents/BasicButton";
-import {ThemeProvider,createTheme} from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { themeOptions } from "./themeOptions";
-
+import BasicSelect from "./Components/BasicComponents/BasicSelect";
+import { React, UseState, useState } from "react";
 
 function App() {
+
   return (
-    <ThemeProvider theme ={themeOptions}>
-      <BasicButton text={"xd"} color={"negative"}/>
-      </ThemeProvider>
+    <ThemeProvider theme={themeOptions}>
+    </ThemeProvider>
   );
 }
 

@@ -21,9 +21,9 @@ export const themeOptions = createTheme({
   typography: {
     button : 
     {
-      fontSize:"18",
+      fontSize:18,
     },
     fontFamily: 'sans-serif', 
-    fontSize:"12"
+    fontSize:12
   },
 });
