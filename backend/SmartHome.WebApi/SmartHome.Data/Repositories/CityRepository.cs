@@ -54,5 +54,19 @@ namespace SmartHome.Data.Repositories
             }
             return _mapper.Map<City>(city);
         }
+
+        public async Task<City> GetCityByNameAndCountry(string cityName, Guid countryId)
+        {
+            var city = await _cities
+                .Include(c => c.Country)
+                .FirstOrDefaultAsync(c => c.Name == cityName && c.CountryId == countryId);
+
+            if (city == null)
+            {
+                throw new ResourceNotFoundException($"City with name '{cityName}' in country with Id '{countryId}' not found.");
+            }
+
+            return _mapper.Map<City>(city);
+        }
     }
 }

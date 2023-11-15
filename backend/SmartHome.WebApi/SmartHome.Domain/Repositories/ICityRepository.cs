@@ -13,6 +13,7 @@ namespace SmartHome.Domain.Repositories
         Task<IEnumerable<City>> GetAllCities();
         Task<City> GetById(Guid id);
         Task<City> GetByName(string name);
+        Task<City> GetCityByNameAndCountry(string cityName, Guid countryId);
 
     }
 }
