@@ -11,6 +11,7 @@ namespace SmartHome.Domain.Models
         public Guid Id { get; set; }
         public string Address { get; set; }
         public City City { get; set; }
+        public Guid CityId { get; set; }
         public double AreaSquareMeters { get; set; }
         public int NumberOfFloors { get; set; }
         public string ImageUrl { get; set; }
