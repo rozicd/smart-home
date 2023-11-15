@@ -12,7 +12,6 @@ namespace SmartHome.DataTransferObjects.Responses
         public Guid Id { get; set; }
         public string Address { get; set; }
         public CityResponseDTO City { get; set; }
-        public string State { get; set; }
         public double AreaSquareMeters { get; set; }
         public int NumberOfFloors { get; set; }
         public string ImageUrl { get; set; }

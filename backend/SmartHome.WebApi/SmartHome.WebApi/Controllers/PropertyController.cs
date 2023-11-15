@@ -9,6 +9,7 @@ using SmartHome.DataTransferObjects.Responses;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using SmartHome.Domain.Exceptions;
 
 namespace SmartHome.WebApi.Controllers
 {
@@ -18,14 +19,12 @@ namespace SmartHome.WebApi.Controllers
     {
         private readonly IPropertyService _propertyService;
         private readonly ICityService _cityService;
-        private readonly ICountryService _countryService;
 
-        public PropertyController(IPropertyService propertyService, ICityService cityService, ICountryService countryService, IMapper mapper)
+        public PropertyController(IPropertyService propertyService, ICityService cityService, IMapper mapper)
             : base(mapper)
         {
             _propertyService = propertyService;
             _cityService = cityService;
-            _countryService = countryService;
         }
 
         [HttpPost("")]
@@ -39,25 +38,22 @@ namespace SmartHome.WebApi.Controllers
 
             try
             {
-                City city = await _cityService.GetCityByName(propertyRequest.CityName);
-                if (city == null)
-                {
-                    return BadRequest($"City '{propertyRequest.CityName}' not found");
-                }
-
-                Country country = await _countryService.GetCountryByName(propertyRequest.CountryName);
-                if (country == null)
-                {
-                    return BadRequest($"Country '{propertyRequest.CountryName}' not found");
-                }
+                City city = await _cityService.GetCityByNameAndCountry(propertyRequest.CityName,propertyRequest.CountryName);
 
                 Property property = _mapper.Map<Property>(propertyRequest);
 
                 property.UserId = _user.UserId;
+                property.CityId = city.Id;
 
                 await _propertyService.AddProperty(property);
 
+                property.City = city;
+
                 return Ok(_mapper.Map<PropertyResponseDTO>(property));
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
