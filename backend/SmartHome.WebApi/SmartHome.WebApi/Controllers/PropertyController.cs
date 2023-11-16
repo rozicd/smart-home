@@ -18,15 +18,22 @@ namespace SmartHome.WebApi.Controllers
     public class PropertyController : BaseController
     {
         private readonly IPropertyService _propertyService;
-        public PropertyController(IPropertyService propertyService, IMapper mapper)
+        private readonly IFileService _fileService;
+        private readonly IEmailService _emailService;
+        private readonly IUserService _userService;
+
+        public PropertyController(IPropertyService propertyService, IFileService fileService, IEmailService emailService, IUserService userService, IMapper mapper)
             : base(mapper)
         {
             _propertyService = propertyService;
+            _fileService = fileService;
+            _emailService = emailService;
+            _userService = userService;
         }
 
         [HttpPost("")]
         [Authorize(Roles = "USER")]
-        public async Task<IActionResult> RegisterProperty([FromBody] RegisterPropertyRequestDTO propertyRequest)
+        public async Task<IActionResult> RegisterProperty([FromForm] RegisterPropertyRequestDTO propertyRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -35,13 +42,19 @@ namespace SmartHome.WebApi.Controllers
 
             try
             {
-                Property property = _mapper.Map<Property>(propertyRequest);
+                var imagePath = await _fileService.SaveImageAsync(propertyRequest.ImageFile, "static/properties");
 
+                Property property = _mapper.Map<Property>(propertyRequest);
                 property.UserId = _user.UserId;
+                property.ImageUrl = imagePath;
 
                 await _propertyService.AddProperty(property);
 
-                return Created("/", "Property successfuly created");
+                return Created("/", "Property successfully created");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (ResourceNotFoundException ex)
             {
@@ -90,8 +103,9 @@ namespace SmartHome.WebApi.Controllers
                 property.Status = PropertyStatus.Approved;
                 await _propertyService.UpdateProperty(property);
 
-                // Send email to the user with approval confirmation
-                // ...
+                User userOfProperty = await _userService.GetById(property.UserId);
+
+                await _emailService.SendApprovePropertyEmail(userOfProperty, property);
 
                 return Ok($"Property {id} approved successfully");
             }
@@ -117,8 +131,9 @@ namespace SmartHome.WebApi.Controllers
                 property.Status = PropertyStatus.Rejected;
                 await _propertyService.UpdateProperty(property);
 
-                // Send email to the user with rejection information
-                // ...
+                User userOfProperty = await _userService.GetById(property.UserId);
+
+                await _emailService.SendRejectPropertyEmail(userOfProperty, property);
 
                 return Ok($"Property {id} rejected successfully");
             }
