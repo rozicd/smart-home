@@ -16,6 +16,7 @@ namespace SmartHome.Data.Entities
         public Status Status { get; set; }
         public Role Role { get; set; }
 
+
     }
  
 }

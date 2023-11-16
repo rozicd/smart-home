@@ -19,6 +19,7 @@ namespace SmartHome.Data
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<PropertyEntity> Properties { get; set; }
         public DbSet<ActivationTokenEntity> ActivationTokens { get; set; }
+        public DbSet<EnvironmentalConditionsSensorEntity> EnvironmentalConditionsSensors { get; set; }
 
         public DatabaseContext(DbContextOptions options) : base(options)
         {
