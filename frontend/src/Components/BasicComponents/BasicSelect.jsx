@@ -4,21 +4,23 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const BasicSelect = ({ label, callback, selected, collection, valueParam, nameParam }) => {
     return (
-        <FormControl >
-            <InputLabel id={label + "-id"}>{label}</InputLabel>
+        < >
             <Select
-                labelId={label + "-id"}
+                sx={{ m: 1, minWidth: 120,maxHeight:40,marginTop:"20px" }}
                 id={label + "-select"}
-                value={selected}
-                label={label}
+                className="form-item"
+                value={selected ? selected : "x"}
+                displayEmpty
                 onChange={callback}
             >
+                <MenuItem value={"x"}>{"Select " + label}</MenuItem>
+
                 {collection.map((item, index) => (
-                    <MenuItem  value={item[valueParam]}>{item[nameParam]}</MenuItem>
+                    <MenuItem key={item[valueParam]} value={item[valueParam]}>{item[nameParam]}</MenuItem>
                 ))}
-                
+
             </Select>
-        </FormControl>
+        </>
     );
 };
 
