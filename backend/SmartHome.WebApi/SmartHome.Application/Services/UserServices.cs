@@ -18,10 +18,9 @@ namespace SmartHome.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task Add(User user)
+        public async Task<User> Add(User user)
         {
-
-            await _userRepository.Add(user);
+            return await _userRepository.Add(user);
         }
 
         public async Task Delete(Guid id)

@@ -10,7 +10,7 @@ namespace SmartHome.Domain.Repositories
     public interface IUserRepository
     {
         Task<User> GetById(Guid id);
-        Task Add(User project);
+        Task<User> Add(User project);
         Task Update(User project);
         Task Delete(Guid id);
         Task<User> GetByEmailAndPassword(string email, string password);

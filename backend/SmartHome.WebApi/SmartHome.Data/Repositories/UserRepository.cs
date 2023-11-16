@@ -25,7 +25,7 @@ namespace SmartHome.Data.Repositories
             _mapper = mapper;
         }
 
-        public async Task Add(User user)
+        public async Task<User> Add(User user)
         {
             UserEntity existingUser = await _users.FirstOrDefaultAsync(p => p.Email == user.Email);
             if (existingUser != null)
@@ -37,6 +37,7 @@ namespace SmartHome.Data.Repositories
             userEntity.Password = BCrypt.Net.BCrypt.HashPassword(userEntity.Password, salt);
             await _users.AddAsync(userEntity);
             await _context.SaveChangesAsync();
+            return _mapper.Map<User>(userEntity);
         }
 
         public async Task Delete(Guid id)

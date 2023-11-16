@@ -16,10 +16,14 @@ namespace SmartHome.WebApi.Controllers
     public class UserController : BaseController
     {
         private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
+        private readonly IActivationTokenService _activationTokenService;
 
-        public UserController(IUserService userService, IMapper mapper) : base(mapper)
+        public UserController(IUserService userService, IEmailService emailService, IActivationTokenService activationTokenService,IMapper mapper) : base(mapper)
         {
             _userService = userService;
+            _emailService = emailService;
+            _activationTokenService = activationTokenService;
         }
 
         [HttpPost("")]
@@ -30,8 +34,10 @@ namespace SmartHome.WebApi.Controllers
                 return BadRequest(ModelState);
             }
             User response = _mapper.Map<User>(user);
-            await _userService.Add(response);
-            return Ok(_mapper.Map<UserResponseDTO>(response));
+            User addedUser = await _userService.Add(response);
+            await _emailService.SendActivationEmail(addedUser);
+            await _activationTokenService.AddOne(addedUser.Id);
+            return Ok(_mapper.Map<UserResponseDTO>(addedUser));
         }
 
         [HttpPut("")]
@@ -104,6 +110,7 @@ namespace SmartHome.WebApi.Controllers
             if (_user == null)
             {
                 return Unauthorized();
+                
             }
             else
             {
