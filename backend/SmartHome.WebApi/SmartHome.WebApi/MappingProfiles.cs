@@ -25,5 +25,8 @@ public class MappingProfiles : Profile
         CreateMap<RegisterPropertyRequestDTO, Property>();
         CreateMap<Property, PropertyResponseDTO>().ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name));
 
+        CreateMap<ActivationToken, ActivationTokenEntity>();
+        CreateMap<ActivationTokenEntity, ActivationToken>();
+
     }
 }
