@@ -5,9 +5,10 @@ import { Button } from "@mui/material";
 const BasicButton = ({ color, text, onClick }) => {
     return (
         <Button
+        
             variant="contained"
             color={color}
-            className="btn"
+            className="btn form-item"
             onClick={onClick}
         >
         {text}
