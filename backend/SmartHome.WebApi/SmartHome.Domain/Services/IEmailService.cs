@@ -10,5 +10,10 @@ namespace SmartHome.Domain.Services
     public interface IEmailService
     {
         Task SendActivationEmail(User user);
+
+        Task SendApprovePropertyEmail(User user, Property property);
+
+        Task SendRejectPropertyEmail(User user, Property property);
+
     }
 }
