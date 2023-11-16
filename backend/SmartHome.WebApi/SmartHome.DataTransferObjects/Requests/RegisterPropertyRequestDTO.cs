@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace SmartHome.DataTransferObjects.Requests
         [Range(1, 100, ErrorMessage = "Number of floors should be greater than 0")]
         public int NumberOfFloors { get; set; }
 
-        [Required(ErrorMessage = "Image URL is required")]
-        public string ImageUrl { get; set; }
+        [Required(ErrorMessage = "Image is required")]
+        public IFormFile ImageFile { get; set; }
     }
 }
