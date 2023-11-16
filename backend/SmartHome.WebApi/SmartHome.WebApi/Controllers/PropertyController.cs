@@ -18,13 +18,10 @@ namespace SmartHome.WebApi.Controllers
     public class PropertyController : BaseController
     {
         private readonly IPropertyService _propertyService;
-        private readonly ICityService _cityService;
-
-        public PropertyController(IPropertyService propertyService, ICityService cityService, IMapper mapper)
+        public PropertyController(IPropertyService propertyService, IMapper mapper)
             : base(mapper)
         {
             _propertyService = propertyService;
-            _cityService = cityService;
         }
 
         [HttpPost("")]
@@ -38,18 +35,13 @@ namespace SmartHome.WebApi.Controllers
 
             try
             {
-                City city = await _cityService.GetCityByNameAndCountry(propertyRequest.CityName,propertyRequest.CountryName);
-
                 Property property = _mapper.Map<Property>(propertyRequest);
 
                 property.UserId = _user.UserId;
-                property.CityId = city.Id;
 
                 await _propertyService.AddProperty(property);
 
-                property.City = city;
-
-                return Ok(_mapper.Map<PropertyResponseDTO>(property));
+                return Created("/", "Property successfuly created");
             }
             catch (ResourceNotFoundException ex)
             {
@@ -62,6 +54,7 @@ namespace SmartHome.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetPropertyById(Guid id)
         {
             try

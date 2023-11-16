@@ -13,13 +13,8 @@ namespace SmartHome.DataTransferObjects.Requests
         [StringLength(255, ErrorMessage = "Address should not exceed 255 characters")]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "City name is required")]
-        [StringLength(50, ErrorMessage = "City name should not exceed 50 characters")]
-        public string CityName { get; set; }
-
-        [Required(ErrorMessage = "Country name is required")]
-        [StringLength(50, ErrorMessage = "Country name should not exceed 50 characters")]
-        public string CountryName { get; set; }
+        [Required(ErrorMessage = "City id is required")]
+        public Guid CityId { get; set; }
 
         [Required(ErrorMessage = "Area square meters is required")]
         [Range(1, 1000, ErrorMessage = "Area square meters should be greater than 0")]

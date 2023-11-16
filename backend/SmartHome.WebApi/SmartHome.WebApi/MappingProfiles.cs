@@ -23,9 +23,7 @@ public class MappingProfiles : Profile
         CreateMap<UpdateUserRequestDTO, User>();
 
         CreateMap<RegisterPropertyRequestDTO, Property>();
-        CreateMap<Property, PropertyResponseDTO>();
-        CreateMap<City, CityResponseDTO>();
-        CreateMap<Country, CountryResponseDTO>();
+        CreateMap<Property, PropertyResponseDTO>().ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name));
 
     }
 }
