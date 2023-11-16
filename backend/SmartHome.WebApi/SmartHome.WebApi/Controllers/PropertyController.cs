@@ -19,12 +19,16 @@ namespace SmartHome.WebApi.Controllers
     {
         private readonly IPropertyService _propertyService;
         private readonly IFileService _fileService;
+        private readonly IEmailService _emailService;
+        private readonly IUserService _userService;
 
-        public PropertyController(IPropertyService propertyService, IFileService fileService, IMapper mapper)
+        public PropertyController(IPropertyService propertyService, IFileService fileService, IEmailService emailService, IUserService userService, IMapper mapper)
             : base(mapper)
         {
             _propertyService = propertyService;
             _fileService = fileService;
+            _emailService = emailService;
+            _userService = userService;
         }
 
         [HttpPost("")]
@@ -99,8 +103,9 @@ namespace SmartHome.WebApi.Controllers
                 property.Status = PropertyStatus.Approved;
                 await _propertyService.UpdateProperty(property);
 
-                // Send email to the user with approval confirmation
-                // ...
+                User userOfProperty = await _userService.GetById(property.UserId);
+
+                await _emailService.SendApprovePropertyEmail(userOfProperty, property);
 
                 return Ok($"Property {id} approved successfully");
             }
@@ -126,8 +131,9 @@ namespace SmartHome.WebApi.Controllers
                 property.Status = PropertyStatus.Rejected;
                 await _propertyService.UpdateProperty(property);
 
-                // Send email to the user with rejection information
-                // ...
+                User userOfProperty = await _userService.GetById(property.UserId);
+
+                await _emailService.SendRejectPropertyEmail(userOfProperty, property);
 
                 return Ok($"Property {id} rejected successfully");
             }
