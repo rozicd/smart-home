@@ -2,6 +2,7 @@
 using Azure;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities;
+using SmartHome.Domain.Exceptions;
 using SmartHome.Domain.Models;
 using SmartHome.Domain.Repositories;
 using System;
@@ -41,6 +42,16 @@ namespace SmartHome.Data.Repositories
         public Task DeleteOne(ActivationToken activationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ActivationToken> GetByUserAndToken(ActivationToken activationToken)
+        {
+            ActivationTokenEntity activationTokenEntity = await _activationTokens.FirstOrDefaultAsync(token => token.UserId == activationToken.UserId && token.Token == activationToken.Token);
+            if (activationTokenEntity == null)
+            {
+                throw new ResourceNotFoundException("Token does not exists for user: " + activationToken.UserId.ToString());
+            }
+            return _mapper.Map<ActivationToken>(activationTokenEntity);
         }
 
         public async Task<List<ActivationToken>> GetByUserId(Guid id)
