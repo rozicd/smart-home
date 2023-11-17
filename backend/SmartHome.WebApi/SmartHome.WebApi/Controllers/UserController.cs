@@ -39,8 +39,8 @@ namespace SmartHome.WebApi.Controllers
             User response = _mapper.Map<User>(user);
             response.ProfilePictureUrl = imagePath;
             User addedUser = await _userService.Add(response);
-            await _emailService.SendActivationEmail(addedUser);
-            await _activationTokenService.AddOne(addedUser.Id);
+            ActivationToken activationToken = await _activationTokenService.AddOne(addedUser.Id);
+            await _emailService.SendActivationEmail(addedUser, activationToken);
             return Ok(_mapper.Map<UserResponseDTO>(addedUser));
         }
 
@@ -65,8 +65,8 @@ namespace SmartHome.WebApi.Controllers
             }
             else
             {
-                await _emailService.SendActivationEmail(user);
-                await _activationTokenService.AddOne(user.Id);
+                ActivationToken newActivationToken = await _activationTokenService.AddOne(user.Id);
+                await _emailService.SendActivationEmail(user, newActivationToken);
                 return BadRequest("Token expired");
             }
         }
