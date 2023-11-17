@@ -12,8 +12,8 @@ using SmartHome.Data;
 namespace SmartHome.Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231115170748_add_cities_countries")]
-    partial class add_cities_countries
+    [Migration("20231117192756_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,27 @@ namespace SmartHome.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("SmartHome.Data.Entities.ActivationTokenEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("expires")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivationTokens");
+                });
 
             modelBuilder.Entity("SmartHome.Data.Entities.CityEntity", b =>
                 {
@@ -47,260 +68,260 @@ namespace SmartHome.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c85de4ae-6786-4e84-bc4e-40717952bd01"),
-                            CountryId = new Guid("ce95ee7c-d4ee-4d10-b520-b397180335c4"),
+                            Id = new Guid("20ddceb4-7067-4856-85d9-0875f1dfc4ea"),
+                            CountryId = new Guid("1478584d-069b-47de-92fd-6ef208cade1f"),
                             Name = "New York"
                         },
                         new
                         {
-                            Id = new Guid("77f5fe75-2f60-4a76-90e2-d445b2529344"),
-                            CountryId = new Guid("ce95ee7c-d4ee-4d10-b520-b397180335c4"),
+                            Id = new Guid("df83a8c4-4c65-4f04-bfd7-98b26082cc97"),
+                            CountryId = new Guid("1478584d-069b-47de-92fd-6ef208cade1f"),
                             Name = "Los Angeles"
                         },
                         new
                         {
-                            Id = new Guid("2385cbec-8697-4964-9b8a-b52f117be4d2"),
-                            CountryId = new Guid("ce95ee7c-d4ee-4d10-b520-b397180335c4"),
+                            Id = new Guid("a646b120-0742-4e1d-8481-0911b3589a83"),
+                            CountryId = new Guid("1478584d-069b-47de-92fd-6ef208cade1f"),
                             Name = "Chicago"
                         },
                         new
                         {
-                            Id = new Guid("e73c37f0-c4ab-4613-9ca5-26eae3400033"),
-                            CountryId = new Guid("e4537558-1c23-40e0-a559-df1074d26b45"),
+                            Id = new Guid("d49cc4b7-1747-4f15-886f-f1e709ab55a2"),
+                            CountryId = new Guid("0cfd1841-b5d4-445a-8cb0-ccdb87d6fbdd"),
                             Name = "London"
                         },
                         new
                         {
-                            Id = new Guid("c9432e20-beb8-4c61-b5c5-0dc1a9d4f406"),
-                            CountryId = new Guid("e1bfb08f-5636-44ec-a4db-bcc398d18f46"),
+                            Id = new Guid("7edfe7e0-4892-4c37-96d5-ea6af6fc464b"),
+                            CountryId = new Guid("43b5bc96-7ea1-463e-b2db-27ce64254211"),
                             Name = "Paris"
                         },
                         new
                         {
-                            Id = new Guid("23db35bb-9251-4202-b06e-5420672b74ad"),
-                            CountryId = new Guid("f74c5676-6f40-4447-9135-9fc19a7152bb"),
+                            Id = new Guid("1e082086-8cbd-4d41-97e0-ef39b1348bc7"),
+                            CountryId = new Guid("06dd92c2-c44d-4814-ab63-ce960ed8290f"),
                             Name = "Berlin"
                         },
                         new
                         {
-                            Id = new Guid("38215fbc-6ca2-4e10-85e1-d5be6c9af2fb"),
-                            CountryId = new Guid("ecba7d9e-9b4f-4610-8096-87f6eb663110"),
+                            Id = new Guid("359e1961-1533-424c-8d74-e767f8ce6324"),
+                            CountryId = new Guid("cc814ecb-1c19-46ee-a036-2eca2d8114b3"),
                             Name = "Tokyo"
                         },
                         new
                         {
-                            Id = new Guid("56b03cfb-48bc-44bc-b3d3-815cc5b964db"),
-                            CountryId = new Guid("aeb2da0d-5b65-47f3-83a0-12f6764db54f"),
+                            Id = new Guid("820e9017-4398-462b-b67f-61f267726a2b"),
+                            CountryId = new Guid("b40a59d7-4ab5-4c99-ae05-3e37efc66579"),
                             Name = "Beijing"
                         },
                         new
                         {
-                            Id = new Guid("eb220fbb-5364-40ef-babd-557fc8bfc3f8"),
-                            CountryId = new Guid("c7ead1d2-a1f0-4f1c-a6d4-561ecffdab3e"),
+                            Id = new Guid("b17b277b-d92b-4dad-87a0-84abfab5219a"),
+                            CountryId = new Guid("9b042fdd-a952-4075-8327-c75c9b8c5411"),
                             Name = "Sydney"
                         },
                         new
                         {
-                            Id = new Guid("d91146e7-06a7-4cf6-a6e0-ed52acf19e57"),
-                            CountryId = new Guid("f801aba6-6ef2-483c-b987-d29bfa0a22b2"),
+                            Id = new Guid("bd75d3f3-c0db-4ba2-87c1-bb313ab3f1b1"),
+                            CountryId = new Guid("ee64e289-25f6-42b5-bc49-567b5a131683"),
                             Name = "Toronto"
                         },
                         new
                         {
-                            Id = new Guid("f2009493-5511-4163-b8e1-e718236b1bcc"),
-                            CountryId = new Guid("06ae197e-f7ec-4c4e-9b33-7423bc09d158"),
+                            Id = new Guid("d076508b-f7c7-4770-af0c-0dc694602447"),
+                            CountryId = new Guid("6716c423-51cd-4fb7-bfbd-849673ca9593"),
                             Name = "Mumbai"
                         },
                         new
                         {
-                            Id = new Guid("e1ed0dce-24ad-4cc3-bc40-82e0536f9c4b"),
-                            CountryId = new Guid("353316dd-f171-4149-951f-272a234bf910"),
+                            Id = new Guid("9ba96868-e7b0-46c3-8708-490162036896"),
+                            CountryId = new Guid("1548304c-a478-493a-84f4-f44585959e50"),
                             Name = "Cape Town"
                         },
                         new
                         {
-                            Id = new Guid("6d2e2a48-45e2-4a9e-b0e7-e62918a22faf"),
-                            CountryId = new Guid("88547e50-5d34-4ae3-8384-6b671bf338ff"),
+                            Id = new Guid("4b993f25-baa6-4cca-b45c-ecc32bee7da6"),
+                            CountryId = new Guid("ba65f17e-e05f-4263-9cf1-d779ad33fef0"),
                             Name = "Rio de Janeiro"
                         },
                         new
                         {
-                            Id = new Guid("0ba6f3e8-0407-4dea-b92b-fd782a688a79"),
-                            CountryId = new Guid("001d0400-8069-4831-bd8a-e7960c77ca00"),
+                            Id = new Guid("89714f2f-5a09-4763-80b6-0586a0b502da"),
+                            CountryId = new Guid("37097464-d661-4f1b-8ac2-4da8f9868e4a"),
                             Name = "Moscow"
                         },
                         new
                         {
-                            Id = new Guid("ad8e4fb1-f933-4eef-b335-24f38697101a"),
-                            CountryId = new Guid("439e4dca-082a-48ac-a600-e4bb29baaf83"),
+                            Id = new Guid("6536976a-39b6-44f9-af31-be3e22c477af"),
+                            CountryId = new Guid("8f423c05-729a-4ef7-adf9-b0fe65ce4612"),
                             Name = "Dubai"
                         },
                         new
                         {
-                            Id = new Guid("5d957a27-5916-4094-9b79-dde9b259e68e"),
-                            CountryId = new Guid("4c6f861a-256b-40a3-a39b-030bfaebf0e8"),
+                            Id = new Guid("d41d3184-98aa-4c3e-8215-0e6944e6735e"),
+                            CountryId = new Guid("ec14a3fc-eb5f-4647-8e10-dd32a7f3574a"),
                             Name = "Stockholm"
                         },
                         new
                         {
-                            Id = new Guid("ab0a8e1f-e4d2-4f20-b776-681333d2e9ae"),
-                            CountryId = new Guid("246a520b-beda-4eec-9305-e9504761a0ad"),
+                            Id = new Guid("5bf81f79-3c65-4dbf-9066-05c191ac5ee9"),
+                            CountryId = new Guid("d0febddd-378b-4876-bdf9-f719be9f4c67"),
                             Name = "Seoul"
                         },
                         new
                         {
-                            Id = new Guid("467b1f83-a872-415c-9ecd-2e6d76dbfea5"),
-                            CountryId = new Guid("cca165f6-8567-491a-9a04-58a9fd715c10"),
+                            Id = new Guid("cfeee876-a8ed-4658-82ea-dd538a362fc4"),
+                            CountryId = new Guid("995e8ece-c156-4166-b2d0-dfc8285a2832"),
                             Name = "Mexico City"
                         },
                         new
                         {
-                            Id = new Guid("88ce900c-432b-4f46-8786-eea2d77b10ba"),
-                            CountryId = new Guid("81c593af-2a7f-4589-8862-e0caaadb1c21"),
+                            Id = new Guid("bc416699-ff2e-4821-8351-84d89f872f60"),
+                            CountryId = new Guid("9cb31c3f-9042-47f0-90d0-f4aa56a41405"),
                             Name = "Amsterdam"
                         },
                         new
                         {
-                            Id = new Guid("bd450c30-ad38-48d9-9654-a947f90dc4a5"),
-                            CountryId = new Guid("8e33f77e-ca76-40fb-b386-c10aaccfa4d3"),
+                            Id = new Guid("665722e8-eb10-4b78-9d63-b4b54f17fe1a"),
+                            CountryId = new Guid("ac212ca6-aa37-4909-b4b8-b92b89d78bb7"),
                             Name = "Oslo"
                         },
                         new
                         {
-                            Id = new Guid("71d48394-f90b-4c9b-8d69-50a0ba3fbd2e"),
-                            CountryId = new Guid("6d863dff-235e-4b1c-8310-be6d9564c3c5"),
+                            Id = new Guid("303fa09f-a6c5-45de-bdf1-1ee561347c32"),
+                            CountryId = new Guid("8bf343c2-09df-46df-940d-7883d01fe6bc"),
                             Name = "Hanoi"
                         },
                         new
                         {
-                            Id = new Guid("b583d9d6-8274-49de-9f56-1222caed1fcc"),
-                            CountryId = new Guid("2d153fbd-86b9-4cbd-a85a-edef793fa065"),
+                            Id = new Guid("93386d55-6200-4330-875c-06a7402566a8"),
+                            CountryId = new Guid("532f32c0-f543-42a6-8f8e-6cbb4f42b081"),
                             Name = "Bangkok"
                         },
                         new
                         {
-                            Id = new Guid("a9705c60-c172-4820-b7e8-eb160fd21443"),
-                            CountryId = new Guid("73229010-6971-4016-82c0-056de0a0ee5a"),
+                            Id = new Guid("5d4f0bad-7440-439e-b894-97bcb4c3dd25"),
+                            CountryId = new Guid("c1acf1ae-166b-4f71-9b59-9477812433b0"),
                             Name = "Istanbul"
                         },
                         new
                         {
-                            Id = new Guid("9846bc0f-e3b1-4778-9aa5-33352f9e4215"),
-                            CountryId = new Guid("60d49e4e-d733-4dbb-a4e9-ed89ae388fd3"),
+                            Id = new Guid("27be2e82-3241-497b-90d7-5d3e6203ea9b"),
+                            CountryId = new Guid("8699358d-9be8-47e0-bb42-54709d29ccdb"),
                             Name = "Buenos Aires"
                         },
                         new
                         {
-                            Id = new Guid("0ceb5e2e-e328-42e6-8733-0febc8a9a869"),
-                            CountryId = new Guid("310ae403-e2d9-425b-ae37-11f9e6eba134"),
+                            Id = new Guid("c7773161-ebf8-4828-bef6-76c0d536efbb"),
+                            CountryId = new Guid("e98ad58c-cf1c-47fb-a8f0-f8e498bc2ab6"),
                             Name = "Rome"
                         },
                         new
                         {
-                            Id = new Guid("fa9fd9a2-21b5-448c-abf8-3d00df2b8b74"),
-                            CountryId = new Guid("39a1c684-b99e-4fc5-835b-4cfa4e7cb86a"),
+                            Id = new Guid("992060c4-af0d-48ee-9561-feab1652e83b"),
+                            CountryId = new Guid("6a5e6e43-da91-4005-99cc-c90dcba2b3f8"),
                             Name = "Cairo"
                         },
                         new
                         {
-                            Id = new Guid("a123633b-a109-47dc-a4c0-0afa18e8be4d"),
-                            CountryId = new Guid("a8f8631f-1671-4c1c-a9d6-6d919969e471"),
+                            Id = new Guid("41981db6-75dd-40be-97c4-bc567a885f5a"),
+                            CountryId = new Guid("4ad9c6ba-e389-4fed-baca-c56641b8013d"),
                             Name = "Lagos"
                         },
                         new
                         {
-                            Id = new Guid("b54d6e16-d2c6-4e0a-abc8-5dabc7e6f2f5"),
-                            CountryId = new Guid("3fe69907-2c99-4cb3-b5e2-919998a72dcf"),
+                            Id = new Guid("2ea1b97f-8ea0-408c-bacb-3321ca1e3387"),
+                            CountryId = new Guid("197c0d6a-b9c9-4f45-87c1-b82805de3bb2"),
                             Name = "Auckland"
                         },
                         new
                         {
-                            Id = new Guid("bb0f731f-d58e-4bcc-880b-2477a4f37b73"),
-                            CountryId = new Guid("c04042c6-c471-4d2c-9617-2916a3c66bdc"),
+                            Id = new Guid("bd8cb84e-2959-4876-8b27-40c866f23d25"),
+                            CountryId = new Guid("eaf5efeb-9a03-403b-b6bf-0ee79e12d0f9"),
                             Name = "Nairobi"
                         },
                         new
                         {
-                            Id = new Guid("8b07b70a-b51c-405c-9a5e-d2b00de0fbde"),
-                            CountryId = new Guid("55ac250e-9ff3-4dd1-8450-b3640517d08d"),
+                            Id = new Guid("5ac51440-e7fa-42a8-8138-c82ef34221b0"),
+                            CountryId = new Guid("539b5c83-9940-400d-a009-18cd514a4978"),
                             Name = "Barcelona"
                         },
                         new
                         {
-                            Id = new Guid("0b5e7297-0c91-462e-97ba-c979312b1c34"),
-                            CountryId = new Guid("0b2c3386-02e3-4147-a756-485ffb6a4b35"),
+                            Id = new Guid("c60d5a9b-a00d-4c8e-ae8c-48735a1360d6"),
+                            CountryId = new Guid("d5ba2bee-be50-4d29-9d6b-085b2497e92b"),
                             Name = "Athens"
                         },
                         new
                         {
-                            Id = new Guid("9c0c80b9-02bf-4fe5-b713-9c50525d64d6"),
-                            CountryId = new Guid("5bf24e24-1dc0-480c-ae29-345d828a1ca4"),
+                            Id = new Guid("37d097d8-4ad0-4bad-8bc4-f85f6dbe7ca9"),
+                            CountryId = new Guid("e1c14968-85d9-43d0-bc82-6ab36686a9d2"),
                             Name = "Dublin"
                         },
                         new
                         {
-                            Id = new Guid("85513312-3315-4536-804f-7ed3f332152d"),
-                            CountryId = new Guid("cdd4d44f-8a6f-4136-8d3c-c03905d14f46"),
+                            Id = new Guid("4facaf26-18d2-4dda-961e-cc4053ccfb1a"),
+                            CountryId = new Guid("94caf35f-0eb8-4589-af3e-ad35a0b26df9"),
                             Name = "Zurich"
                         },
                         new
                         {
-                            Id = new Guid("3e044031-f4ff-4329-92be-87111328bf5b"),
-                            CountryId = new Guid("4a158e35-abd5-4cd6-8255-ee3920bb542b"),
+                            Id = new Guid("84aa591e-7039-49de-8863-424fe651ea7a"),
+                            CountryId = new Guid("cf91ef8d-9f6a-4d41-9a25-33bc798b379a"),
                             Name = "Singapore"
                         },
                         new
                         {
-                            Id = new Guid("8fde6d88-6914-4b67-b062-aaf79b8aa22f"),
-                            CountryId = new Guid("ac48a9dd-df13-49a3-87fa-012c27900b62"),
+                            Id = new Guid("1508de43-39d9-4441-b9bd-624f71ebecda"),
+                            CountryId = new Guid("2b21ddfc-f5e1-4727-b925-fbf8e151a18f"),
                             Name = "Vienna"
                         },
                         new
                         {
-                            Id = new Guid("bd818fda-668d-47cf-a7c4-7a594f4deb22"),
-                            CountryId = new Guid("aeb2da0d-5b65-47f3-83a0-12f6764db54f"),
+                            Id = new Guid("0ca4b9e9-90e9-4758-94a5-b028a3bc7ed0"),
+                            CountryId = new Guid("b40a59d7-4ab5-4c99-ae05-3e37efc66579"),
                             Name = "Hong Kong"
                         },
                         new
                         {
-                            Id = new Guid("068676fd-eb30-4360-9228-671e5f3af640"),
-                            CountryId = new Guid("d9bb4c52-7c1d-447b-8b2c-93d454e76491"),
+                            Id = new Guid("0af181c9-d8e2-427e-9e87-44d9a2682c17"),
+                            CountryId = new Guid("7a6d4c15-7755-4dd8-8f3e-edb02d21c6d4"),
                             Name = "Copenhagen"
                         },
                         new
                         {
-                            Id = new Guid("2257b18d-d7f0-451a-992d-7c821a3eb8c8"),
-                            CountryId = new Guid("e9298563-8669-4661-900a-348a366e48db"),
+                            Id = new Guid("35ec4e8f-d9b3-40f1-bc8a-27cf789acf41"),
+                            CountryId = new Guid("32997d44-8920-458f-a605-98012b218834"),
                             Name = "Lisbon"
                         },
                         new
                         {
-                            Id = new Guid("90fbf35a-de7c-4d55-8f87-cadbdec2af05"),
-                            CountryId = new Guid("04f751fd-5041-40d4-a460-8644cff8d689"),
+                            Id = new Guid("828ed3ef-dd91-4b86-bc3e-85e8b413a199"),
+                            CountryId = new Guid("ea269c6a-b06c-4f02-b109-db69ecc0fc23"),
                             Name = "Warsaw"
                         },
                         new
                         {
-                            Id = new Guid("e805b847-df83-42db-841d-58553b5e5376"),
-                            CountryId = new Guid("ad494b8c-1712-4dae-856e-b298c5594c0e"),
+                            Id = new Guid("ff541c87-43db-47fb-bbb0-3a9296cf1a5f"),
+                            CountryId = new Guid("5ba10523-3f8d-4219-8fbf-e7f93f931ae0"),
                             Name = "Prague"
                         },
                         new
                         {
-                            Id = new Guid("678c7c05-d356-466f-9417-02aaa072e65b"),
-                            CountryId = new Guid("6e193476-c988-41a2-8a75-c5b6801d0caf"),
+                            Id = new Guid("8bb45d03-a74f-477a-911c-5abc3d8c48e6"),
+                            CountryId = new Guid("ff9d59af-942e-4003-9572-c4a799ac16f5"),
                             Name = "Budapest"
                         },
                         new
                         {
-                            Id = new Guid("fd110166-ec59-4b39-a852-5cbace1b2444"),
-                            CountryId = new Guid("5fe2e7b2-2a1f-432a-8389-a4649ac221a5"),
+                            Id = new Guid("f63f771d-c5a6-4977-aea0-81fd56d88a90"),
+                            CountryId = new Guid("3cc80109-9496-4382-a1c0-d93f9e601bf6"),
                             Name = "Brussels"
                         },
                         new
                         {
-                            Id = new Guid("46c42b20-da6a-46f8-86f2-c6e780b59b74"),
-                            CountryId = new Guid("95539198-93cd-4555-a3b9-65c28486cc5f"),
+                            Id = new Guid("6151a5fa-f20c-4345-bc1a-88af8641c52b"),
+                            CountryId = new Guid("7b2bedd5-e276-467c-85cd-3678d83a3681"),
                             Name = "Helsinki"
                         });
                 });
@@ -322,204 +343,240 @@ namespace SmartHome.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ce95ee7c-d4ee-4d10-b520-b397180335c4"),
+                            Id = new Guid("1478584d-069b-47de-92fd-6ef208cade1f"),
                             Name = "USA"
                         },
                         new
                         {
-                            Id = new Guid("e4537558-1c23-40e0-a559-df1074d26b45"),
+                            Id = new Guid("0cfd1841-b5d4-445a-8cb0-ccdb87d6fbdd"),
                             Name = "UK"
                         },
                         new
                         {
-                            Id = new Guid("e1bfb08f-5636-44ec-a4db-bcc398d18f46"),
+                            Id = new Guid("43b5bc96-7ea1-463e-b2db-27ce64254211"),
                             Name = "France"
                         },
                         new
                         {
-                            Id = new Guid("f74c5676-6f40-4447-9135-9fc19a7152bb"),
+                            Id = new Guid("06dd92c2-c44d-4814-ab63-ce960ed8290f"),
                             Name = "Germany"
                         },
                         new
                         {
-                            Id = new Guid("ecba7d9e-9b4f-4610-8096-87f6eb663110"),
+                            Id = new Guid("cc814ecb-1c19-46ee-a036-2eca2d8114b3"),
                             Name = "Japan"
                         },
                         new
                         {
-                            Id = new Guid("aeb2da0d-5b65-47f3-83a0-12f6764db54f"),
+                            Id = new Guid("b40a59d7-4ab5-4c99-ae05-3e37efc66579"),
                             Name = "China"
                         },
                         new
                         {
-                            Id = new Guid("c7ead1d2-a1f0-4f1c-a6d4-561ecffdab3e"),
+                            Id = new Guid("9b042fdd-a952-4075-8327-c75c9b8c5411"),
                             Name = "Australia"
                         },
                         new
                         {
-                            Id = new Guid("f801aba6-6ef2-483c-b987-d29bfa0a22b2"),
+                            Id = new Guid("ee64e289-25f6-42b5-bc49-567b5a131683"),
                             Name = "Canada"
                         },
                         new
                         {
-                            Id = new Guid("06ae197e-f7ec-4c4e-9b33-7423bc09d158"),
+                            Id = new Guid("6716c423-51cd-4fb7-bfbd-849673ca9593"),
                             Name = "India"
                         },
                         new
                         {
-                            Id = new Guid("353316dd-f171-4149-951f-272a234bf910"),
+                            Id = new Guid("1548304c-a478-493a-84f4-f44585959e50"),
                             Name = "South Africa"
                         },
                         new
                         {
-                            Id = new Guid("88547e50-5d34-4ae3-8384-6b671bf338ff"),
+                            Id = new Guid("ba65f17e-e05f-4263-9cf1-d779ad33fef0"),
                             Name = "Brazil"
                         },
                         new
                         {
-                            Id = new Guid("001d0400-8069-4831-bd8a-e7960c77ca00"),
+                            Id = new Guid("37097464-d661-4f1b-8ac2-4da8f9868e4a"),
                             Name = "Russia"
                         },
                         new
                         {
-                            Id = new Guid("439e4dca-082a-48ac-a600-e4bb29baaf83"),
+                            Id = new Guid("8f423c05-729a-4ef7-adf9-b0fe65ce4612"),
                             Name = "UAE"
                         },
                         new
                         {
-                            Id = new Guid("4c6f861a-256b-40a3-a39b-030bfaebf0e8"),
+                            Id = new Guid("ec14a3fc-eb5f-4647-8e10-dd32a7f3574a"),
                             Name = "Sweden"
                         },
                         new
                         {
-                            Id = new Guid("246a520b-beda-4eec-9305-e9504761a0ad"),
+                            Id = new Guid("d0febddd-378b-4876-bdf9-f719be9f4c67"),
                             Name = "South Korea"
                         },
                         new
                         {
-                            Id = new Guid("cca165f6-8567-491a-9a04-58a9fd715c10"),
+                            Id = new Guid("995e8ece-c156-4166-b2d0-dfc8285a2832"),
                             Name = "Mexico"
                         },
                         new
                         {
-                            Id = new Guid("81c593af-2a7f-4589-8862-e0caaadb1c21"),
+                            Id = new Guid("9cb31c3f-9042-47f0-90d0-f4aa56a41405"),
                             Name = "Netherlands"
                         },
                         new
                         {
-                            Id = new Guid("8e33f77e-ca76-40fb-b386-c10aaccfa4d3"),
+                            Id = new Guid("ac212ca6-aa37-4909-b4b8-b92b89d78bb7"),
                             Name = "Norway"
                         },
                         new
                         {
-                            Id = new Guid("6d863dff-235e-4b1c-8310-be6d9564c3c5"),
+                            Id = new Guid("8bf343c2-09df-46df-940d-7883d01fe6bc"),
                             Name = "Vietnam"
                         },
                         new
                         {
-                            Id = new Guid("2d153fbd-86b9-4cbd-a85a-edef793fa065"),
+                            Id = new Guid("532f32c0-f543-42a6-8f8e-6cbb4f42b081"),
                             Name = "Thailand"
                         },
                         new
                         {
-                            Id = new Guid("73229010-6971-4016-82c0-056de0a0ee5a"),
+                            Id = new Guid("c1acf1ae-166b-4f71-9b59-9477812433b0"),
                             Name = "Turkey"
                         },
                         new
                         {
-                            Id = new Guid("60d49e4e-d733-4dbb-a4e9-ed89ae388fd3"),
+                            Id = new Guid("8699358d-9be8-47e0-bb42-54709d29ccdb"),
                             Name = "Argentina"
                         },
                         new
                         {
-                            Id = new Guid("310ae403-e2d9-425b-ae37-11f9e6eba134"),
+                            Id = new Guid("e98ad58c-cf1c-47fb-a8f0-f8e498bc2ab6"),
                             Name = "Italy"
                         },
                         new
                         {
-                            Id = new Guid("39a1c684-b99e-4fc5-835b-4cfa4e7cb86a"),
+                            Id = new Guid("6a5e6e43-da91-4005-99cc-c90dcba2b3f8"),
                             Name = "Egypt"
                         },
                         new
                         {
-                            Id = new Guid("a8f8631f-1671-4c1c-a9d6-6d919969e471"),
+                            Id = new Guid("4ad9c6ba-e389-4fed-baca-c56641b8013d"),
                             Name = "Nigeria"
                         },
                         new
                         {
-                            Id = new Guid("3fe69907-2c99-4cb3-b5e2-919998a72dcf"),
+                            Id = new Guid("197c0d6a-b9c9-4f45-87c1-b82805de3bb2"),
                             Name = "New Zealand"
                         },
                         new
                         {
-                            Id = new Guid("c04042c6-c471-4d2c-9617-2916a3c66bdc"),
+                            Id = new Guid("eaf5efeb-9a03-403b-b6bf-0ee79e12d0f9"),
                             Name = "Kenya"
                         },
                         new
                         {
-                            Id = new Guid("55ac250e-9ff3-4dd1-8450-b3640517d08d"),
+                            Id = new Guid("539b5c83-9940-400d-a009-18cd514a4978"),
                             Name = "Spain"
                         },
                         new
                         {
-                            Id = new Guid("0b2c3386-02e3-4147-a756-485ffb6a4b35"),
+                            Id = new Guid("d5ba2bee-be50-4d29-9d6b-085b2497e92b"),
                             Name = "Greece"
                         },
                         new
                         {
-                            Id = new Guid("5bf24e24-1dc0-480c-ae29-345d828a1ca4"),
+                            Id = new Guid("e1c14968-85d9-43d0-bc82-6ab36686a9d2"),
                             Name = "Ireland"
                         },
                         new
                         {
-                            Id = new Guid("cdd4d44f-8a6f-4136-8d3c-c03905d14f46"),
+                            Id = new Guid("94caf35f-0eb8-4589-af3e-ad35a0b26df9"),
                             Name = "Switzerland"
                         },
                         new
                         {
-                            Id = new Guid("4a158e35-abd5-4cd6-8255-ee3920bb542b"),
+                            Id = new Guid("cf91ef8d-9f6a-4d41-9a25-33bc798b379a"),
                             Name = "Singapore"
                         },
                         new
                         {
-                            Id = new Guid("ac48a9dd-df13-49a3-87fa-012c27900b62"),
+                            Id = new Guid("2b21ddfc-f5e1-4727-b925-fbf8e151a18f"),
                             Name = "Austria"
                         },
                         new
                         {
-                            Id = new Guid("d9bb4c52-7c1d-447b-8b2c-93d454e76491"),
+                            Id = new Guid("7a6d4c15-7755-4dd8-8f3e-edb02d21c6d4"),
                             Name = "Denmark"
                         },
                         new
                         {
-                            Id = new Guid("e9298563-8669-4661-900a-348a366e48db"),
+                            Id = new Guid("32997d44-8920-458f-a605-98012b218834"),
                             Name = "Portugal"
                         },
                         new
                         {
-                            Id = new Guid("04f751fd-5041-40d4-a460-8644cff8d689"),
+                            Id = new Guid("ea269c6a-b06c-4f02-b109-db69ecc0fc23"),
                             Name = "Poland"
                         },
                         new
                         {
-                            Id = new Guid("ad494b8c-1712-4dae-856e-b298c5594c0e"),
+                            Id = new Guid("5ba10523-3f8d-4219-8fbf-e7f93f931ae0"),
                             Name = "Czech Republic"
                         },
                         new
                         {
-                            Id = new Guid("6e193476-c988-41a2-8a75-c5b6801d0caf"),
+                            Id = new Guid("ff9d59af-942e-4003-9572-c4a799ac16f5"),
                             Name = "Hungary"
                         },
                         new
                         {
-                            Id = new Guid("5fe2e7b2-2a1f-432a-8389-a4649ac221a5"),
+                            Id = new Guid("3cc80109-9496-4382-a1c0-d93f9e601bf6"),
                             Name = "Belgium"
                         },
                         new
                         {
-                            Id = new Guid("95539198-93cd-4555-a3b9-65c28486cc5f"),
+                            Id = new Guid("7b2bedd5-e276-467c-85cd-3678d83a3681"),
                             Name = "Finland"
                         });
+                });
+
+            modelBuilder.Entity("SmartHome.Data.Entities.EnvironmentalConditionsSensorEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Connection")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("DeviceStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DeviceType")
+                        .HasColumnType("integer");
+
+                    b.Property<float>("EnergySpending")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PowerSupply")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EnvironmentalConditionsSensors");
                 });
 
             modelBuilder.Entity("SmartHome.Data.Entities.PropertyEntity", b =>
@@ -547,10 +604,6 @@ namespace SmartHome.Data.Migrations
 
                     b.Property<int>("NumberOfFloors")
                         .HasColumnType("integer");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -603,6 +656,17 @@ namespace SmartHome.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("SmartHome.Data.Entities.EnvironmentalConditionsSensorEntity", b =>
+                {
+                    b.HasOne("SmartHome.Data.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SmartHome.Data.Entities.PropertyEntity", b =>
