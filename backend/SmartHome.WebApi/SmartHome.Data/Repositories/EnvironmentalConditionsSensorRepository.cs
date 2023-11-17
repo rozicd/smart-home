@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace SmartHome.Data.Repositories
 {
@@ -26,6 +27,10 @@ namespace SmartHome.Data.Repositories
 
         public async Task Add(EnvironmentalConditionsSensor device)
         {
+            device.PowerSupply = PowerSupplyType.HOME;
+            device.DeviceStatus = DeviceStatus.OFFLINE;
+            device.DeviceType = DeviceType.HSD;
+            device.Connection = "";
             EnvironmentalConditionsSensorEntity sensorEntity = _mapper.Map<EnvironmentalConditionsSensorEntity>(device);
             await _environmentalConditionsSensors.AddAsync(sensorEntity);
             await _context.SaveChangesAsync();
@@ -58,14 +63,19 @@ namespace SmartHome.Data.Repositories
             {
                 throw new ResourceNotFoundException($"EnvironmentalConditionsSensor with Id {device.Id} not found.");
             }
-
-            _mapper.Map(device, existingSensor);
+            existingSensor.DeviceStatus = device.DeviceStatus;
             await _context.SaveChangesAsync();
         }
 
-        public async Task Connect(Guid id)
+        public async Task Connect(Guid id, string address)
         {
-            // Implementation for Connect
+            var sensor = await _environmentalConditionsSensors.FirstOrDefaultAsync(s => s.Id == id);
+            if (sensor == null)
+            {
+                throw new ResourceNotFoundException($"EnvironmentalConditionsSensor with Id {id} not found.");
+            }
+            sensor.Connection = address;
+            await _context.SaveChangesAsync();
         }
     }
 }

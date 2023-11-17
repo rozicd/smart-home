@@ -13,7 +13,11 @@ namespace SmartHome.Domain.Services
         Task<IEnumerable<T>> GetSmartDevicesByUserId(Guid userId);
         Task<T> GetById(Guid id);
         Task Update(T device);
-        Task Connect(Guid id);
+        Task Connect(Guid id, string address);
+        Task PowerOn(Guid id);
+        Task PowerOff(Guid id);
+
+
 
     }
 }

@@ -11,10 +11,7 @@ namespace SmartHome.Domain.Models
     {
         public EnvironmentalConditionsSensor() 
         {
-            PowerSupply = PowerSupplyType.HOME;
-            DeviceStatus = DeviceStatus.OFFLINE;
-            DeviceType = DeviceType.HSD;
-            Connection = "";
+           
         }
     }
 }

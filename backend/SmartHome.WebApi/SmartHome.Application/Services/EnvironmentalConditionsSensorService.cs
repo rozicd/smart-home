@@ -1,4 +1,5 @@
-﻿using SmartHome.Domain.Models;
+﻿using MQTTnet;
+using SmartHome.Domain.Models;
 using SmartHome.Domain.Repositories;
 using SmartHome.Domain.Services;
 using System;
@@ -10,10 +11,13 @@ namespace SmartHome.Application.Services
     public class EnvironmentalConditionsSensorService : IEnvironmentalConditionsSensorService
     {
         private readonly IEnvironmentalConditionsSensorRepository _sensorRepository;
+        private readonly IMqttClientService _mqttClientService;
 
-        public EnvironmentalConditionsSensorService(IEnvironmentalConditionsSensorRepository sensorRepository)
+        public EnvironmentalConditionsSensorService(IEnvironmentalConditionsSensorRepository sensorRepository, IMqttClientService mqttClientService)
         {
             _sensorRepository = sensorRepository;
+            _mqttClientService = mqttClientService;
+
         }
 
         public async Task Add(EnvironmentalConditionsSensor sensor)
@@ -36,9 +40,37 @@ namespace SmartHome.Application.Services
             await _sensorRepository.Update(sensor);
         }
 
-        public async Task Connect(Guid id)
+        public async Task Connect(Guid id, string address)
         {
-            await _sensorRepository.Connect(id);
+            await _sensorRepository.Connect(id,address);
+        }
+
+        public async Task PowerOn(Guid id)
+        {
+
+            EnvironmentalConditionsSensor ecs = await GetById(id);
+            if (ecs.DeviceStatus == DeviceStatus.ONLINE) return;
+            await _mqttClientService.ConnectAsync();
+            await _mqttClientService.PublishMessageAsync(ecs.Connection, "PowerOn");
+            await _mqttClientService.SubscribeAsync("esc/status");
+            ecs.DeviceStatus = DeviceStatus.ONLINE;
+            await Update(ecs);
+
+
+            return;
+        }
+        public async Task PowerOff(Guid id)
+        {
+            EnvironmentalConditionsSensor ecs = await GetById(id);
+            if (ecs.DeviceStatus == DeviceStatus.OFFLINE) return;
+            await _mqttClientService.ConnectAsync();
+            await _mqttClientService.PublishMessageAsync(ecs.Connection, "PowerOff");
+            await _mqttClientService.UnubscribeAsync("esc/status");
+            ecs.DeviceStatus = DeviceStatus.OFFLINE;
+            await Update(ecs);
+
+
+            return;
         }
     }
 }
