@@ -37,6 +37,16 @@ builder.Services.AddScoped<IMqttClientService, MqttClientService>();
 
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontendLocal", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000") 
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+    });
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -81,7 +91,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontendLocal");
 app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -93,6 +103,7 @@ app.UseAuthorization();
 app.UseMiddleware<ClaimsMiddleware>();
 
 app.MapControllers();
+
 
 using (var scope = app.Services.CreateScope())
 {

@@ -1,0 +1,17 @@
+.user-properties-container {
+    max-width: 1000px; /* Adjust the maximum width as needed */
+    margin: auto; /* Center the container horizontally */
+    overflow-y: auto; /* Add vertical scroll if content overflows */
+    padding: 20px; /* Add padding for spacing */
+  }
+  
+  .page-title {
+    text-align: center;
+  }
+  
+  .property-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  

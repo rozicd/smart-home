@@ -18,8 +18,8 @@ namespace SmartHome.Domain.Models
     }
     public enum Status
     {
-        ACTIVE,
-        INACTIVE
+        INACTIVE,
+        ACTIVE
     }
 
     public enum Role

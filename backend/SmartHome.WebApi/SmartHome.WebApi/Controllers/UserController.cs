@@ -48,6 +48,25 @@ namespace SmartHome.WebApi.Controllers
             return Ok("User Updated!");
         }
 
+        [HttpPut("activate")]
+        public async Task<IActionResult> ActivateUser([FromBody] ActivationTokenRequestDTO activationTokenRequestDTO)
+        {
+            ActivationToken activationToken = _mapper.Map<ActivationToken>(activationTokenRequestDTO);
+            User user = await _userService.GetById(activationToken.UserId);
+            if(_activationTokenService.IsTokenValid(activationToken).Result)
+            {
+                user.Status = Status.ACTIVE;
+                await _userService.Update(user);
+                return Ok("Account activated successfuly!");
+            }
+            else
+            {
+                await _emailService.SendActivationEmail(user);
+                await _activationTokenService.AddOne(user.Id);
+                return BadRequest("Token expired");
+            }
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest credentials)
         {

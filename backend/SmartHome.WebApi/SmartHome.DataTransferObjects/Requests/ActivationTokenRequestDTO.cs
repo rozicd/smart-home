@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHome.Domain.Models
+namespace SmartHome.DataTransferObjects.Requests
 {
-    public class ActivationToken
+    public class ActivationTokenRequestDTO
     {
-        public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string Token { get; set; }
-        public DateTime expires { get; set; }
     }
 }

@@ -87,6 +87,31 @@ namespace SmartHome.WebApi.Controllers
             }
         }
 
+        [HttpGet("user/{userId}")]
+        [Authorize(Roles = "USER")]
+        public async Task<IActionResult> GetPropertiesByUserId(Guid userId)
+        {
+            try
+            {
+                var properties = await _propertyService.GetPropertiesByUserId(userId);
+        
+                Console.WriteLine(properties.FirstOrDefault().City.Country.Name); 
+                if (properties == null || properties.Count() == 0)
+                {
+                    return NotFound("No properties found for the user");
+                }
+
+                var propertyResponseDTOs = _mapper.Map<List<PropertyResponseDTO>>(properties);
+
+                Console.WriteLine(propertyResponseDTOs.FirstOrDefault().CountryName);
+                return Ok(propertyResponseDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+        }
+
         [HttpPost("{id}/approve")]
         [Authorize(Roles = "ADMIN,SUPERADMIN")]
         public async Task<IActionResult> ApproveProperty(Guid id)
