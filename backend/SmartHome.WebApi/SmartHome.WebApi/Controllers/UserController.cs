@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using SmartHome.Application.Services;
 using SmartHome.DataTransferObjects.Requests;
 using SmartHome.DataTransferObjects.Responses;
 using SmartHome.Domain.Models;
@@ -18,22 +19,25 @@ namespace SmartHome.WebApi.Controllers
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly IActivationTokenService _activationTokenService;
-
-        public UserController(IUserService userService, IEmailService emailService, IActivationTokenService activationTokenService,IMapper mapper) : base(mapper)
+        private readonly IFileService _fileService;
+        public UserController(IUserService userService, IEmailService emailService, IFileService fileService, IActivationTokenService activationTokenService,IMapper mapper) : base(mapper)
         {
             _userService = userService;
             _emailService = emailService;
             _activationTokenService = activationTokenService;
+            _fileService = fileService;
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO user)
+        public async Task<IActionResult> AddUser([FromForm] CreateUserRequestDTO user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            string imagePath = await _fileService.SaveImageAsync(user.ImageFile, "static/users");
             User response = _mapper.Map<User>(user);
+            response.ProfilePictureUrl = imagePath;
             User addedUser = await _userService.Add(response);
             await _emailService.SendActivationEmail(addedUser);
             await _activationTokenService.AddOne(addedUser.Id);
