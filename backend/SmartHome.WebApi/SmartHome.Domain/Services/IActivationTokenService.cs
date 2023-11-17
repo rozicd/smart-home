@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHome.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace SmartHome.Domain.Services
     public interface IActivationTokenService
     {
         Task AddOne(Guid id);
+        Task<bool> IsTokenValid(ActivationToken activationToken);
     }
 }

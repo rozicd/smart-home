@@ -11,7 +11,7 @@ namespace SmartHome.Domain.Repositories
     {
         Task AddOne(Guid userId);
         Task DeleteOne(ActivationToken activationToken);
-
+        Task<ActivationToken> GetByUserAndToken(ActivationToken activationToken);
         Task<List<ActivationToken>> GetByUserId(Guid id);
     }
 }

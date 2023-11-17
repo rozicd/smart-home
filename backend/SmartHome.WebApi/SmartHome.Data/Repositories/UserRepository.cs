@@ -94,6 +94,7 @@ namespace SmartHome.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+
     }
 
 }
