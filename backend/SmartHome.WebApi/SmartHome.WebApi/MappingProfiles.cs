@@ -12,6 +12,8 @@ public class MappingProfiles : Profile
     {
         CreateMap<User, UserEntity>();
         CreateMap<UserEntity, User>();
+        CreateMap<EnvironmentalConditionsSensor, EnvironmentalConditionsSensorEntity>();
+        CreateMap<EnvironmentalConditionsSensorEntity, EnvironmentalConditionsSensor>();
         CreateMap<Property, PropertyEntity>();
         CreateMap<PropertyEntity, Property>();
         CreateMap<City, CityEntity>();
@@ -22,8 +24,9 @@ public class MappingProfiles : Profile
         CreateMap<User, UserResponseDTO>();
         CreateMap<UpdateUserRequestDTO, User>();
 
+        CreateMap<CreateECSRequestDTO, EnvironmentalConditionsSensor>();
         CreateMap<RegisterPropertyRequestDTO, Property>();
-        CreateMap<Property, PropertyResponseDTO>().ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name));
+        CreateMap<Property, PropertyResponseDTO>().ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City.Country.Name));
 
         CreateMap<ActivationToken, ActivationTokenEntity>();
         CreateMap<ActivationTokenEntity, ActivationToken>();

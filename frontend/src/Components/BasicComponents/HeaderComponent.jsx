@@ -1,6 +1,5 @@
 import React from "react";
 import "./basic-items.css";
-import { Button } from "@mui/material";
 
 const HeaderComponent = ({ name }) => {
     return (

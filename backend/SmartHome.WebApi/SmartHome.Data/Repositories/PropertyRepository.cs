@@ -34,7 +34,11 @@ namespace SmartHome.Data.Repositories
 
         public async Task<IEnumerable<Property>> GetPropertiesByUserId(Guid userId)
         {
-            var properties = await _properties.Where(p => p.UserId == userId).ToListAsync();
+            var properties = await _properties
+                    .Include(p => p.City)
+                        .ThenInclude(c => c.Country)
+                    .Where(p => p.UserId == userId)
+                    .ToListAsync();
             return _mapper.Map<IEnumerable<Property>>(properties);
         }
 

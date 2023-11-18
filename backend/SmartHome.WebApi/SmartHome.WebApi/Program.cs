@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
+using MQTTnet.Client;
 using SmartHome.Application.Services;
 using SmartHome.Data;
 using SmartHome.Data.Repositories;
@@ -28,7 +29,24 @@ builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IEnvironmentalConditionsSensorRepository, EnvironmentalConditionsSensorRepository>();
+builder.Services.AddScoped<IEnvironmentalConditionsSensorService, EnvironmentalConditionsSensorService>();
+builder.Services.AddScoped<IMqttClientService, MqttClientService>();
 
+
+
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontendLocal", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000") 
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+    });
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -73,7 +91,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontendLocal");
 app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -85,6 +103,7 @@ app.UseAuthorization();
 app.UseMiddleware<ClaimsMiddleware>();
 
 app.MapControllers();
+
 
 using (var scope = app.Services.CreateScope())
 {
