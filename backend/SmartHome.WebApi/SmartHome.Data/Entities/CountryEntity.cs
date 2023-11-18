@@ -10,6 +10,6 @@ namespace SmartHome.Data.Entities
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<CityEntity> Cities { get; set; }
+        public virtual ICollection<CityEntity> Cities { get; set; }
     }
 }

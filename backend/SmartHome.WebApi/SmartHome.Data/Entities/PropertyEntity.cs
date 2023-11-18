@@ -12,7 +12,7 @@ namespace SmartHome.Data.Entities
         public Guid Id { get; set; }
         public string Address { get; set; }
         public Guid CityId { get; set; }
-        public CityEntity City { get; set; }
+        public virtual CityEntity City { get; set; }
         public double AreaSquareMeters { get; set; }
         public int NumberOfFloors { get; set; }
         public string ImageUrl { get; set; }

@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using SmartHome.Domain.Models;
 using SmartHome.Domain.Repositories;
 
-public interface IEnvironmentalConditionsSensorRepository : ISmartDeviceRepository<EnvironmentalConditionsSensor>
+public interface IEnvironmentalConditionsSensorRepository 
 {
+    Task Add(EnvironmentalConditionsSensor device);
+    Task<EnvironmentalConditionsSensor> GetById(Guid id);
+
 }

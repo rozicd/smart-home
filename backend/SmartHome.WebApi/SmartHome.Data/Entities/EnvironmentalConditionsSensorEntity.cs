@@ -9,5 +9,6 @@ namespace SmartHome.Data.Entities
 {
     public class EnvironmentalConditionsSensorEntity : SmartDeviceEntity
     {
+      
     }
 }

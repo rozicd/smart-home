@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace SmartHome.Data
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<PropertyEntity> Properties { get; set; }
         public DbSet<ActivationTokenEntity> ActivationTokens { get; set; }
-        public DbSet<EnvironmentalConditionsSensorEntity> EnvironmentalConditionsSensors { get; set; }
+        public DbSet<SmartDeviceEntity> SmartDevices { get; set; }
 
         public DatabaseContext(DbContextOptions options) : base(options)
         {
@@ -47,6 +48,15 @@ namespace SmartHome.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             SeedCountriesAndCities(modelBuilder);
+
+           
+
+            modelBuilder.Entity<EnvironmentalConditionsSensorEntity>()
+                .ToTable("EnvironmentalConditionsSensors")
+                .HasBaseType<SmartDeviceEntity>();
+
+           
+
         }
 
 
@@ -128,6 +138,10 @@ namespace SmartHome.Data
             }
 
             return cities;
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
         }
     }
 

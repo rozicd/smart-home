@@ -2,7 +2,7 @@
 
 namespace SmartHome.Data.Entities
 {
-    public abstract class SmartDeviceEntity
+    public  class SmartDeviceEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -12,7 +12,7 @@ namespace SmartHome.Data.Entities
         public DeviceType DeviceType { get; set; }
         public string ImageUrl {  get; set; }
         public DeviceStatus DeviceStatus { get; set; }
-        public UserEntity User { get; set; }
+        public virtual UserEntity User { get; set; }
         public Guid UserId { get; set; }
 
     }

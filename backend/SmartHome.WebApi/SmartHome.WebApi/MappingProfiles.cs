@@ -12,6 +12,9 @@ public class MappingProfiles : Profile
     {
         CreateMap<User, UserEntity>();
         CreateMap<UserEntity, User>();
+        CreateMap<SmartDevice, SmartDeviceEntity>();
+        CreateMap<SmartDeviceEntity, SmartDevice>();
+
         CreateMap<EnvironmentalConditionsSensor, EnvironmentalConditionsSensorEntity>();
         CreateMap<EnvironmentalConditionsSensorEntity, EnvironmentalConditionsSensor>();
         CreateMap<Property, PropertyEntity>();
@@ -27,7 +30,8 @@ public class MappingProfiles : Profile
         CreateMap<CreateECSRequestDTO, EnvironmentalConditionsSensor>();
         CreateMap<RegisterPropertyRequestDTO, Property>();
         CreateMap<Property, PropertyResponseDTO>().ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City.Country.Name));
-
+        CreateMap<RegisterPropertyRequestDTO, Property>();
+        CreateMap<SmartDevice, SmartDeviceResponseDTO>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Name));
         CreateMap<ActivationToken, ActivationTokenEntity>();
         CreateMap<ActivationTokenEntity, ActivationToken>();
         CreateMap<ActivationTokenRequestDTO, ActivationToken>()

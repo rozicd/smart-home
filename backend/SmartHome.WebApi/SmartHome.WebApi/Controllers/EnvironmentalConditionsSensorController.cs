@@ -13,13 +13,15 @@ namespace SmartHome.WebApi.Controllers
     public class EnvironmentalConditionsSensorController : BaseController
     {
         private readonly IEnvironmentalConditionsSensorService _ecsService;
+        private readonly ISmartDeviceService _smartDeviceService;
         private readonly IFileService _fileService;
 
 
-        public EnvironmentalConditionsSensorController(IEnvironmentalConditionsSensorService ecs,IMapper mapper, IFileService fileService) : base(mapper)
+        public EnvironmentalConditionsSensorController(ISmartDeviceService smartDeviceService,IEnvironmentalConditionsSensorService ecs,IMapper mapper, IFileService fileService) : base(mapper)
         {
             _ecsService = ecs;
             _fileService = fileService;
+            _smartDeviceService = smartDeviceService;
         }
 
         [HttpPost("")]
@@ -40,21 +42,21 @@ namespace SmartHome.WebApi.Controllers
         [HttpPost("connect")]
         public async Task<IActionResult> ConnectDevice([FromForm] ConnectDeviceDTO cd)
         {
-            await _ecsService.Connect(cd.Id, cd.Address);
+            await _smartDeviceService.Connect(cd.Id, cd.Address);
             return Ok();
 
         }
         [HttpPost("on")]
         public async Task<IActionResult> PowerOn([FromForm] DevicePowerDTO dp)
         {
-            await _ecsService.PowerOn(dp.Id);
+            await _smartDeviceService.TurnOn(dp.Id);
             return Ok();
 
         }
         [HttpPost("off")]
         public async Task<IActionResult> PowerOff([FromForm] DevicePowerDTO dp)
         {
-            await _ecsService.PowerOff(dp.Id);
+            await _smartDeviceService.TurnOff(dp.Id);
             return Ok();
 
         }

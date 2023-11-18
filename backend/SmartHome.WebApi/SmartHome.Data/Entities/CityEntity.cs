@@ -11,7 +11,7 @@ namespace SmartHome.Data.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public Guid CountryId { get; set; }
-        public CountryEntity Country { get; set; }
-        public ICollection<PropertyEntity> Properties { get; set; }
+        public virtual CountryEntity Country { get; set; }
+        public virtual ICollection<PropertyEntity> Properties { get; set; }
     }
 }

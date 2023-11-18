@@ -5,12 +5,13 @@ using SmartHome.Domain.Models;
 
 namespace SmartHome.Domain.Repositories
 {
-    public interface ISmartDeviceRepository<T> 
+    public interface ISmartDeviceRepository 
     {
-        Task Add(T device);
-        Task<IEnumerable<T>> GetSmartDevicesByUserId(Guid userId);
-        Task<T> GetById(Guid id);
-        Task Update(T device);
+        Task<PaginationReturnObject<SmartDevice>> GetAll(Pagination page);
         Task Connect(Guid id,string address);
+        Task<SmartDevice> TurnOn(Guid id);
+        Task<SmartDevice> TurnOff(Guid id);
+        Task ForceTurnOff(Guid id);
+
     }
 }

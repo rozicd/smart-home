@@ -11,7 +11,7 @@ namespace SmartHome.Application.Services
 {
     public class MqttClientService : IMqttClientService
     {
-        private IMqttClient _mqttClient;
+        public IMqttClient _mqttClient;
 
 
         public async Task ConnectAsync()
@@ -37,15 +37,12 @@ namespace SmartHome.Application.Services
             return await _mqttClient.PublishAsync(message);
         }
 
-        public async Task SubscribeAsync(string topic)
+        public async Task<IMqttClient> SubscribeAsync(string topic)
         {
            
             await _mqttClient.SubscribeAsync(topic);
-            _mqttClient.ApplicationMessageReceivedAsync += e =>
-            {
-                Console.WriteLine($"Received message on topic {e.ApplicationMessage.Topic}: {Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment)}");
-                return Task.CompletedTask;
-            };
+
+            return _mqttClient;
         }
         public async Task UnubscribeAsync(string topic)
         {

@@ -29,6 +29,9 @@ builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<ISmartDeviceRepository, SmartDeviceRepository>();
+builder.Services.AddScoped<ISmartDeviceService, SmartDeviceService>();
+
 builder.Services.AddScoped<IEnvironmentalConditionsSensorRepository, EnvironmentalConditionsSensorRepository>();
 builder.Services.AddScoped<IEnvironmentalConditionsSensorService, EnvironmentalConditionsSensorService>();
 builder.Services.AddScoped<IMqttClientService, MqttClientService>();

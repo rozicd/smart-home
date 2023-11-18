@@ -4,12 +4,13 @@ import paho.mqtt.client as mqtt
 import random
 
 class ECS:
-    def __init__(self):
+    def __init__(self,name):
         self.broker_address = "localhost"
         self.broker_port = 8883
-        self.topicSend = "esc/status"
-        self.topicRecive = "esc/recive"
+        self.topicSend = name+"/status"
+        self.topicRecive = name+"/recive"
         self.status = 'offline'
+        self.name = name
 
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
@@ -49,8 +50,8 @@ class ECS:
         while self.running:
             random_number = random.uniform(1.1, 0.9)
             print("Publishing message")
-            self.client.publish(self.topicSend, "Device online")
-            self.client.publish(self.topicSend, f"Temperature: {21*random_number}°C")
+            self.client.publish(self.topicSend, f"{self.name} : online")
+            self.client.publish(self.topicSend, f"{self.name} : Temperature: {21*random_number}°C")
             time.sleep(10)
 
 

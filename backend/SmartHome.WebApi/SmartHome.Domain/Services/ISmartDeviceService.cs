@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services
 {
-    public interface ISmartDeviceService<T>
+    public interface ISmartDeviceService
     {
-        Task Add(T device);
-        Task<IEnumerable<T>> GetSmartDevicesByUserId(Guid userId);
-        Task<T> GetById(Guid id);
-        Task Update(T device);
+        Task<PaginationReturnObject<SmartDevice>> GetAll(Pagination page);
         Task Connect(Guid id, string address);
-        Task PowerOn(Guid id);
-        Task PowerOff(Guid id);
+        Task TurnOn(Guid id);
+        Task TurnOff(Guid id);
 
 
 

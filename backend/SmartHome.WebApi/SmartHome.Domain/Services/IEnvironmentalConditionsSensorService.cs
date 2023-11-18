@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services
 {
-    public interface IEnvironmentalConditionsSensorService :ISmartDeviceService<EnvironmentalConditionsSensor>
+    public interface IEnvironmentalConditionsSensorService 
     {
+        Task Add(EnvironmentalConditionsSensor sensor);
+        Task<EnvironmentalConditionsSensor> GetById(Guid id);
+
+
     }
 }
