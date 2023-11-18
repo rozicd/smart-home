@@ -6,6 +6,7 @@ import { React, UseState, useState } from "react";
 import BasicRadioButton from "./Components/BasicComponents/BasicRadioButtons";
 import BasicInput from "./Components/BasicComponents/BasicInput";
 import BasicForm from "./Components/BasicComponents/BasicForm";
+import HeaderComponent from "./Components/BasicComponents/HeaderComponent";
 
 
 const testform =
@@ -60,6 +61,7 @@ function App() {
   const [value, setValue] = useState(0)
   return (
     <ThemeProvider theme={themeOptions}>
+      <HeaderComponent name = "Register"></HeaderComponent>
       <BasicForm template={testform}/>
     </ThemeProvider>
   );
