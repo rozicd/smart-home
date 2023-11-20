@@ -8,7 +8,13 @@ const signIn = async (credentials) => {
     const response = await axios.post(`${API_BASE_URL}/users/login`, credentials);
     return response.data;
   } catch (error) {
-    throw error;
+    if (error.response) {
+      window.alert(error.response.data)
+    } else if (error.request) {
+      window.alert('No response received for the request.');
+    } else {
+      window.alert('Error Message:', error.message);
+    }
   }
 };
 

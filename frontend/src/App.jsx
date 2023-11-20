@@ -9,6 +9,7 @@ import BasicForm from "./Components/BasicComponents/BasicForm";
 import { signIn } from "./Components/Services/UserService";
 import UserPropertiesPage from "./Pages/UserPropertiesPage";
 import RegisterComponent from "./Components/BasicComponents/RegisterComponent";
+import LoginComponent from "./Components/BasicComponents/LoginComponent";
 
 
 const testform =
@@ -64,29 +65,30 @@ function App() {
   const [userId,setUserId] = useState('')
 
   useEffect(() => {
-    const signInAndFetchUserId = async () => {
-      try {
-        const credentials = { email: 'user@example.com', password: 'stringst' };
+    // const signInAndFetchUserId = async () => {
+    //   try {
+    //     const credentials = { email: 'user@example.com', password: 'stringst' };
 
-        const userData = await signIn(credentials);
+    //     const userData = await signIn(credentials);
 
-        console.log(userData);
-        const id = userData.id;
+    //     console.log(userData);
+    //     const id = userData.id;
 
-        setUserId(id);
-      } catch (error) {
-        console.error('Error signing in:', error);
-      }
-    };
+    //     setUserId(id);
+    //   } catch (error) {
+    //     console.error('Error signing in:', error);
+    //   }
+    // };
 
-    signInAndFetchUserId();
-    console.log(userId);
-    console.log(userId);
+    // signInAndFetchUserId();
+    // console.log(userId);
+    // console.log(userId);
   }, []);
 
   return (
     <ThemeProvider theme={themeOptions}>
-      <RegisterComponent></RegisterComponent>
+      {/* <RegisterComponent></RegisterComponent> */}
+      <LoginComponent></LoginComponent>
       <BasicForm template={testform}/>
       {/* <BasicRadioButton label={"test"} choices={["Male", "Female","Other"]} value={value} identificator={"test"} callback={(e)=>setValue(e.target.value)}/> */}
       {/* <UserPropertiesPage userId={userId}/> */}
