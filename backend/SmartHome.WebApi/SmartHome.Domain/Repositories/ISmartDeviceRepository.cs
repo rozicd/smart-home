@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SmartHome.Domain.Models;
+using SmartHome.Domain.Models.SmartDevices;
 
 namespace SmartHome.Domain.Repositories
 {

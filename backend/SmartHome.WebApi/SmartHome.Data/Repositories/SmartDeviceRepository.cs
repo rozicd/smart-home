@@ -2,9 +2,10 @@
 using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SmartHome.Data.Entities;
+using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Exceptions;
 using SmartHome.Domain.Models;
+using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Repositories;
 using System;
 using System.Collections.Generic;

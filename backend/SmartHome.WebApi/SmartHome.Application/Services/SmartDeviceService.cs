@@ -1,4 +1,5 @@
 ﻿using SmartHome.Domain.Models;
+using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Repositories;
 using SmartHome.Domain.Services;
 using System;
