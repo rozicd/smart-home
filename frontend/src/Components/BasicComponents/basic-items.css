@@ -25,7 +25,7 @@
 
 .header{
     width: 100%;
-    height: 50px;
+    height: 70px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     background-color: #00AEAE;
@@ -60,12 +60,23 @@
     width: 80%;
     display: flex;
     align-items: center;
+    justify-content: center;
     
 }
 .register-form> .basic-form{
     padding: 0% !important;
-    width: 100%;
+    /* width: 100%; */
     height: 100%;
+}
+
+.register-form > .basic-form > .form-item > div{
+    width: 350px;
+}
+
+.register-form > .basic-form > button{
+    margin-top: 10px;
+    border-radius: 25px;
+    width: 300px;
 }
 
 
@@ -73,10 +84,32 @@
     margin-top: 100px;
     margin-left: 100px;
     border-radius: 10px;
-    width: 500px;
+    background-color: snow;
+    width: 450px;
     height: 500px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
     -5px 5px 10px rgba(0, 0, 0, 0.1),
     5px -5px 10px rgba(0, 0, 0, 0.1),
     -5px -5px 10px rgba(0, 0, 0, 0.1);
+}
+.login-form{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-form > .basic-form > .form-item > div{
+    width: 350px;
+}
+
+.login-form > .basic-form > button{
+    margin-top: 10px;
+    border-radius: 25px;
+    width: 300px;
+}
+
+.button-container > button{
+    font-size: 12px;
 }

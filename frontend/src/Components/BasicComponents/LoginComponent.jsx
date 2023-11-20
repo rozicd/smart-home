@@ -28,7 +28,10 @@ const LoginComponent = () => {
     const handleSubmit = async (state) =>{
         setUserCredentials(state)
         const response = await signIn(userCredentials);
-        window.alert(response['email'])
+        if(response){
+            window.alert(response['email'])
+        }
+        
       }
 
     return (
@@ -36,6 +39,7 @@ const LoginComponent = () => {
             <HeaderComponent name = {"LOGIN"}></HeaderComponent>
             <div className="login-form">
                 <BasicForm template={loginTemplate} callback={handleSubmit} />
+                <p>Don't have account? <a href="/">Sign up Here.</a></p>
             </div>
         </div>
     );

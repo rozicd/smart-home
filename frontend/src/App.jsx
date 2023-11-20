@@ -10,6 +10,7 @@ import { signIn } from "./Components/Services/UserService";
 import UserPropertiesPage from "./Pages/UserPropertiesPage";
 import RegisterComponent from "./Components/BasicComponents/RegisterComponent";
 import LoginComponent from "./Components/BasicComponents/LoginComponent";
+import NavbarComponent from "./Components/BasicComponents/NavbarComponent";
 
 
 const testform =
@@ -87,7 +88,8 @@ function App() {
 
   return (
     <ThemeProvider theme={themeOptions}>
-      {/* <RegisterComponent></RegisterComponent> */}
+      <NavbarComponent></NavbarComponent>
+      <RegisterComponent></RegisterComponent>
       <LoginComponent></LoginComponent>
       <BasicForm template={testform}/>
       {/* <BasicRadioButton label={"test"} choices={["Male", "Female","Other"]} value={value} identificator={"test"} callback={(e)=>setValue(e.target.value)}/> */}

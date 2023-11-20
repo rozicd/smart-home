@@ -5,6 +5,7 @@ import BasicForm from "./BasicForm";
 import ProfilePictureUpload from "./ProfilePictureUpload";
 import { useState, useEffect } from "react";
 import { register } from "../Services/UserService";
+import BasicButton from "./BasicButton";
 
 
 
@@ -75,6 +76,9 @@ const RegisterComponent = () => {
         <ProfilePictureUpload onProfilePictureChange={handleProfilePictureChange} />
         <div className="register-form"> 
           <BasicForm template={registerTemplate} callback={handleSubmit} />
+        </div>
+        <div className="button-container">
+          <BasicButton text = {'Go back'} variant={'text'}></BasicButton>
         </div>
       </div>
     );

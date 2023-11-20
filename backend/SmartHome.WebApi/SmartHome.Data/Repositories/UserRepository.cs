@@ -7,6 +7,7 @@ using SmartHome.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -94,7 +95,40 @@ namespace SmartHome.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+ /*       public void SeedSuperAdmin()
+        {
+            if (!_users.Any(u => u.Email == "admin"))
+            {
+                string randomPassword = GenerateRandomPassword(12);
 
+                var superAdmin = new UserEntity
+                {
+                    
+                };
+
+                context.Users.Add(superAdmin);
+                context.SaveChanges();
+            }
+        }*/
+        private string GenerateRandomPassword(int length)
+        {
+            const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
+
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] randomBytes = new byte[length];
+                rng.GetBytes(randomBytes);
+
+                StringBuilder password = new StringBuilder(length);
+
+                foreach (byte byteValue in randomBytes)
+                {
+                    password.Append(allowedChars[byteValue % allowedChars.Length]);
+                }
+
+                return password.ToString();
+            }
+        }
     }
 
 }
