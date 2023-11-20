@@ -17,9 +17,9 @@ namespace SmartHome.Application.Services
         {
             _activationTokenRepository = activationTokenRepository;
         }
-        public async Task AddOne(Guid id)
+        public async Task<ActivationToken> AddOne(Guid id)
         {
-            await _activationTokenRepository.AddOne(id);
+            return await _activationTokenRepository.AddOne(id);
         }
 
         public async Task<bool> IsTokenValid(ActivationToken activationToken)

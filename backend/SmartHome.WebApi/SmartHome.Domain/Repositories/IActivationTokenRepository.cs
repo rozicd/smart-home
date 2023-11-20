@@ -9,7 +9,7 @@ namespace SmartHome.Domain.Repositories
 {
     public interface IActivationTokenRepository
     {
-        Task AddOne(Guid userId);
+        Task<ActivationToken> AddOne(Guid userId);
         Task DeleteOne(ActivationToken activationToken);
         Task<ActivationToken> GetByUserAndToken(ActivationToken activationToken);
         Task<List<ActivationToken>> GetByUserId(Guid id);

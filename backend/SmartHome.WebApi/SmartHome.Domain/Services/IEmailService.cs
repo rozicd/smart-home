@@ -9,7 +9,7 @@ namespace SmartHome.Domain.Services
 {
     public interface IEmailService
     {
-        Task SendActivationEmail(User user);
+        Task SendActivationEmail(User user, ActivationToken activationToken);
 
         Task SendApprovePropertyEmail(User user, Property property);
 

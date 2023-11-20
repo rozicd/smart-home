@@ -16,7 +16,7 @@ const BasicForm = ({ template, callback, label= "Create item"}) => {
   };
   return (
     <FormControl className="basic-form">
-      <h2>{label}</h2>
+      {/* <h2>{label}</h2> */}
       {template.map((item, index) => (
         <FormComponent 
         
@@ -25,7 +25,7 @@ const BasicForm = ({ template, callback, label= "Create item"}) => {
          form ={formState} 
          change={handleInputChange} />
       ))}
-    <BasicButton text={"Submit"} onClick={()=>{console.log(formState)}}/>
+    <BasicButton text={"Submit"} onClick={()=>{callback(formState)}}/>
     </FormControl>
     
   );
