@@ -13,7 +13,27 @@ const signIn = async (credentials) => {
 };
 
 const register = async (userDTO) => {
-  
-}
+  try {
+    const response = await axios.post(`${API_BASE_URL}/users`, userDTO, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
-export { signIn };
+    console.log('Response:', response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status == 400) {
+      window.alert(error.response.data)
+    } else if (error.request) {
+      window.alert('No response received for the request.');
+    } else {
+      window.alert('Error Message:', error.message);
+    }
+
+    return null;
+  }
+};
+
+
+export { signIn, register };

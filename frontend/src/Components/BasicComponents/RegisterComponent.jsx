@@ -2,9 +2,10 @@ import React from "react";
 import "./basic-items.css";
 import HeaderComponent from "./HeaderComponent";
 import BasicForm from "./BasicForm";
-import { Button } from "@mui/material";
 import ProfilePictureUpload from "./ProfilePictureUpload";
 import { useState, useEffect } from "react";
+import { register } from "../Services/UserService";
+
 
 
 const registerTemplate = 
@@ -37,8 +38,8 @@ const registerTemplate =
 ]
 
 const RegisterComponent = () => {
-    const [profilePicture, setProfilePicture] = useState(null);
-    const [formState, setFormState] = useState(null);
+    const [profilePicture, setProfilePicture] = useState([]);
+    const [formState, setFormState] = useState({});
   
     useEffect(() => {
         // console.log(profilePicture);
@@ -49,16 +50,21 @@ const RegisterComponent = () => {
         setProfilePicture(picture);
       };
 
-      const handleSubmit = (state) =>{
+      const handleSubmit = async (state) =>{
         setFormState(state)
         const userDTO = {
-            profilePicture: profilePicture,
-            name: formState['name'],
-            surname: formState['surname'],
-            email: formState['email'],
-            passoword: formState['passoword']
+            Name: formState['name'],
+            Surname: formState['surname'],
+            Email: formState['email'],
+            ImageFile: profilePicture,
+            Password: formState['password'],
+            Status: 0,
+            Role: 0
         }
         console.log(userDTO)
+        const response = await register(userDTO)
+        window.alert(response)
+
       }
     
       
