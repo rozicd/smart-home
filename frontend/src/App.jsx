@@ -19,12 +19,7 @@ const testform =
       itemValue :"password"
 
     },
-    {
-      item: "BasicInput",
-      label: "Test",
-      itemValue :"test1"
-
-    },
+  
     {
       item: "BasicInput",
       label: "Test",
