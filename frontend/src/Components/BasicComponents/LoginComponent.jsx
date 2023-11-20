@@ -1,7 +1,7 @@
 import React from "react";
 import "./basic-items.css";
 import HeaderComponent from "./HeaderComponent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "../Services/UserService";
 import BasicForm from "./BasicForm";
 const loginTemplate = [
@@ -25,11 +25,18 @@ const loginTemplate = [
 const LoginComponent = () => {
     const [userCredentials, setUserCredentials] = useState({})
 
+    useEffect(() => {
+
+        console.log("Updated userCredentials:", userCredentials);
+      }, [userCredentials]);
+
     const handleSubmit = async (state) =>{
         setUserCredentials(state)
-        const response = await signIn(userCredentials);
+        console.log(userCredentials)
+        const response = await signIn(state);
         if(response){
             window.alert(response['email'])
+            // window.location.reload();
         }
         
       }

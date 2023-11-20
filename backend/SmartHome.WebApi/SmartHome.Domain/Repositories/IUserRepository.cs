@@ -15,7 +15,7 @@ namespace SmartHome.Domain.Repositories
         Task Delete(Guid id);
         Task<User> GetByEmailAndPassword(string email, string password);
 
-        void SeedSuperAdmin();
+ 
 
     }
 }

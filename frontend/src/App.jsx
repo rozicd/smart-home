@@ -1,99 +1,58 @@
-import "./App.css";
+import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { themeOptions } from "./themeOptions";
-import BasicSelect from "./Components/BasicComponents/BasicSelect";
-import { React, UseState, useEffect, useState } from "react";
-import BasicRadioButton from "./Components/BasicComponents/BasicRadioButtons";
-import BasicInput from "./Components/BasicComponents/BasicInput";
-import BasicForm from "./Components/BasicComponents/BasicForm";
-import { signIn } from "./Components/Services/UserService";
 import UserPropertiesPage from "./Pages/UserPropertiesPage";
-import RegisterComponent from "./Components/BasicComponents/RegisterComponent";
-import LoginComponent from "./Components/BasicComponents/LoginComponent";
+import RegisterPage from "./Pages/RegisterPage";
+import LoginPage from "./Pages/LoginPage";
 import NavbarComponent from "./Components/BasicComponents/NavbarComponent";
+import { authenticateUser } from "./Components/Services/UserService";
 
-
-const testform =
-  [
-    {
-      item: "BasicInput",
-      label: "Test",
-      itemValue :"password"
-
-    },
-    {
-      item: "BasicInput",
-      label: "Test",
-      itemValue :"test1"
-
-    },
-    {
-      item: "BasicInput",
-      label: "Test",
-      itemValue :"test2"
-
-    },
-    {
-      item: "BasicSelect",
-      label: "Test",
-      collection: [{ id: 1, name: "pera" }, { id: 2, name: "mika" }],
-      valueParam: "id",
-      nameParam: "name",
-      itemValue :"lol",
-      def:"Please select lol"
-
-    },
-    {
-      item: "BasicRadio",
-      label: "Test",
-      choices: ["Male", "Female"],
-      itemValue :"gender",
-      identificator:"ASDSDAASD"
-
-    },
-    {
-      item: "BasicRadio",
-      label: "Test",
-      choices: ["Male", "Female"],
-      itemValue :"BENDER",
-      identificator:"ASDASDAAAAASD"
-
-
-    },
-  ]
 function App() {
-  const [value, setValue] = useState(0)
-  const [userId,setUserId] = useState('')
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // const signInAndFetchUserId = async () => {
-    //   try {
-    //     const credentials = { email: 'user@example.com', password: 'stringst' };
+    async function fetchData() {
+      const response = await authenticateUser();
+      setIsAuthenticated(true)
+      setUser(response);
+      if(response == null){
+        setIsAuthenticated(false)
+      }
+    }
+    fetchData();
 
-    //     const userData = await signIn(credentials);
-
-    //     console.log(userData);
-    //     const id = userData.id;
-
-    //     setUserId(id);
-    //   } catch (error) {
-    //     console.error('Error signing in:', error);
-    //   }
-    // };
-
-    // signInAndFetchUserId();
-    // console.log(userId);
-    // console.log(userId);
+    return () => console.log("asdasd");
   }, []);
 
   return (
     <ThemeProvider theme={themeOptions}>
-      <NavbarComponent></NavbarComponent>
-      <RegisterComponent></RegisterComponent>
-      <LoginComponent></LoginComponent>
-      <BasicForm template={testform}/>
-      {/* <BasicRadioButton label={"test"} choices={["Male", "Female","Other"]} value={value} identificator={"test"} callback={(e)=>setValue(e.target.value)}/> */}
-      {/* <UserPropertiesPage userId={userId}/> */}
+      <Router>
+        <NavbarComponent loggedUser={user} />
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              isAuthenticated ? <Navigate to="/properties" /> : <LoginPage />
+            }
+          />
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/properties" />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route path="login" element={<LoginPage />}/>
+          <Route path="register" element={<RegisterPage />} />
+          <Route path="properties" element={<UserPropertiesPage />} />
+        </Routes>
+      </Router>
+      <Outlet/>
     </ThemeProvider>
   );
 }

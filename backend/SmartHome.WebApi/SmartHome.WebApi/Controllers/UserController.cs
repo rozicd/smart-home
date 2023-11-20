@@ -38,9 +38,23 @@ namespace SmartHome.WebApi.Controllers
             string imagePath = await _fileService.SaveImageAsync(user.ImageFile, "static/users");
             User response = _mapper.Map<User>(user);
             response.ProfilePictureUrl = imagePath;
+            if (_user == null)
+            {
+                response.Status = Status.INACTIVE;
+                response.Role = Role.USER;
+            }
+            else if(_user.Role == Role.SUPERADMIN)
+            {
+                response.Status = Status.ACTIVE;
+                response.Role = Role.ADMIN;
+            }
+            
             User addedUser = await _userService.Add(response);
-            ActivationToken activationToken = await _activationTokenService.AddOne(addedUser.Id);
-            await _emailService.SendActivationEmail(addedUser, activationToken);
+            if(addedUser.Status == Status.INACTIVE) {
+                ActivationToken activationToken = await _activationTokenService.AddOne(addedUser.Id);
+                await _emailService.SendActivationEmail(addedUser, activationToken);
+            }
+            
             return Ok(_mapper.Map<UserResponseDTO>(addedUser));
         }
 
@@ -67,7 +81,7 @@ namespace SmartHome.WebApi.Controllers
             {
                 ActivationToken newActivationToken = await _activationTokenService.AddOne(user.Id);
                 await _emailService.SendActivationEmail(user, newActivationToken);
-                return BadRequest("Token expired");
+                return BadRequest("Token expired! Check email for new");
             }
         }
 
