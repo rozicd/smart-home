@@ -2,7 +2,7 @@ import React from "react";
 import "./basic-items.css";
 import { FormControl,TextField } from "@mui/material";
 
-const BasicInput = ({type, label, callback, value }) => {
+const BasicInput = ({type, label, callback, value, visibility='visible' }) => {
     return (
         < div
         className="form-item"
@@ -13,6 +13,7 @@ const BasicInput = ({type, label, callback, value }) => {
             label={label} 
             onChange={callback} 
             variant="standard"
+            visibility={visibility}
              type = {type} 
              value ={value?value:""}/>
         </div>

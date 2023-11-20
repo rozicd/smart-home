@@ -5,7 +5,7 @@ const API_BASE_URL = 'http://localhost:5090';
 
 const signIn = async (credentials) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/users/login`, credentials);
+    const response = await axios.post(`${API_BASE_URL}/users/login`, credentials,{withCredentials:true});
     return response.data;
   } catch (error) {
     throw error;

@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from "react";
 import FormComponent from "./FormComponent"; // Assuming you've created a FormComponent
-import { FormControl } from "@mui/material";
+import { FormControl,Form} from "@mui/material";
 import BasicButton from "./BasicButton";
 import './basic-items.css'
 const BasicForm = ({ template, callback, label= "Create item"}) => {
@@ -15,7 +15,7 @@ const BasicForm = ({ template, callback, label= "Create item"}) => {
     }));
   };
   return (
-    <FormControl className="basic-form">
+    <div className="basic-form">
       {/* <h2>{label}</h2> */}
       {template.map((item, index) => (
         <FormComponent 
@@ -26,7 +26,7 @@ const BasicForm = ({ template, callback, label= "Create item"}) => {
          change={handleInputChange} />
       ))}
     <BasicButton text={"Submit"} onClick={()=>{callback(formState)}}/>
-    </FormControl>
+    </div>
     
   );
 };

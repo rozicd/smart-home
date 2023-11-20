@@ -95,7 +95,6 @@ namespace SmartHome.WebApi.Controllers
             {
                 var properties = await _propertyService.GetPropertiesByUserId(userId);
         
-                Console.WriteLine(properties.FirstOrDefault().City.Country.Name); 
                 if (properties == null || properties.Count() == 0)
                 {
                     return NotFound("No properties found for the user");
