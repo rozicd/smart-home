@@ -9,7 +9,7 @@ namespace SmartHome.Domain.Services
 {
     public interface IActivationTokenService
     {
-        Task AddOne(Guid id);
+        Task<ActivationToken> AddOne(Guid id);
         Task<bool> IsTokenValid(ActivationToken activationToken);
     }
 }

@@ -27,7 +27,7 @@ namespace SmartHome.Data.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddOne(Guid userId)
+        public async Task<ActivationToken> AddOne(Guid userId)
         {
             ActivationTokenEntity activationTokenEntity = new ActivationTokenEntity();
             activationTokenEntity.UserId = userId;
@@ -36,6 +36,7 @@ namespace SmartHome.Data.Repositories
 
             await _activationTokens.AddAsync(activationTokenEntity);
             await _context.SaveChangesAsync();
+            return _mapper.Map<ActivationToken>(activationTokenEntity);
 
         }
 

@@ -12,5 +12,8 @@ const signIn = async (credentials) => {
   }
 };
 
+const register = async (userDTO) => {
+  
+}
 
 export { signIn };

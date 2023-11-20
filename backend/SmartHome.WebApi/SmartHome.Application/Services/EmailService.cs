@@ -16,7 +16,7 @@ namespace SmartHome.Application.Services
     public class EmailService : IEmailService
     {
 
-        public async Task SendActivationEmail(User user)
+        public async Task SendActivationEmail(User user, ActivationToken activationToken)
         {
             var apiKey = Environment.GetEnvironmentVariable("SEND_GRID_API_KEY");
             var client = new SendGridClient(apiKey);
@@ -24,7 +24,7 @@ namespace SmartHome.Application.Services
             var subject = "Account activation";
             var to = new EmailAddress(user.Email, user.Name);
             var plainTextContent = "Grettings " + user.Name;
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+            var htmlContent = "<strong>userId: "+activationToken.UserId.ToString()+ "</strong>\n<strong>token :" + activationToken.Token +"</strong>";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }
