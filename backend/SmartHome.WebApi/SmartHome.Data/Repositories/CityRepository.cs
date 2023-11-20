@@ -33,7 +33,7 @@ namespace SmartHome.Data.Repositories
 
         public async Task<IEnumerable<City>> GetAllCities()
         {
-            var cities = await _cities.ToListAsync();
+            var cities = await _cities.Include(c => c.Country).ToListAsync();
             return _mapper.Map<IEnumerable<City>>(cities);
         }
         public async Task<City> GetByName(string name)

@@ -8,8 +8,11 @@ namespace SmartHome.DataTransferObjects.Responses
 {
     public class CityResponseDTO
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public CountryResponseDTO Country { get; set; }
+        public string CountryId { get; set; }
+        public string CountryName { get; set; }
+
     }
 
 }

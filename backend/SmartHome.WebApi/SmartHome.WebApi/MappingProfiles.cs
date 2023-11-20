@@ -83,6 +83,7 @@ public class MappingProfiles : Profile
            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
            .ForMember(dest => dest.expires, opt => opt.MapFrom(src => (DateTime?)null));
         CreateMap<ActivationToken, ActivationTokenRequestDTO>();
+        CreateMap<City, CityResponseDTO>().ForMember(dest => dest.CountryName, opt=> opt.MapFrom(src=>src.Country.Name)).ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.Country.Id));
 
 
     }

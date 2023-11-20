@@ -1,12 +1,16 @@
+// UserPropertiesPage.js
 import React, { useEffect, useState } from 'react';
 import { getPropertiesByUserId } from '../Components/Services/PropertiesService';
 import PropertyCard from '../Components/BasicComponents/PropertyCard';
-import './UserPropertiesPage.css'; // Import your CSS file
+import AddButton from '../Components/BasicComponents/AddButton';
+import './UserPropertiesPage.css';
+import PropertyStepper from '../Components/BasicComponents/PropertyStepper';
 
 const UserPropertiesPage = ({ userId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [properties, setProperties] = useState([]);
+  const [stepperOpen, setStepperOpen] = useState(false);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -23,6 +27,14 @@ const UserPropertiesPage = ({ userId }) => {
     fetchProperties();
   }, [userId]);
 
+  const handleAddProperty = () => {
+    setStepperOpen(true);
+  };
+
+  const handleCloseStepper = () => {
+    setStepperOpen(false);
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -31,10 +43,12 @@ const UserPropertiesPage = ({ userId }) => {
     <div className="user-properties-container">
       <h2 className="page-title">Your Properties</h2>
       <div className="property-list">
-        {properties.map(property => (
+        {properties.map((property) => (
           <PropertyCard key={property.id} property={property} />
         ))}
       </div>
+      <AddButton className="add-property-button" onClick={handleAddProperty} />
+      <PropertyStepper open={stepperOpen} onClose={handleCloseStepper} />
     </div>
   );
 };
