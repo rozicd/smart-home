@@ -63,6 +63,7 @@ namespace SmartHome.Application.Services
             htmlTemplate = htmlTemplate.Replace("{{City}}", property.City.Name);
             htmlTemplate = htmlTemplate.Replace("{{Country}}", property.City.Country.Name);
             htmlTemplate = htmlTemplate.Replace("{{Address}}", property.Address);
+            htmlTemplate = htmlTemplate.Replace("{{Description}}", description);
 
             var plainTextContent = "Greetings " + user.Name;
             var htmlContent = htmlTemplate;

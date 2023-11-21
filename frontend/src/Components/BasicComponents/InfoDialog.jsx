@@ -5,7 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 
-const InfoDialog = ({ open, onClose, title, content, onConfirm }) => {
+const InfoDialog = ({ open, onClose, title, content }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
@@ -14,11 +14,6 @@ const InfoDialog = ({ open, onClose, title, content, onConfirm }) => {
         <Button onClick={onClose} color="primary">
           Close
         </Button>
-        {onConfirm && (
-          <Button onClick={onConfirm} color="primary">
-            Confirm
-          </Button>
-        )}
       </DialogActions>
     </Dialog>
   );
