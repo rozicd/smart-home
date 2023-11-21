@@ -10,7 +10,7 @@ const UserPropertiesPage = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [properties, setProperties] = useState([]);
-  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 5 });
+  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 4 });
   const [totalItems, setTotalItems] = useState(0);
   const [stepperOpen, setStepperOpen] = useState(false);
 
@@ -18,21 +18,23 @@ const UserPropertiesPage = ({ user }) => {
   {
     console.log(id)
   }
+  
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      const userProperties = await getPropertiesByUserId(user.userId, pagination);
+      console.log(pagination)
+      console.log(userProperties)
+      setProperties(userProperties.items);
+      setTotalItems(userProperties.totalItems);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message || 'Error fetching properties');
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        setLoading(true);
-        const userProperties = await getPropertiesByUserId(user.userId, pagination);
-        console.log(pagination)
-        console.log(userProperties)
-        setProperties(userProperties.items);
-        setTotalItems(userProperties.totalItems);
-        setLoading(false);
-      } catch (error) {
-        setError(error.message || 'Error fetching properties');
-        setLoading(false);
-      }
-    };
 
     fetchProperties();
   }, [user.userId, pagination.pageNumber, pagination.pageSize]);
@@ -48,7 +50,10 @@ const UserPropertiesPage = ({ user }) => {
     setStepperOpen(true);
   };
 
-  const handleCloseStepper = () => {
+  const handleCloseStepper = (creation) => {
+    if (creation == 1 && totalItems != pagination.pageSize){
+      fetchProperties()
+    }
     setStepperOpen(false);
   };
 
@@ -58,17 +63,18 @@ const UserPropertiesPage = ({ user }) => {
 
   return (
     <div className="user-properties-container">
-      <h2 className="page-title">Your Properties</h2>
-      <BasicPagination
+      <BasicPagination 
         currentPage={pagination.pageNumber}
         pageSize={pagination.pageSize}
         totalItems={totalItems}
         onPageChange={handlePageChange}
       />
-      <div className="property-list">
-        {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} callback={ClickedProperty}/>
-        ))}
+      <div className="property-list-container">
+        <div className="property-list">
+          {properties.map((property) => (
+            <PropertyCard key={property.id} property={property} />
+          ))}
+        </div>
       </div>
       <AddButton className="add-property-button" onClick={handleAddProperty} />
       <PropertyStepper open={stepperOpen} onClose={handleCloseStepper} />

@@ -29,29 +29,44 @@ namespace SmartHome.Application.Services
             var response = await client.SendEmailAsync(msg);
         }
 
-        public async Task SendApprovePropertyEmail(User user,Property property)
+        public async Task SendApprovePropertyEmail(User user, Property property)
         {
             var apiKey = Environment.GetEnvironmentVariable("SEND_GRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("smarthometeam7@gmail.com", "Smart home team");
-            var subject = "Account activation";
+            var subject = "Property Approved";
             var to = new EmailAddress(user.Email, user.Name);
-            var plainTextContent = "Grettings " + user.Name;
-            var htmlContent = "Congratulations\n<strong>Your property in city " + property.City.Name + " on address " + property.Address + " has been approved</strong>";
+
+            var htmlTemplate = File.ReadAllText("../SmartHome.Data/EmailTemplates/propertyApprovalEmailTemplate.html");
+
+            htmlTemplate = htmlTemplate.Replace("{{City}}", property.City.Name);
+            htmlTemplate = htmlTemplate.Replace("{{Country}}", property.City.Country.Name);
+            htmlTemplate = htmlTemplate.Replace("{{Address}}", property.Address);
+
+            var plainTextContent = "Greetings " + user.Name;
+            var htmlContent = htmlTemplate;
+
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }
 
-
-        public async Task SendRejectPropertyEmail(User user,Property property)
+        public async Task SendRejectPropertyEmail(User user, Property property)
         {
             var apiKey = Environment.GetEnvironmentVariable("SEND_GRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("smarthometeam7@gmail.com", "Smart home team");
-            var subject = "Account activation";
+            var subject = "Property Rejected";
             var to = new EmailAddress(user.Email, user.Name);
-            var plainTextContent = "Grettings " + user.Name;
-            var htmlContent = "We are sorry\n<strong>Your property in city "+property.City.Name+" on address " + property.Address + " has been rejected</strong>";
+
+            var htmlTemplate = File.ReadAllText("../SmartHome.Data/EmailTemplates/propertyRejectionEmailTemplate.html");
+
+            htmlTemplate = htmlTemplate.Replace("{{City}}", property.City.Name);
+            htmlTemplate = htmlTemplate.Replace("{{Country}}", property.City.Country.Name);
+            htmlTemplate = htmlTemplate.Replace("{{Address}}", property.Address);
+
+            var plainTextContent = "Greetings " + user.Name;
+            var htmlContent = htmlTemplate;
+
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }

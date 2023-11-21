@@ -41,14 +41,17 @@ const CheckAuthentication = ({ Component,Component2 }) => {
         return <p>Loading</p>
     }
 
-    console.log("pre ifa")
     if (!isAuthenticated) {
-        console.log("u ifu")
         return <LoginPage/>;
     }
     
-    console.log("komponenta")
-    return <Component user={user} />;
+    if (user.role == 0){
+      return <Component user={user} />;
+    }
+    else if (user.role == 1){
+      console.log("ADMIN COMPONENT")
+      return <Component2 user={user} />;
+    }
 
   };
   

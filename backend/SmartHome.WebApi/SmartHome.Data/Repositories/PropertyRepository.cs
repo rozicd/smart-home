@@ -49,10 +49,21 @@ namespace SmartHome.Data.Repositories
             return new PaginationReturnObject<Property>(_mapper.Map<IEnumerable<Property>>(properties), pagination.PageNumber, pagination.PageSize, totalItems);
         }
 
-        public async Task<IEnumerable<Property>> GetPropertiesByStatus(PropertyStatus status)
+        public async Task<PaginationReturnObject<Property>> GetPropertiesByStatus(PropertyStatus status, Pagination pagination)
         {
-            var properties = await _properties.Where(p => p.Status == status).ToListAsync();
-            return _mapper.Map<IEnumerable<Property>>(properties);
+            var query = _properties
+                .Include(p => p.City)
+                    .ThenInclude(c => c.Country)
+                .Where(p => p.Status == status);
+
+            var totalItems = await query.CountAsync();
+
+            var properties = await query
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+
+            return new PaginationReturnObject<Property>(_mapper.Map<IEnumerable<Property>>(properties), pagination.PageNumber, pagination.PageSize, totalItems);
         }
 
         public async Task<Property> GetById(Guid id)
