@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Rejected</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-container {
+            background-color: #00AEAE;
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .ii a[href] {
+            color: white;
+        }
+
+        h1 {
+            color: #ffffff;
+        }
+
+        p {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .placeholder {
+            color: #ffffff;
+            font-style: italic;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            background-color: #ffffff;
+            color: #ff6666;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+            text-decoration: none;
+        }
+        a{
+            color:white;
+        }
+            .button:hover {
+                background-color: #00AEAE;
+                color: #ff6666;
+            }
+    </style>
+</head>
+<body>
+    <div class="notification-container">
+        <h1>Property Rejected</h1>
+        <p>We are sorry,</p>
+        <p>Your property in city {{City}}, {{Country}} on address {{Address}} has been rejected.</p>
+        <p>Thank you for using our service.</p>
+        <p>Sincerely,<br>Smart Home Team</p>
+        <div class="button-container">
+            <a href="http://localhost:3000/" class="button">Go Home</a>
+        </div>
+    </div>
+</body>
+</html>
