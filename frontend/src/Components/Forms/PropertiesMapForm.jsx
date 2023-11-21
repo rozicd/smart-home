@@ -38,12 +38,14 @@ const PropertiesMapForm = React.forwardRef(  ({ onDataValidated, previousFormDat
     if (!selectedCountry) {
       errors.selectedCountry = "Please select a country.";
     }
-    if (!selectedCity) {
+    if (!selectedCity && isCitiesVisible) {
       errors.selectedCity = "Please select a city.";
     }
     if (!address && isCitiesVisible) {
-      errors.address = "Please click on the map to get the address.";
-    }
+        errors.address = "Please click on the map to get the address.";
+      } else if (address.length > 100) {
+        errors.address = "Address must be no more than 100 characters.";
+      }
 
     const firstErrorKey = Object.keys(errors)[0];
     setFormErrors(firstErrorKey ? { [firstErrorKey]: errors[firstErrorKey] } : {});

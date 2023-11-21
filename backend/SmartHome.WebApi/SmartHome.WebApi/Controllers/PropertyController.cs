@@ -107,7 +107,7 @@ public class PropertyController : BaseController
 
     [HttpPut("{id}/reject")]
     [Authorize(Roles = "ADMIN,SUPERADMIN")]
-    public async Task<IActionResult> RejectProperty(Guid id)
+    public async Task<IActionResult> RejectProperty(Guid id, [FromBody] RejectRequestDTO rejectRequestDTO)
     {
         Property property = await _propertyService.GetPropertyById(id);
 
@@ -121,7 +121,7 @@ public class PropertyController : BaseController
 
         User userOfProperty = await _userService.GetById(property.UserId);
 
-        await _emailService.SendRejectPropertyEmail(userOfProperty, property);
+        await _emailService.SendRejectPropertyEmail(userOfProperty, property, rejectRequestDTO.Description);
 
         return Ok($"Property {id} rejected successfully");
     }

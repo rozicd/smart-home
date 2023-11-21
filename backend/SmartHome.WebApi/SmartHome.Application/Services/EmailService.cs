@@ -50,7 +50,7 @@ namespace SmartHome.Application.Services
             var response = await client.SendEmailAsync(msg);
         }
 
-        public async Task SendRejectPropertyEmail(User user, Property property)
+        public async Task SendRejectPropertyEmail(User user, Property property, string description)
         {
             var apiKey = Environment.GetEnvironmentVariable("SEND_GRID_API_KEY");
             var client = new SendGridClient(apiKey);

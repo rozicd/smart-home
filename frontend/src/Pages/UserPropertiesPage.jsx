@@ -72,12 +72,12 @@ const UserPropertiesPage = ({ user }) => {
       <div className="property-list-container">
         <div className="property-list">
           {properties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
+            <PropertyCard key={property.id} property={property} callback={ClickedProperty} />
           ))}
         </div>
       </div>
       <AddButton className="add-property-button" onClick={handleAddProperty} />
-      <PropertyStepper open={stepperOpen} onClose={handleCloseStepper} />
+      <PropertyStepper open={stepperOpen} onClose={handleCloseStepper}/>
     </div>
   );
 };

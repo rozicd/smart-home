@@ -13,7 +13,7 @@ namespace SmartHome.Domain.Services
 
         Task SendApprovePropertyEmail(User user, Property property);
 
-        Task SendRejectPropertyEmail(User user, Property property);
+        Task SendRejectPropertyEmail(User user, Property property, string description);
 
     }
 }
