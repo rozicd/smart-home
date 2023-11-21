@@ -68,12 +68,14 @@ const createProperty = async (formData) => {
     data.append('areaSquareMeters', formData.areaSquareMeters);
     data.append('numberOfFloors', formData.numberOfFloors);
     data.append('imageFile', formData.imageFile);
+    data.append('propertyName',formData.propertyName)
 
     const response = await axios.post(`${API_BASE_URL}/properties`, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },withCredentials:'true'
     });
+    console.log(response)
 
   } catch (error) {
     console.error('Error creating property:', error.response ? error.response.data : error.message);

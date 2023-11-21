@@ -12,7 +12,7 @@ namespace SmartHome.DataTransferObjects.Responses
         public Guid Id { get; set; }
         public string Address { get; set; }
         public string CityName { get; set; }
-
+        public string PropertyName { get; set; }
         public string CountryName { get; set; }
         public double AreaSquareMeters { get; set; }
         public int NumberOfFloors { get; set; }

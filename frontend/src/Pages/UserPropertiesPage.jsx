@@ -79,7 +79,7 @@ const UserPropertiesPage = ({ user }) => {
         </div>
       </div>
       <AddButton className="add-property-button" onClick={handleAddProperty} />
-      <PropertyStepper open={stepperOpen} onClose={handleCloseStepper} />
+      <PropertyStepper open={stepperOpen} onClose={handleCloseStepper}/>
     </div>
   );
 };

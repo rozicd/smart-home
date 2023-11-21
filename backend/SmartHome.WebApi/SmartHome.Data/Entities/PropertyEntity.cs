@@ -10,6 +10,7 @@ namespace SmartHome.Data.Entities
     public class PropertyEntity
     {
         public Guid Id { get; set; }
+        public string PropertyName { get; set; }
         public string Address { get; set; }
         public Guid CityId { get; set; }
         public virtual CityEntity City { get; set; }
