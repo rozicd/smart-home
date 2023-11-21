@@ -26,7 +26,6 @@ namespace SmartHome.Data
         public DbSet<SprinkleModeEntity> SprinkleModes { get; set; }
 
         public DbSet<WashingMachineModeEntity> WashingMachineModes { get; set; }
-        public DbSet<SolarPanelEntity> SolarPanels { get; set; }
 
 
 

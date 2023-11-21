@@ -11,6 +11,7 @@ namespace SmartHome.DataTransferObjects.Requests
     public class SmartDeviceResponseDTO
     {
         public string Id {  get; set; }
+        public string Name {  get; set; }
         public string UserName { get; set; }
         public Guid UserId { get; set; }
         public string ImageUrl {  get; set; }

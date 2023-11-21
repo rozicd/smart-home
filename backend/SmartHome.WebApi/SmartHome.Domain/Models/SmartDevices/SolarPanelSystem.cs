@@ -8,14 +8,15 @@ namespace SmartHome.Domain.Models.SmartDevices
 {
     public class SolarPanelSystem : SmartDevice
     {
-        public List<SolarPanel> SolarPanels { get; set; }
+        public string Size { get; set; }
+        public float Efficiency { get; set; }
+
         public SolarPanelSystem()
         {
             PowerSupply = PowerSupplyType.HOME;
             DeviceStatus = DeviceStatus.OFFLINE;
             DeviceType = DeviceType.BED;
             Connection = "";
-            SolarPanels = new List<SolarPanel>();
         }
     }
 }

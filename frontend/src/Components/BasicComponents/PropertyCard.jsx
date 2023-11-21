@@ -30,13 +30,8 @@ const PropertyCard = ({ property, callback }) => {
   }
 
   return (
-<<<<<<< HEAD
-    <Card onClick = {()=>callback(property.id)} style={{ display: 'flex', width: '40vw', height: '260px', margin: '20px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }} >
-      <CardMedia  component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', minWidth: '260px', maxWidth: '260px' }} image={imageData} />
-=======
     <Card className="property-card" onClick={() => callback(property.id)} style={{ display: 'flex',margin:'20px', width: '32vw', height: '260px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
       <CardMedia component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', maxWidth: '260px' }} image={imageData} />
->>>>>>> 4ab1911ddda91769be9598b22426cd8a27f99dd5
       <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <CardContent style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '20px', backgroundColor: '#ffffff', color: '#000000' }}>
           <Typography variant="h5" style={{ flex: '40%' }}>{property.propertyName}</Typography>

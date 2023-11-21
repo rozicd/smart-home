@@ -36,8 +36,6 @@ public class MappingProfiles : Profile
         CreateMap<SolarPanelSystem, SolarPanelSystemEntity>();
         CreateMap<WashingMachineModeEntity, WashingMachineMode>();
         CreateMap<WashingMachineMode, WashingMachineModeEntity>();
-        CreateMap<SolarPanelEntity, SolarPanel>();
-        CreateMap<SolarPanel, SolarPanelEntity>();
         CreateMap<SprinkleMode, SprinkleModeEntity>();
         CreateMap<SprinkleModeEntity, SprinkleMode>();
 
@@ -57,7 +55,6 @@ public class MappingProfiles : Profile
         CreateMap<CreateWashingMachineDTO, WashingMachine>();
         CreateMap<CreateCarGateDTO, CarGate>();
         CreateMap<CreateSprinklerDTO, Sprinkler>();
-        CreateMap<CreateSolarPanelDTO, SolarPanel>();
         CreateMap<CreateSolarPanelSystemDTO, SolarPanelSystem>();
         CreateMap<CreateHomeBatteryDTO, HomeBattery>();
 

@@ -20,6 +20,10 @@ const UserPropertiesPage = ({ user }) => {
   {
     navigate(id)
   }
+  const NotAccepted=(id) =>
+  {
+    console.log(id+" Not Accepted")
+  }
   
   const fetchProperties = async () => {
     try {
@@ -74,7 +78,7 @@ const UserPropertiesPage = ({ user }) => {
       <div className="property-list-container">
         <div className="property-list">
           {properties.map((property) => (
-            <PropertyCard key={property.id} property={property} callback={ClickedProperty} />
+            <PropertyCard key={property.id} property={property} callback={property.status == 1?ClickedProperty:NotAccepted} />
           ))}
         </div>
       </div>

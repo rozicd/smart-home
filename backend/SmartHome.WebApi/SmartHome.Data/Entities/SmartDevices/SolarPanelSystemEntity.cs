@@ -10,6 +10,7 @@ namespace SmartHome.Data.Entities.SmartDevices
     public class SolarPanelSystemEntity : SmartDeviceEntity
     {
 
-        List<SolarPanelEntity> SolarPanels { get; set; }
+        public float Size { get; set; }
+        public float Efficiency { get; set; }
     }
 }

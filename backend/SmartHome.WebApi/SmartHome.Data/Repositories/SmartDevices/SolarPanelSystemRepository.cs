@@ -26,10 +26,7 @@ namespace SmartHome.Data.Repositories.SmartDevices
 
         public async Task Add(SolarPanelSystem device)
         {
-            foreach(SolarPanel solarPanel in device.SolarPanels) {
-                SolarPanelEntity solarPanelEntity = _mapper.Map<SolarPanelEntity>(solarPanel);
-                await _context.SolarPanels.AddAsync(solarPanelEntity);
-            }
+            
             SolarPanelSystemEntity solarPanelSystemEntity = _mapper.Map<SolarPanelSystemEntity>(device);
             await _solarPanelSystems.AddAsync(solarPanelSystemEntity);
             await _context.SaveChangesAsync();

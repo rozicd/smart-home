@@ -14,3 +14,20 @@ export const GetSmartDevicesByProperty = async (pagination) => {
       throw error;
     }
   };
+
+  export const AddSmartDevice = async (device,url) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/${url}`,device, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        
+        
+        withCredentials: true,
+      });
+  
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
