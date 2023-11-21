@@ -5,6 +5,7 @@ import AddButton from '../Components/BasicComponents/AddButton';
 import BasicPagination from '../Components/BasicComponents/BasicPagination'; // Import your Pagination component
 import './UserPropertiesPage.css';
 import PropertyStepper from '../Components/BasicComponents/PropertyStepper';
+import { useNavigate } from 'react-router-dom';
 
 const UserPropertiesPage = ({ user }) => {
   const [loading, setLoading] = useState(true);
@@ -13,10 +14,11 @@ const UserPropertiesPage = ({ user }) => {
   const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 4 });
   const [totalItems, setTotalItems] = useState(0);
   const [stepperOpen, setStepperOpen] = useState(false);
+  const navigate = useNavigate()
 
   const ClickedProperty=(id) =>
   {
-    console.log(id)
+    navigate(id)
   }
   
   const fetchProperties = async () => {
@@ -72,7 +74,7 @@ const UserPropertiesPage = ({ user }) => {
       <div className="property-list-container">
         <div className="property-list">
           {properties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
+            <PropertyCard key={property.id} property={property} callback={ClickedProperty} />
           ))}
         </div>
       </div>

@@ -43,7 +43,7 @@ const PropertyCard = ({ property,callback }) => {
   };
 
   return (
-    <Card onClick = {()=>callback(property.id)} style={{ display: 'flex', width: '800px', height: '260px', margin: '20px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }} >
+    <Card onClick = {()=>callback(property.id)} style={{ display: 'flex', width: '40vw', height: '260px', margin: '20px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }} >
       <CardMedia  component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', minWidth: '260px', maxWidth: '260px' }} image={imageData} />
       <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <CardContent style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '20px', backgroundColor: '#ffffff', color: '#000000' }}>
