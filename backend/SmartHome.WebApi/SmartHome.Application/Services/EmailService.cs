@@ -55,5 +55,18 @@ namespace SmartHome.Application.Services
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }
+
+        public async Task SendSuperAdminCredentials(User superAdmin)
+        {
+            var apiKey = Environment.GetEnvironmentVariable("SEND_GRID_API_KEY");
+            var client = new SendGridClient(apiKey);
+            var from = new EmailAddress("smarthometeam7@gmail.com", "Smart home team");
+            var subject = "Account activation";
+            var to = new EmailAddress(superAdmin.Email, superAdmin.Name);
+            var plainTextContent = "Grettings " + superAdmin.Name;
+            var htmlContent = "<strong>email: " + superAdmin.Email + "</strong>\n<strong>password:" + superAdmin.Password + "</strong>";
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            var response = await client.SendEmailAsync(msg);
+        }
     }
 }

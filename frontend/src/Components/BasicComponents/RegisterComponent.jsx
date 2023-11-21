@@ -42,6 +42,7 @@ const registerTemplate =
 const RegisterComponent = () => {
     const [profilePicture, setProfilePicture] = useState([]);
     const [formState, setFormState] = useState({});
+
   
     useEffect(() => {
         // console.log(profilePicture);
@@ -65,6 +66,9 @@ const RegisterComponent = () => {
         }
         console.log(userDTO)
         const response = await register(userDTO)
+        if(response){
+          window.alert("Registration is successful! Check email for account activation.")
+        }
         // window.alert(response)
 
       }

@@ -36,7 +36,7 @@ namespace SmartHome.Data.Repositories
             UserEntity userEntity = _mapper.Map<UserEntity>(user);
             string salt = "$2a$12$abcdefghijklmno1234567";
             userEntity.Password = BCrypt.Net.BCrypt.HashPassword(userEntity.Password, salt);
-            await _users.AddAsync(userEntity);
+            _users.AddAsync(userEntity);
             await _context.SaveChangesAsync();
             return _mapper.Map<User>(userEntity);
         }
@@ -95,21 +95,39 @@ namespace SmartHome.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
- /*       public void SeedSuperAdmin()
+       public async Task<User> SeedSuperAdmin()
         {
-            if (!_users.Any(u => u.Email == "admin"))
+            if (!_users.Any(u => u.Name == "admin" && u.Email == "sanduzicro19@gmail.com"))
             {
                 string randomPassword = GenerateRandomPassword(12);
 
-                var superAdmin = new UserEntity
-                {
-                    
-                };
+                var superAdmin = new UserEntity();
+                superAdmin.ProfilePictureUrl = "static/users\\97dbd7a9-5a33-4af1-a277-02910c1f84a0";
+                superAdmin.Name = "admin";
+                superAdmin.Email = "sanduzicro19@gmail.com";
+                superAdmin.Password = GenerateRandomPassword(12);
+                superAdmin.Status = Status.INACTIVE;
+                superAdmin.Role = Role.SUPERADMIN;
+                string salt = "$2a$12$abcdefghijklmno1234567";
+                superAdmin.Password = BCrypt.Net.BCrypt.HashPassword(superAdmin.Password, salt);
 
-                context.Users.Add(superAdmin);
-                context.SaveChanges();
+                _users.AddAsync(superAdmin);
+                await _context.SaveChangesAsync();
+                return _mapper.Map<User>(superAdmin);
             }
-        }*/
+            return null;
+        }
+
+        public async Task<User> FindSuperAdmin()
+        {
+            UserEntity superAdmin = await _users.FirstOrDefaultAsync(u => u.Name == "admin" && u.Email == "sanduzicro19@gmail.com");
+            if(superAdmin == null)
+            {
+                return null;
+            }
+            return _mapper.Map<User>(superAdmin);
+        }
+
         private string GenerateRandomPassword(int length)
         {
             const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";

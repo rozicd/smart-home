@@ -142,6 +142,10 @@ using (var scope = app.Services.CreateScope())
     {
         context.Database.Migrate();
     }
+
+    var userService = services.GetRequiredService<IUserService>();
+
+    await userService.GenerateSuperAdmin();
 }
 
 app.UseStaticFiles();
