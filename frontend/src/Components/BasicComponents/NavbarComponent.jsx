@@ -25,9 +25,10 @@ const NavbarComponent = ({loggedUser}) => {
                         <Link>
                             <BasicButton color={'secondary'}   text={"Button1"} variant="outlined"></BasicButton>
                         </Link>
+                        {loggedUser.role == 2 &&
                         <Link>
-                            <BasicButton  color={'secondary'}   text={"Button1"} variant="outlined"></BasicButton>
-                        </Link>
+                            <BasicButton  color={'secondary'}   text={"Admins"} variant="outlined"></BasicButton>
+                        </Link>}
                     </>)}
             </div>
             <div className="menu-container">

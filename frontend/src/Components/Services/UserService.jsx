@@ -88,4 +88,19 @@ const activateUser = async(activationTokenRequestDTO) => {
     }
   }
 }
-export { signIn, register, authenticateUser, logout, activateUser };
+
+const activateSuperAdmin = async(changeSuperAdminPasswordDTO) =>{
+  try{
+    const response = await axios.put(`${API_BASE_URL}/users/activate-superAdmin`, changeSuperAdminPasswordDTO,{withCredentials: true});
+    return response.data;
+  }catch(error){
+    if (error.response) {
+      window.alert(error.response.data)
+    } else if (error.request) {
+      console.log('No response received for the request.');
+    } else {
+      console.log('Error Message:', error.message);
+    }
+  }
+}
+export { signIn, register, authenticateUser, logout, activateUser, activateSuperAdmin };

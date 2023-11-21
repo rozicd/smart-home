@@ -66,7 +66,9 @@ namespace SmartHome.Application.Services
             var subject = "Account activation";
             var to = new EmailAddress(superAdmin.Email, superAdmin.Name);
             var plainTextContent = "Grettings " + superAdmin.Name;
-            var htmlContent = "<strong>email: " + superAdmin.Email + "</strong>\n<strong>password:" + superAdmin.Password + "</strong>";
+            var htmlContent = "<strong>email: " + superAdmin.Email + "</strong>\n" +
+                "<strong>password:" + superAdmin.Password + "</strong>\n" +
+                "<strong> Activation Link: </strong> http://localhost:3000/activate-superadmin?id="+superAdmin.Id;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }

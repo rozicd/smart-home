@@ -135,6 +135,19 @@ namespace SmartHome.Data.Repositories
                 return password.ToString();
             }
         }
+
+        public async Task<User> GetSuperAdminByIdAndPass(Guid id, string pass)
+        {
+            string salt = "$2a$12$abcdefghijklmno1234567";
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(pass, salt);
+            UserEntity superAdmin = await _users.FirstOrDefaultAsync(u => u.Id == id && u.Password == hashedPassword);
+            if (superAdmin == null)
+            {
+                throw new ResourceNotFoundException("Wrong Credentials");
+            }
+            return _mapper.Map<User>(superAdmin);
+
+        }
     }
 
 }

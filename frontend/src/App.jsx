@@ -13,6 +13,7 @@ import RegisterPage from "./Pages/RegisterPage";
 import LoginPage from "./Pages/LoginPage";
 import NavbarComponent from "./Components/BasicComponents/NavbarComponent";
 import ActivateAccountPage from "./Pages/ActivateAccountPage";
+import ActivateSuperAdminPage from "./Pages/ActivateSuperAdminPage";
 import { authenticateUser } from "./Components/Services/UserService";
 import Home from "./Pages/Home";
 import CheckAuthentication from "./Pages/CheckAuthentication";
@@ -31,6 +32,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/activate" element={<ActivateAccountPage/>}/>
+          <Route path="/activate-superadmin" element={<ActivateSuperAdminPage/>}/>
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/*" element={<AuthenticatedHome />} >
             <Route path="properties" element={<AuthenticatedProperties />} />

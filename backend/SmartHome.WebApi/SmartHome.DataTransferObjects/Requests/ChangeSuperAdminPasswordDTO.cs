@@ -8,7 +8,8 @@ namespace SmartHome.DataTransferObjects.Requests
 {
     public class ChangeSuperAdminPasswordDTO
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
+        public string OldPassword { get; set; }
         public string Password { get; set; }
     }
 }

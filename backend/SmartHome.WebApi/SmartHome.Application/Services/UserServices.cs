@@ -68,8 +68,9 @@ namespace SmartHome.Application.Services
                 newSuperAdmin.Password = GenerateRandomPassword(12);
                 newSuperAdmin.Status = Status.INACTIVE;
                 newSuperAdmin.Role = Role.SUPERADMIN;
-                await _userRepository.Add(newSuperAdmin);
-                await _emailService.SendSuperAdminCredentials(newSuperAdmin);
+                User savedSuperAdmin = await _userRepository.Add(newSuperAdmin);
+                savedSuperAdmin.Password = newSuperAdmin.Password;
+                await _emailService.SendSuperAdminCredentials(savedSuperAdmin);
             }
            
         }
@@ -91,6 +92,11 @@ namespace SmartHome.Application.Services
 
                 return password.ToString();
             }
+        }
+
+        public Task<User> getSuperAdminByIdAndOldPass(Guid id, string password)
+        {
+            return _userRepository.GetSuperAdminByIdAndPass(id, password);
         }
     }
 }

@@ -88,11 +88,7 @@ namespace SmartHome.WebApi.Controllers
         [HttpPut("activate-superAdmin")]
         public async Task<IActionResult> ActivateSuperAdmin([FromBody] ChangeSuperAdminPasswordDTO changeSuperAdminPasswordDTO)
         {
-            User superAdmin = await _userService.GetById(changeSuperAdminPasswordDTO.Id);
-            if(superAdmin == null || superAdmin.Role != Role.SUPERADMIN)
-            {
-                return BadRequest("Something went wrong");
-            }
+            User superAdmin = await _userService.getSuperAdminByIdAndOldPass(Guid.Parse(changeSuperAdminPasswordDTO.Id), changeSuperAdminPasswordDTO.OldPassword);
             superAdmin.Password = changeSuperAdminPasswordDTO.Password;
             superAdmin.Status = Status.ACTIVE;
             await _userService.Update(superAdmin);
