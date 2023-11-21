@@ -1,12 +1,15 @@
 ﻿using CsvHelper;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities;
+using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Models;
+using SmartHome.Domain.Models.SmartDevices;
 using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +22,15 @@ namespace SmartHome.Data
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<PropertyEntity> Properties { get; set; }
         public DbSet<ActivationTokenEntity> ActivationTokens { get; set; }
-        public DbSet<EnvironmentalConditionsSensorEntity> EnvironmentalConditionsSensors { get; set; }
+        public DbSet<SmartDeviceEntity> SmartDevices { get; set; }
+        public DbSet<SprinkleModeEntity> SprinkleModes { get; set; }
+
+        public DbSet<WashingMachineModeEntity> WashingMachineModes { get; set; }
+        public DbSet<SolarPanelEntity> SolarPanels { get; set; }
+
+
+
+
 
         public DatabaseContext(DbContextOptions options) : base(options)
         {
@@ -47,6 +58,39 @@ namespace SmartHome.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             SeedCountriesAndCities(modelBuilder);
+
+           
+
+            modelBuilder.Entity<EnvironmentalConditionsSensorEntity>()
+                .ToTable("EnvironmentalConditionsSensors")
+                .HasBaseType<SmartDeviceEntity>();
+            modelBuilder.Entity<AirConditionerEntity>()
+                .ToTable("AirConditioners")
+                .HasBaseType<SmartDeviceEntity>();
+            modelBuilder.Entity<WashingMachineEntity>()
+                .ToTable("WashingMachines")
+                .HasBaseType<SmartDeviceEntity>();
+            modelBuilder.Entity<LampEntity>()
+                .ToTable("Lamps")
+                .HasBaseType<SmartDeviceEntity>();
+            modelBuilder.Entity<CarGateEntity>()
+                .ToTable("CarGates")
+                .HasBaseType<SmartDeviceEntity>();
+            modelBuilder.Entity<SprinklerEntity>()
+                .ToTable("Sprinklers")
+                .HasBaseType<SmartDeviceEntity>();
+            modelBuilder.Entity<SolarPanelSystemEntity>()
+                .ToTable("SolarPanelSystems")
+                .HasBaseType<SmartDeviceEntity>();
+            modelBuilder.Entity<HomeBatteryEntity>()
+                .ToTable("HomeBatteries")
+                .HasBaseType<SmartDeviceEntity>();
+            modelBuilder.Entity<CarChargerEntity>()
+                .ToTable("CarChargers")
+                .HasBaseType<SmartDeviceEntity>();
+
+
+
         }
 
 
@@ -128,6 +172,10 @@ namespace SmartHome.Data
             }
 
             return cities;
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
         }
     }
 

@@ -19,8 +19,8 @@ const NavbarComponent = ({loggedUser}) => {
             <div className="menu-container">
                 {loggedUser != null && (
                     <>
-                        <Link>
-                            <BasicButton color={'secondary'}    text={"Button1"} variant="outlined"></BasicButton>
+                        <Link to = {'/properties'}>
+                            <BasicButton color={'secondary'}    text={"Properties"} variant="outlined"></BasicButton>
                         </Link>
                         <Link>
                             <BasicButton color={'secondary'}   text={"Button1"} variant="outlined"></BasicButton>

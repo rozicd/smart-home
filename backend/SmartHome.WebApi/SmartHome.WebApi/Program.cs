@@ -4,10 +4,14 @@ using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 using MQTTnet.Client;
 using SmartHome.Application.Services;
+using SmartHome.Application.Services.SmartDevices;
 using SmartHome.Data;
 using SmartHome.Data.Repositories;
+using SmartHome.Data.Repositories.SmartDevices;
 using SmartHome.Domain.Repositories;
+using SmartHome.Domain.Repositories.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.WebApi.Middlewares;
 using System.Text;
 
@@ -29,9 +33,32 @@ builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<ISmartDeviceRepository, SmartDeviceRepository>();
+builder.Services.AddScoped<ISmartDeviceService, SmartDeviceService>();
+builder.Services.AddScoped<IWashingMachineRepository, WashingMachineRepository>();
+builder.Services.AddScoped<IWashingMachineService, WashingMachineService>();
+
 builder.Services.AddScoped<IEnvironmentalConditionsSensorRepository, EnvironmentalConditionsSensorRepository>();
 builder.Services.AddScoped<IEnvironmentalConditionsSensorService, EnvironmentalConditionsSensorService>();
+builder.Services.AddScoped<IAirConditionerService, AirConditionerService>();
+builder.Services.AddScoped<IAirConditionerRepository, AirConditionerRepository>();
+builder.Services.AddScoped<ILampRepository, LampRepository>();
+builder.Services.AddScoped<ILampService, LampService>();
 builder.Services.AddScoped<IMqttClientService, MqttClientService>();
+
+builder.Services.AddScoped<ICarGateRepository, CarGateRepository>();
+builder.Services.AddScoped<ICarGateService, CarGateService>();
+builder.Services.AddScoped<ISprinklerRepository, SprinklerRepository>();
+builder.Services.AddScoped<ISprinklerService, SprinklerService>();
+
+builder.Services.AddScoped<ISolarPanelSystemRepository, SolarPanelSystemRepository>();
+builder.Services.AddScoped<ISolarPanelSystemService, SolarPanelSystemService>();
+
+builder.Services.AddScoped<IHomeBatteryRepository, HomeBatteryRepository>();
+builder.Services.AddScoped<IHomeBatteryService, HomeBatteryService>();
+
+builder.Services.AddScoped<ICarChargerRepository, CarChargerRepository>();
+builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 
 
 
@@ -41,7 +68,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.WithOrigins("http://localhost:3000")
+
+        builder.WithOrigins("http://localhost:3000")  
                   .AllowAnyMethod()
                   .AllowAnyHeader()
                   .AllowCredentials();

@@ -15,16 +15,20 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       const response = await authenticateUser();
-      setIsAuthenticated(true)
-      setUser(response);
       if(response == null){
         setIsAuthenticated(false)
+        return
       }
+      console.log(response)
+      setIsAuthenticated(true)
+      setUser(response);
+      
     }
     fetchData();
 
     return () => console.log("asdasd");
   }, []);
+
 
   return (
     <ThemeProvider theme={themeOptions}>
@@ -49,7 +53,7 @@ function App() {
           />
           <Route path="login" element={<LoginPage />}/>
           <Route path="register" element={<RegisterPage />} />
-          <Route path="properties" element={<UserPropertiesPage />} />
+          {user != null && <Route path="properties" element={<UserPropertiesPage userId={user['userId']} />} />}
         </Routes>
       </Router>
       <Outlet/>
