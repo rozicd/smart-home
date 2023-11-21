@@ -14,6 +14,7 @@ namespace SmartHome.Domain.Services
         Task Connect(Guid id, string address);
         Task TurnOn(Guid id);
         Task TurnOff(Guid id);
+        Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId);
 
 
 

@@ -16,6 +16,7 @@ namespace SmartHome.Domain.Repositories
         Task<User> GetByEmailAndPassword(string email, string password);
 
         Task<User> FindSuperAdmin();
+        Task UpdateStatus(User user);
 
     }
 }

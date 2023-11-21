@@ -22,9 +22,10 @@ const signIn = async (credentials) => {
 const register = async (userDTO) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/users`, userDTO, {
+      withCredentials: true,
       headers: {
         'Content-Type': 'multipart/form-data',
-      },
+      }
     });
 
     console.log('Response:', response.data);
@@ -73,4 +74,18 @@ const authenticateUser = async () => {
   }
 };
 
-export { signIn, register, authenticateUser, logout };
+const activateUser = async(activationTokenRequestDTO) => {
+  try{
+    const response = await axios.put(`${API_BASE_URL}/users/activate`, activationTokenRequestDTO,{withCredentials: true});
+    return response.data;
+  }catch(error){
+    if (error.response) {
+      window.alert(error.response.data)
+    } else if (error.request) {
+      console.log('No response received for the request.');
+    } else {
+      console.log('Error Message:', error.message);
+    }
+  }
+}
+export { signIn, register, authenticateUser, logout, activateUser };

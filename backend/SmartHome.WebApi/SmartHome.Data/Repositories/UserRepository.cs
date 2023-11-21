@@ -95,27 +95,15 @@ namespace SmartHome.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-       public async Task<User> SeedSuperAdmin()
+        public async Task UpdateStatus(User user)
         {
-            if (!_users.Any(u => u.Name == "admin" && u.Email == "sanduzicro19@gmail.com"))
+            UserEntity userEntity = await _users.FirstOrDefaultAsync(p => p.Id == user.Id);
+            if (userEntity == null)
             {
-                string randomPassword = GenerateRandomPassword(12);
-
-                var superAdmin = new UserEntity();
-                superAdmin.ProfilePictureUrl = "static/users\\97dbd7a9-5a33-4af1-a277-02910c1f84a0";
-                superAdmin.Name = "admin";
-                superAdmin.Email = "sanduzicro19@gmail.com";
-                superAdmin.Password = GenerateRandomPassword(12);
-                superAdmin.Status = Status.INACTIVE;
-                superAdmin.Role = Role.SUPERADMIN;
-                string salt = "$2a$12$abcdefghijklmno1234567";
-                superAdmin.Password = BCrypt.Net.BCrypt.HashPassword(superAdmin.Password, salt);
-
-                _users.AddAsync(superAdmin);
-                await _context.SaveChangesAsync();
-                return _mapper.Map<User>(superAdmin);
+                throw new ResourceNotFoundException("User not found");
             }
-            return null;
+            userEntity.Status = Status.ACTIVE;
+            await _context.SaveChangesAsync();
         }
 
         public async Task<User> FindSuperAdmin()

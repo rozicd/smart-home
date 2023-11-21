@@ -39,7 +39,7 @@ const registerTemplate =
     
 ]
 
-const RegisterComponent = () => {
+const RegisterComponent = ({headerName = "REGISTER"}) => {
     const [profilePicture, setProfilePicture] = useState([]);
     const [formState, setFormState] = useState({});
 
@@ -77,13 +77,13 @@ const RegisterComponent = () => {
   
     return (
       <div className="register">
-        <HeaderComponent name="REGISTER" />
+        <HeaderComponent name={headerName} />
         <ProfilePictureUpload onProfilePictureChange={handleProfilePictureChange} />
         <div className="register-form"> 
           <BasicForm template={registerTemplate} callback={handleSubmit} />
         </div>
         <div className="button-container">
-          <Link to={'/login'}>
+          <Link to={'/'}>
             <BasicButton text = {'Go back'} variant={'text'}></BasicButton>
           </Link>
         </div>

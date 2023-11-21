@@ -26,7 +26,17 @@ namespace SmartHome.WebApi.Controllers
         {
 
             PaginationReturnObject<SmartDevice> devices =await  _smartDeviceService.GetAll(page);
-            PaginationReturnObject<SmartDeviceResponseDTO> response = new PaginationReturnObject<SmartDeviceResponseDTO>(_mapper.Map<IEnumerable<SmartDeviceResponseDTO>>(devices.Items),devices.Page,devices.PageSize,devices.TotalItems);
+            PaginationReturnObject<SmartDeviceResponseDTO> response = new PaginationReturnObject<SmartDeviceResponseDTO>(_mapper.Map<IEnumerable<SmartDeviceResponseDTO>>(devices.Items),devices.PageNumber,devices.PageSize,devices.TotalItems);
+
+            return Ok(response);
+        }
+        [HttpGet("property")]
+
+        public async Task<IActionResult> GetAll([FromQuery] PropertySmartDeviceRequestDTO request)
+        {
+
+            PaginationReturnObject<SmartDevice> devices = await _smartDeviceService.GetAllFromProperty(request.Page,request.PropertyId);
+            PaginationReturnObject<SmartDeviceResponseDTO> response = new PaginationReturnObject<SmartDeviceResponseDTO>(_mapper.Map<IEnumerable<SmartDeviceResponseDTO>>(devices.Items), devices.PageNumber, devices.PageSize, devices.TotalItems);
 
             return Ok(response);
         }

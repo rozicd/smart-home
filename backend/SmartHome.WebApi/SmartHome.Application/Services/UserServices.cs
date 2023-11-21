@@ -42,6 +42,10 @@ namespace SmartHome.Application.Services
         {
             return _userRepository.Update(user);
         }
+        public Task UpdateStatus(User user)
+        {
+            return _userRepository.UpdateStatus(user);
+        }
 
         public Task<User> GetByEmailAndPassword(string email, string password)
         {

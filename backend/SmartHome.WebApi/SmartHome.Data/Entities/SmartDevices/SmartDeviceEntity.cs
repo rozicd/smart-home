@@ -14,6 +14,8 @@ namespace SmartHome.Data.Entities.SmartDevices
         public DeviceStatus DeviceStatus { get; set; }
         public virtual UserEntity User { get; set; }
         public Guid UserId { get; set; }
+        public virtual PropertyEntity Property { get; set; }
+        public Guid PropertyId {  get; set; }
 
     }
 }

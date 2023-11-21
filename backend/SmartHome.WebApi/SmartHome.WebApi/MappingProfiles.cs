@@ -73,6 +73,7 @@ public class MappingProfiles : Profile
         CreateMap<CreateESCDTO, EnvironmentalConditionsSensor>();
         CreateMap<CreateAirConditionerDTO, AirConditioner>();
 
+        CreateMap<PaginationReturnObject<Property>, PropertyResponseDTO>();
         CreateMap<RegisterPropertyRequestDTO, Property>();
         CreateMap<Property, PropertyResponseDTO>().ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City.Country.Name));
         CreateMap<RegisterPropertyRequestDTO, Property>();
@@ -80,6 +81,7 @@ public class MappingProfiles : Profile
         CreateMap<ActivationToken, ActivationTokenEntity>();
         CreateMap<ActivationTokenEntity, ActivationToken>();
         CreateMap<ActivationTokenRequestDTO, ActivationToken>()
+           .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => Guid.Parse(src.UserId)))
            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
            .ForMember(dest => dest.expires, opt => opt.MapFrom(src => (DateTime?)null));
         CreateMap<ActivationToken, ActivationTokenRequestDTO>();

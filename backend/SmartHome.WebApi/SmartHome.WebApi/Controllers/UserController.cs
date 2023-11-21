@@ -74,7 +74,7 @@ namespace SmartHome.WebApi.Controllers
             if(_activationTokenService.IsTokenValid(activationToken).Result)
             {
                 user.Status = Status.ACTIVE;
-                await _userService.Update(user);
+                await _userService.UpdateStatus(user);
                 return Ok("Account activated successfuly!");
             }
             else
@@ -83,6 +83,20 @@ namespace SmartHome.WebApi.Controllers
                 await _emailService.SendActivationEmail(user, newActivationToken);
                 return BadRequest("Token expired! Check email for new");
             }
+        }
+
+        [HttpPut("activate-superAdmin")]
+        public async Task<IActionResult> ActivateSuperAdmin([FromBody] ChangeSuperAdminPasswordDTO changeSuperAdminPasswordDTO)
+        {
+            User superAdmin = await _userService.GetById(changeSuperAdminPasswordDTO.Id);
+            if(superAdmin == null || superAdmin.Role != Role.SUPERADMIN)
+            {
+                return BadRequest("Something went wrong");
+            }
+            superAdmin.Password = changeSuperAdminPasswordDTO.Password;
+            superAdmin.Status = Status.ACTIVE;
+            await _userService.Update(superAdmin);
+            return Ok("Account Activated!");
         }
 
         [HttpPost("login")]

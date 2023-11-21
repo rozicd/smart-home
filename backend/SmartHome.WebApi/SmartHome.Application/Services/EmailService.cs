@@ -24,7 +24,9 @@ namespace SmartHome.Application.Services
             var subject = "Account activation";
             var to = new EmailAddress(user.Email, user.Name);
             var plainTextContent = "Grettings " + user.Name;
-            var htmlContent = "<strong>userId: "+activationToken.UserId.ToString()+ "</strong>\n<strong>token :" + activationToken.Token +"</strong>";
+            var htmlContent = "<strong>userId: "+activationToken.UserId.ToString()+ "</strong>" +
+                "\n<strong>token :" + activationToken.Token +"</strong>" +
+                "<p>Activation Link: http://localhost:3000/activate?id=" + activationToken.UserId.ToString() + "&token="+ activationToken.Token;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }

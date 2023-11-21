@@ -45,7 +45,7 @@ const LoginComponent = () => {
             <HeaderComponent name = {"LOGIN"}></HeaderComponent>
             <div className="login-form">
                 <BasicForm template={loginTemplate} callback={handleSubmit} /> 
-                <p>Don't have account? <a href="/">Sign up Here.</a></p> 
+                <p>Don't have account? <a href="/register">Sign up Here.</a></p> 
             </div>
             
         </div>
