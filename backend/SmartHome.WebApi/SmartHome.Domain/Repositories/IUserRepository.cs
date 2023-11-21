@@ -14,5 +14,8 @@ namespace SmartHome.Domain.Repositories
         Task Update(User project);
         Task Delete(Guid id);
         Task<User> GetByEmailAndPassword(string email, string password);
+
+ 
+
     }
 }

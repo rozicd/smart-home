@@ -1,10 +1,12 @@
 import React from "react";
 import "./basic-items.css";
 import HeaderComponent from "./HeaderComponent";
+import {Link} from 'react-router-dom'
 import BasicForm from "./BasicForm";
 import ProfilePictureUpload from "./ProfilePictureUpload";
 import { useState, useEffect } from "react";
 import { register } from "../Services/UserService";
+import BasicButton from "./BasicButton";
 
 
 
@@ -63,7 +65,7 @@ const RegisterComponent = () => {
         }
         console.log(userDTO)
         const response = await register(userDTO)
-        window.alert(response)
+        // window.alert(response)
 
       }
     
@@ -75,6 +77,11 @@ const RegisterComponent = () => {
         <ProfilePictureUpload onProfilePictureChange={handleProfilePictureChange} />
         <div className="register-form"> 
           <BasicForm template={registerTemplate} callback={handleSubmit} />
+        </div>
+        <div className="button-container">
+          <Link to={'/login'}>
+            <BasicButton text = {'Go back'} variant={'text'}></BasicButton>
+          </Link>
         </div>
       </div>
     );

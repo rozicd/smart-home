@@ -44,5 +44,6 @@ namespace SmartHome.Application.Services
         {
             return _userRepository.GetByEmailAndPassword(email, password);
         }
+
     }
 }

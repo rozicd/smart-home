@@ -5,10 +5,17 @@ const API_BASE_URL = 'http://localhost:5090';
 
 const signIn = async (credentials) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/users/login`, credentials,{withCredentials:true});
+    const response = await axios.post(`${API_BASE_URL}/users/login`, credentials, {withCredentials: true});
     return response.data;
   } catch (error) {
-    throw error;
+    if (error.response) {
+      console.log(error.response.data)
+      window.alert(error.response.data)
+    } else if (error.request) {
+      window.alert('No response received for the request.');
+    } else {
+      window.alert('Error Message:', error.message);
+    }
   }
 };
 
@@ -23,7 +30,7 @@ const register = async (userDTO) => {
     console.log('Response:', response.data);
     return response.data;
   } catch (error) {
-    if (error.response && error.response.status == 400) {
+    if (error.response) {
       window.alert(error.response.data)
     } else if (error.request) {
       window.alert('No response received for the request.');
@@ -35,5 +42,35 @@ const register = async (userDTO) => {
   }
 };
 
+const logout = async () =>{
+  try{
+    const response = await axios.post(`${API_BASE_URL}/users/logout`, {},{withCredentials: true});
+    console.log(response.data);
+  }catch(error){
+    console.log(error)
+  }
+}
 
-export { signIn, register };
+const authenticateUser = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/authenticate`, {withCredentials: true});
+
+    if (response.status === 200) {
+      console.log('Authentication successful:', response.data);
+      return response.data; 
+    } else {
+      console.error('Unexpected status code:', response.status);
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response)
+      // window.alert(error.response)
+    } else if (error.request) {
+      window.alert('No response received for the request.');
+    } else {
+      window.alert('Error Message:', error.message);
+    }
+  }
+};
+
+export { signIn, register, authenticateUser, logout };

@@ -2,11 +2,11 @@ import React from "react";
 import "./basic-items.css";
 import { Button } from "@mui/material";
 
-const BasicButton = ({ color, text, onClick }) => {
+const BasicButton = ({ color, text, onClick, variant="contained" }) => {
     return (
         <Button
         
-            variant="contained"
+            variant={variant}
             color={color}
             className="btn form-item"
             onClick={onClick}

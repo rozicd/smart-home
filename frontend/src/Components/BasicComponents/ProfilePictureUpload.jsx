@@ -34,6 +34,7 @@ const ProfilePictureUpload = ({ onProfilePictureChange }) => {
     <div>
       <div
         style={{
+          margin: '10px auto auto auto',
           width: '150px',
           height: '150px',
           borderRadius: '50%',
