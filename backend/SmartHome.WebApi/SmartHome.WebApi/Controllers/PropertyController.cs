@@ -1,170 +1,120 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SmartHome.Domain.Models;
-using SmartHome.Domain.Services;
 using SmartHome.DataTransferObjects.Requests;
 using SmartHome.DataTransferObjects.Responses;
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using SmartHome.Domain.Exceptions;
+using SmartHome.Domain.Models;
+using SmartHome.Domain.Services;
+using SmartHome.WebApi.Controllers;
 
-namespace SmartHome.WebApi.Controllers
+[ApiController]
+[Route("properties")]
+public class PropertyController : BaseController
 {
-    [ApiController]
-    [Route("properties")]
-    public class PropertyController : BaseController
+    private readonly IPropertyService _propertyService;
+    private readonly IFileService _fileService;
+    private readonly IEmailService _emailService;
+    private readonly IUserService _userService;
+
+    public PropertyController(IPropertyService propertyService, IFileService fileService, IEmailService emailService, IUserService userService, IMapper mapper)
+        : base(mapper)
     {
-        private readonly IPropertyService _propertyService;
-        private readonly IFileService _fileService;
-        private readonly IEmailService _emailService;
-        private readonly IUserService _userService;
+        _propertyService = propertyService;
+        _fileService = fileService;
+        _emailService = emailService;
+        _userService = userService;
+    }
 
-        public PropertyController(IPropertyService propertyService, IFileService fileService, IEmailService emailService, IUserService userService, IMapper mapper)
-            : base(mapper)
+    [HttpPost("")]
+    [Authorize(Roles = "USER")]
+    public async Task<IActionResult> RegisterProperty([FromForm] RegisterPropertyRequestDTO propertyRequest)
+    {
+        if (!ModelState.IsValid)
         {
-            _propertyService = propertyService;
-            _fileService = fileService;
-            _emailService = emailService;
-            _userService = userService;
+            return BadRequest(ModelState);
         }
 
-        [HttpPost("")]
-        [Authorize(Roles = "USER")]
-        public async Task<IActionResult> RegisterProperty([FromForm] RegisterPropertyRequestDTO propertyRequest)
+        var imagePath = await _fileService.SaveImageAsync(propertyRequest.ImageFile, "static/properties");
+
+        Property property = _mapper.Map<Property>(propertyRequest);
+        property.UserId = _user.UserId;
+        property.ImageUrl = imagePath;
+
+        await _propertyService.AddProperty(property);
+
+        return Created("/", "Property successfully created");
+    }
+
+    [HttpGet("{id}")]
+    [Authorize(Roles = "USER")]
+    public async Task<IActionResult> GetPropertyById(Guid id)
+    {
+        Property property = await _propertyService.GetPropertyById(id);
+
+        if (property == null)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var imagePath = await _fileService.SaveImageAsync(propertyRequest.ImageFile, "static/properties");
-
-                Property property = _mapper.Map<Property>(propertyRequest);
-                property.UserId = _user.UserId;
-                property.ImageUrl = imagePath;
-
-                await _propertyService.AddProperty(property);
-
-                return Created("/", "Property successfully created");
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (ResourceNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
+            return NotFound("Property not found");
         }
 
-        [HttpGet("{id}")]
-        [Authorize(Roles = "USER")]
-        public async Task<IActionResult> GetPropertyById(Guid id)
+        return Ok(_mapper.Map<PropertyResponseDTO>(property));
+    }
+
+    [HttpGet("user/{userId}")]
+    [Authorize(Roles = "USER")]
+    public async Task<IActionResult> GetPropertiesByUserId(Guid userId, [FromQuery] Pagination page)
+    {
+        var properties = await _propertyService.GetPropertiesByUserId(userId,page);
+
+        if (properties == null || properties.TotalItems == 0)
         {
-            try
-            {
-                Property property = await _propertyService.GetPropertyById(id);
-
-                if (property == null)
-                {
-                    return NotFound("Property not found");
-                }
-
-                return Ok(_mapper.Map<PropertyResponseDTO>(property));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
+            return NotFound("No properties found for the user");
         }
 
-        [HttpGet("user/{userId}")]
-        [Authorize(Roles = "USER")]
-        public async Task<IActionResult> GetPropertiesByUserId(Guid userId)
+        PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(_mapper.Map<IEnumerable<PropertyResponseDTO>>(properties.Items), properties.PageNumber, properties.PageSize, properties.TotalItems);
+
+
+        return Ok(response);
+    }
+
+    [HttpPost("{id}/approve")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
+    public async Task<IActionResult> ApproveProperty(Guid id)
+    {
+        Property property = await _propertyService.GetPropertyById(id);
+
+        if (property == null)
         {
-            try
-            {
-                var properties = await _propertyService.GetPropertiesByUserId(userId);
-        
-                if (properties == null || properties.Count() == 0)
-                {
-                    return NotFound("No properties found for the user");
-                }
-
-                var propertyResponseDTOs = _mapper.Map<List<PropertyResponseDTO>>(properties);
-
-                Console.WriteLine(propertyResponseDTOs.FirstOrDefault().CountryName);
-                return Ok(propertyResponseDTOs);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
+            return NotFound("Property not found");
         }
 
-        [HttpPost("{id}/approve")]
-        [Authorize(Roles = "ADMIN,SUPERADMIN")]
-        public async Task<IActionResult> ApproveProperty(Guid id)
+        property.Status = PropertyStatus.Approved;
+        await _propertyService.UpdateProperty(property);
+
+        User userOfProperty = await _userService.GetById(property.UserId);
+
+        await _emailService.SendApprovePropertyEmail(userOfProperty, property);
+
+        return Ok($"Property {id} approved successfully");
+    }
+
+    [HttpPost("{id}/reject")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
+    public async Task<IActionResult> RejectProperty(Guid id)
+    {
+        Property property = await _propertyService.GetPropertyById(id);
+
+        if (property == null)
         {
-            try
-            {
-                Property property = await _propertyService.GetPropertyById(id);
-
-                if (property == null)
-                {
-                    return NotFound("Property not found");
-                }
-
-                property.Status = PropertyStatus.Approved;
-                await _propertyService.UpdateProperty(property);
-
-                User userOfProperty = await _userService.GetById(property.UserId);
-
-                await _emailService.SendApprovePropertyEmail(userOfProperty, property);
-
-                return Ok($"Property {id} approved successfully");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
+            return NotFound("Property not found");
         }
 
-        [HttpPost("{id}/reject")]
-        [Authorize(Roles = "ADMIN,SUPERADMIN")] 
-        public async Task<IActionResult> RejectProperty(Guid id)
-        {
-            try
-            {
-                Property property = await _propertyService.GetPropertyById(id);
+        property.Status = PropertyStatus.Rejected;
+        await _propertyService.UpdateProperty(property);
 
-                if (property == null)
-                {
-                    return NotFound("Property not found");
-                }
+        User userOfProperty = await _userService.GetById(property.UserId);
 
-                property.Status = PropertyStatus.Rejected;
-                await _propertyService.UpdateProperty(property);
+        await _emailService.SendRejectPropertyEmail(userOfProperty, property);
 
-                User userOfProperty = await _userService.GetById(property.UserId);
-
-                await _emailService.SendRejectPropertyEmail(userOfProperty, property);
-
-                return Ok($"Property {id} rejected successfully");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
-        }
+        return Ok($"Property {id} rejected successfully");
     }
 }

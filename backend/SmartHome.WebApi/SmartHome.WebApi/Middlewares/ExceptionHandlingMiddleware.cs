@@ -34,6 +34,10 @@ namespace SmartHome.WebApi.Middlewares
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
             }
+            else if (exception is ArgumentException)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            }
             else
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
