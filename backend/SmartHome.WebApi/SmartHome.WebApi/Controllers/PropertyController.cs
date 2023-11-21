@@ -109,6 +109,11 @@ public class PropertyController : BaseController
     [Authorize(Roles = "ADMIN,SUPERADMIN")]
     public async Task<IActionResult> RejectProperty(Guid id, [FromBody] RejectRequestDTO rejectRequestDTO)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         Property property = await _propertyService.GetPropertyById(id);
 
         if (property == null)

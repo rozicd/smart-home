@@ -46,11 +46,15 @@ const approveProperty = async (propertyId) => {
 
 
 
-const rejectProperty = async (propertyId) => {
+const rejectProperty = async (propertyId, description) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/properties/${propertyId}/reject`,{}, {
-      withCredentials: true,
-    });
+    const response = await axios.put(
+      `${API_BASE_URL}/properties/${propertyId}/reject`,
+      { description }, 
+      {
+        withCredentials: true,
+      }
+    );
 
     return response.data;
   } catch (error) {
