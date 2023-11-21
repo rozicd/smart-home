@@ -26,7 +26,7 @@ const NavbarComponent = ({loggedUser}) => {
                             <BasicButton color={'secondary'}   text={"Button1"} variant="outlined"></BasicButton>
                         </Link>
                         {loggedUser.role == 2 &&
-                        <Link>
+                        <Link to={'/admins'}>
                             <BasicButton  color={'secondary'}   text={"Admins"} variant="outlined"></BasicButton>
                         </Link>}
                     </>)}
