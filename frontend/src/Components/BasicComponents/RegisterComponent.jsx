@@ -40,27 +40,22 @@ const registerTemplate =
 ]
 
 const RegisterComponent = ({headerName = "REGISTER"}) => {
-    const [profilePicture, setProfilePicture] = useState([]);
+    const [profilePicture, setProfilePicture] = useState({});
     const [formState, setFormState] = useState({});
 
-  
-    useEffect(() => {
-        // console.log(profilePicture);
-        console.log(formState);
-      }, [profilePicture, formState]);
-    
+
       const handleProfilePictureChange = (picture) => {
         setProfilePicture(picture);
       };
 
       const handleSubmit = async (state) =>{
-        setFormState(state)
+        console.log(state)
         const userDTO = {
-            Name: formState['name'],
-            Surname: formState['surname'],
-            Email: formState['email'],
+            Name: state['name'],
+            Surname: state['surname'],
+            Email: state['email'],
             ImageFile: profilePicture,
-            Password: formState['password'],
+            Password: state['password'],
             Status: 0,
             Role: 0
         }

@@ -18,14 +18,13 @@ import { authenticateUser } from "./Components/Services/UserService";
 import Home from "./Pages/Home";
 import CheckAuthentication from "./Pages/CheckAuthentication";
 import { Login } from "@mui/icons-material";
+import AdminPropertiesPage from "./Pages/AdminPropertiesPage";
 import AdminCreationPage from "./Pages/AdminCreationPage";
+import CheckForSuperAdmin from "./Pages/CheckForSuperAdmin";
 
-const AuthenticatedHome = CheckAuthentication({ Component: Home });
-const AuthenticatedProperties = CheckAuthentication({ Component: UserPropertiesPage });
-const AuthenticatedAdmins = CheckAuthentication({ Component: AdminCreationPage });
-
-
-
+const AuthenticatedHome = CheckAuthentication({ Component: Home, Component2:Home });
+const AuthenticatedProperties = CheckAuthentication({ Component: UserPropertiesPage, Component2: AdminPropertiesPage});
+const AuthenticatedAdmins = CheckForSuperAdmin({ Component: AdminCreationPage });
 
 
 const App = () => {
@@ -39,7 +38,7 @@ const App = () => {
           <Route path="/*" element={<AuthenticatedHome />} >
             <Route path="properties" element={<AuthenticatedProperties />} />
             <Route path="admins" element={<AuthenticatedAdmins />}/>
-            </Route>
+          </Route>
         </Routes>
       </Router>
     </ThemeProvider>

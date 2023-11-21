@@ -1,17 +1,27 @@
 .user-properties-container {
-    max-width: 1000px; /* Adjust the maximum width as needed */
-    margin: auto; /* Center the container horizontally */
-    overflow-y: auto; /* Add vertical scroll if content overflows */
-    padding: 20px; /* Add padding for spacing */
-  }
-  
-  .page-title {
-    text-align: center;
-  }
-  
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.property-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70vw;
+}
+
+.property-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 60px;
+}
+
+@media (max-width: 1600px) {
   .property-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    width: 60vw;
+    justify-content: center;
   }
-  
+}

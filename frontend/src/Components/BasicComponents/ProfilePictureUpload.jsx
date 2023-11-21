@@ -9,13 +9,7 @@ const ProfilePictureUpload = ({ onProfilePictureChange }) => {
     const file = e.target.files[0];
 
     if (file) {
-      const arrayBufferReader = new FileReader();
-      arrayBufferReader.onloadend = () => {
-        setProfilePictureArrayBuffer(arrayBufferReader.result);
-        onProfilePictureChange(arrayBufferReader.result);
-      };
-      arrayBufferReader.readAsArrayBuffer(file);
-
+      onProfilePictureChange(file);
       const binaryStringReader = new FileReader();
       binaryStringReader.onloadend = () => {
         setProfilePicture(binaryStringReader.result);

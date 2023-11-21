@@ -57,8 +57,8 @@ const PropertyStepper = ({ open, onClose }) => {
               ...data,
               ...formData,
             };
-            createProperty(finalFormData);
-            onClose();
+            await createProperty(finalFormData);
+            onClose(1);
             setFormData({});
             setPreviousFormData({});
             setActiveStep(0);

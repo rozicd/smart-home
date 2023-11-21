@@ -21,7 +21,16 @@ const signIn = async (credentials) => {
 
 const register = async (userDTO) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/users`, userDTO, {
+    const data = new FormData();
+
+    data.append('Name', userDTO.Name);
+    data.append('Surname', userDTO.Surname);
+    data.append('Email', userDTO.Email);
+    data.append('ImageFile', userDTO.ImageFile);
+    data.append('Password', userDTO.Password);
+    data.append('Status',userDTO.Status);
+    data.append('Role',userDTO.Role);
+    const response = await axios.post(`${API_BASE_URL}/users`, data, {
       withCredentials: true,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -31,15 +40,7 @@ const register = async (userDTO) => {
     console.log('Response:', response.data);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      window.alert(error.response.data)
-    } else if (error.request) {
-      window.alert('No response received for the request.');
-    } else {
-      window.alert('Error Message:', error.message);
-    }
-
-    return null;
+    console.log(error);
   }
 };
 
@@ -57,7 +58,7 @@ const authenticateUser = async () => {
     const response = await axios.get(`${API_BASE_URL}/users/authenticate`, {withCredentials: true});
 
     if (response.status === 200) {
-      console.log('Authentication successful:', response.data);
+      // console.log('Authentication successful:', response.data);
       return response.data; 
     } else {
       console.error('Unexpected status code:', response.status);

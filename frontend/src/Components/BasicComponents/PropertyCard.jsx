@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useFetch from '../Services/useFetch';
-import { Box, Card, CardContent, CardMedia, Typography, lighten } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Typography, Chip } from '@mui/material';
 import getStaticContent from '../Services/StaticService';
 import { themeOptions } from '../../themeOptions';
-
-const PropertyCard = ({ property,callback }) => {
+import "./propertyCard.css"
+const PropertyCard = ({ property, callback }) => {
   const [imageData, setImageData] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,38 +29,22 @@ const PropertyCard = ({ property,callback }) => {
     return <p>Loading...</p>;
   }
 
-  const statusStyle = {
-    textAlign: 'center',
-    padding: '5px',
-    borderRadius: '5px',
-    height: '100%',
-    backgroundColor: getStatusColor(property.status),
-    color: getStatusColor(property.status) === '#ffffff' ? '#000000' : '#ffffff',
-    textTransform: 'uppercase',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  };
-
   return (
-    <Card onClick = {()=>callback(property.id)} style={{ display: 'flex', width: '800px', height: '260px', margin: '20px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }} >
-      <CardMedia  component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', minWidth: '260px', maxWidth: '260px' }} image={imageData} />
+    <Card className="property-card" onClick={() => callback(property.id)} style={{ display: 'flex',margin:'20px', width: '32vw', height: '260px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
+      <CardMedia component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', maxWidth: '260px' }} image={imageData} />
       <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <CardContent style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '20px', backgroundColor: '#ffffff', color: '#000000' }}>
-          <Typography variant="h5" style={{ marginBottom: '10px', flex: '40%' }}>Address: {property.address}</Typography>
-          <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', flex: '100%' }}>
-            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <Typography variant="h5" style={{ flex: '40%' }}>{property.propertyName}</Typography>
+          <Chip label={getStatusText(property.status)} style={{  marginBottom: '10px',width: '100px', height: '50px' }} color={getStatusChipColor(property.status)} />
+          <Typography variant="body2" color="textSecondary" style={{marginTop: '10px', }}>Address: {property.address}</Typography>
+          <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: '100%' }}>
+            <Box style={{ display: 'flex', flexDirection: 'column'}}>
               <Typography variant="body1" color="textSecondary">City: {property.cityName}</Typography>
               <Typography variant="body1" color="textSecondary">Country: {property.countryName}</Typography>
             </Box>
-            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+            <Box style={{ display: 'flex', flexDirection: 'column'}}>
               <Typography variant="body1" color="textSecondary">Area: {property.areaSquareMeters} sqm</Typography>
               <Typography variant="body1" color="textSecondary">Floors: {property.numberOfFloors}</Typography>
-            </Box>
-            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'right' }}>
-              <Box style={statusStyle}>
-                <Typography fontSize="larger" variant="body1">{getStatusText(property.status)}</Typography>
-              </Box>
             </Box>
           </Box>
         </CardContent>
@@ -71,6 +55,7 @@ const PropertyCard = ({ property,callback }) => {
 
 PropertyCard.propTypes = {
   property: PropTypes.shape({
+    propertyName: PropTypes.string,
     address: PropTypes.string,
     cityName: PropTypes.string,
     countryName: PropTypes.string,
@@ -84,16 +69,16 @@ PropertyCard.propTypes = {
 
 export default PropertyCard;
 
-const getStatusColor = (status) => {
+const getStatusChipColor = (status) => {
   switch (status) {
     case 0:
-      return lighten(themeOptions.palette.primary.main, 0.6); 
+      return 'default';
     case 1:
-      return themeOptions.palette.primary.main; 
+      return 'success';
     case 2:
-      return themeOptions.palette.negative.main; 
+      return 'error';
     default:
-      return '#ffffff'; 
+      return 'default';
   }
 };
 

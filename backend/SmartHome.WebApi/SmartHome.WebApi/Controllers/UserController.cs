@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SmartHome.Application.Services;
@@ -184,5 +186,6 @@ namespace SmartHome.WebApi.Controllers
             await _userService.Delete(id);
             return Ok("User Deleted!");
         }
+
     }
 }

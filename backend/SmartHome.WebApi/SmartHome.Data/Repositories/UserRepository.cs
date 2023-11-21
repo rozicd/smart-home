@@ -148,6 +148,11 @@ namespace SmartHome.Data.Repositories
             return _mapper.Map<User>(superAdmin);
 
         }
+
+        public Task<bool> UserExists(string email)
+        {
+            U
+        }
     }
 
 }

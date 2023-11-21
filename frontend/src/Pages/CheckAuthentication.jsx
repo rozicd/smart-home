@@ -3,8 +3,9 @@ import { authenticateUser } from "../Components/Services/UserService";
 import LoginPage from "./LoginPage";
 import { Navigate, useNavigate } from "react-router-dom";
 import { KeyboardReturnOutlined } from "@mui/icons-material";
+import LoadingComponent from "../Components/BasicComponents/LoadingComponent";
 
-const CheckAuthentication = ({ Component,Component2 }) => {
+const CheckAuthentication = ({ Component,Component2}) => {
   return  () => {
     const navigate = useNavigate();
 
@@ -38,17 +39,20 @@ const CheckAuthentication = ({ Component,Component2 }) => {
     }, []);
 
     if(isLoading) {
-        return <p>Loading</p>
+        return <LoadingComponent/>
     }
 
-    console.log("pre ifa")
     if (!isAuthenticated) {
-        console.log("u ifu")
         return <LoginPage/>;
     }
     
-    console.log("komponenta")
-    return <Component user={user} />;
+    if (user.role == 0){
+      return <Component user={user} />;
+    }
+    else if (user.role == 1 || user.role == 2){
+      console.log("ADMIN COMPONENT")
+      return <Component2 user={user} />;
+    }
 
   };
   

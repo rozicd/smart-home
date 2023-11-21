@@ -65,10 +65,18 @@ public class PropertyController : BaseController
     {
         var properties = await _propertyService.GetPropertiesByUserId(userId,page);
 
-        if (properties == null || properties.TotalItems == 0)
-        {
-            return NotFound("No properties found for the user");
-        }
+        PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(_mapper.Map<IEnumerable<PropertyResponseDTO>>(properties.Items), properties.PageNumber, properties.PageSize, properties.TotalItems);
+
+
+        return Ok(response);
+    }
+
+    [HttpGet("pending")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
+    public async Task<IActionResult> GetPendingProperties([FromQuery] Pagination page)
+    {
+        var properties = await _propertyService.GetPropertiesByStatus(PropertyStatus.Pending, page);
+
 
         PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(_mapper.Map<IEnumerable<PropertyResponseDTO>>(properties.Items), properties.PageNumber, properties.PageSize, properties.TotalItems);
 
@@ -76,7 +84,7 @@ public class PropertyController : BaseController
         return Ok(response);
     }
 
-    [HttpPost("{id}/approve")]
+    [HttpPut("{id}/approve")]
     [Authorize(Roles = "ADMIN,SUPERADMIN")]
     public async Task<IActionResult> ApproveProperty(Guid id)
     {
@@ -97,10 +105,15 @@ public class PropertyController : BaseController
         return Ok($"Property {id} approved successfully");
     }
 
-    [HttpPost("{id}/reject")]
+    [HttpPut("{id}/reject")]
     [Authorize(Roles = "ADMIN,SUPERADMIN")]
-    public async Task<IActionResult> RejectProperty(Guid id)
+    public async Task<IActionResult> RejectProperty(Guid id, [FromBody] RejectRequestDTO rejectRequestDTO)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         Property property = await _propertyService.GetPropertyById(id);
 
         if (property == null)
@@ -113,7 +126,7 @@ public class PropertyController : BaseController
 
         User userOfProperty = await _userService.GetById(property.UserId);
 
-        await _emailService.SendRejectPropertyEmail(userOfProperty, property);
+        await _emailService.SendRejectPropertyEmail(userOfProperty, property, rejectRequestDTO.Description);
 
         return Ok($"Property {id} rejected successfully");
     }

@@ -3,13 +3,17 @@ import React, { forwardRef, useState } from 'react';
 import { Box, TextField, Typography } from '@mui/material';
 import Dropzone, { useDropzone } from 'react-dropzone';
 
-const PropertyDetailsForm =  forwardRef(({ onDataValidated, previousFormData }, ref) =>  {
+const PropertyDetailsForm = forwardRef(({ onDataValidated, previousFormData }, ref) => {
   useDropzone({
     accept: {
       'image/jpeg': [],
       'image/png': []
     }
-  })
+  });
+
+  const [propertyName, setPropertyName] = useState(
+    previousFormData.propertyName || ''
+  );
   const [areaSquareMeters, setAreaSquareMeters] = useState(
     previousFormData.areaSquareMeters || ''
   );
@@ -22,19 +26,28 @@ const PropertyDetailsForm =  forwardRef(({ onDataValidated, previousFormData }, 
   const handleImageDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     const imageFiles = acceptedFiles.filter(file => file.type.startsWith('image/'));
-    
     setImageFile(imageFiles[0]);
   };
 
-  const validateForm = async() => {
+  const validateForm = async () => {
     const errors = {};
+
+    if (!propertyName) {
+      errors.propertyName = 'Property Name is required.';
+    } else if (propertyName.length > 20) {
+      errors.propertyName = 'Property Name cannot be more than 20 characters.';
+    }
 
     if (!areaSquareMeters) {
       errors.areaSquareMeters = 'Area Square Meters is required.';
+    } else if (isNaN(areaSquareMeters) || areaSquareMeters < 1 || areaSquareMeters > 1000) {
+      errors.areaSquareMeters = 'Area Square Meters must be a number between 1 and 1000.';
     }
-
+  
     if (!numberOfFloors) {
       errors.numberOfFloors = 'Number of Floors is required.';
+    } else if (isNaN(numberOfFloors) || numberOfFloors < 1 || numberOfFloors > 100) {
+      errors.numberOfFloors = 'Number of Floors must be a number between 1 and 100.';
     }
 
     if (!imageFile) {
@@ -46,25 +59,26 @@ const PropertyDetailsForm =  forwardRef(({ onDataValidated, previousFormData }, 
     return Object.keys(errors).length === 0;
   };
 
-  const handleFinishButtonClick = async() => {
+  const handleFinishButtonClick = async () => {
     const isValid = validateForm();
 
-    if (!isValid){
-      return 
+    if (!isValid) {
+      return;
     }
 
-
     return {
+      propertyName,
       areaSquareMeters,
       numberOfFloors,
       imageFile,
     };
-
   };
+
   React.useImperativeHandle(ref, () => ({
     handleFinishButtonClick,
     validateForm
   }));
+
   return (
     <Box
       sx={{
@@ -76,10 +90,22 @@ const PropertyDetailsForm =  forwardRef(({ onDataValidated, previousFormData }, 
       }}
     >
       <TextField
+        id="propertyName-input"
+        label="Property Name"
+        type="text"
+        value={propertyName}
+        onChange={(e) => setPropertyName(e.target.value)}
+        sx={{ minWidth: '300px', minHeight: '40px', margin: '10px' }}
+      />
+      {formErrors.propertyName && (
+        <Typography color="error">{formErrors.propertyName}</Typography>
+      )}
+
+      <TextField
         id="areaSquareMeters-input"
         label="Area Square Meters"
         type="number"
-        inputMode='numeric'
+        inputMode="numeric"
         value={areaSquareMeters}
         onChange={(e) => setAreaSquareMeters(e.target.value)}
         sx={{ minWidth: '300px', minHeight: '40px', margin: '10px' }}
@@ -92,7 +118,7 @@ const PropertyDetailsForm =  forwardRef(({ onDataValidated, previousFormData }, 
         id="numberOfFloors-input"
         label="Number of Floors"
         type="number"
-        inputMode='numeric'
+        inputMode="numeric"
         value={numberOfFloors}
         onChange={(e) => setNumberOfFloors(e.target.value)}
         sx={{ minWidth: '300px', minHeight: '40px', margin: '10px' }}
@@ -100,6 +126,7 @@ const PropertyDetailsForm =  forwardRef(({ onDataValidated, previousFormData }, 
       {formErrors.numberOfFloors && (
         <Typography color="error">{formErrors.numberOfFloors}</Typography>
       )}
+
       <Dropzone onDrop={handleImageDrop}>
         {({ getRootProps, getInputProps }) => (
           <Box
