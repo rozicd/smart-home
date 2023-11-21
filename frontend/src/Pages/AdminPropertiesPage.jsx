@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getPendingProperties, acceptProperty, declineProperty, approveProperty, rejectProperty } from '../Components/Services/PropertiesService';
+import { getPendingProperties, approveProperty, rejectProperty } from '../Components/Services/PropertiesService';
 import AdminPropertyCard from '../Components/BasicComponents/AdminPropertyCard';
-import BasicPagination from '../Components/BasicComponents/BasicPagination'; // Import your Pagination component
+import BasicPagination from '../Components/BasicComponents/BasicPagination';
+import DescriptionDialog from '../Components/BasicComponents/DescriptionDialog';
+import InfoDialog from '../Components/BasicComponents/InfoDialog'; // Import the InfoDialog
 import './AdminPropertiesPage.css';
 
 const AdminPropertiesPage = (user) => {
@@ -10,6 +12,13 @@ const AdminPropertiesPage = (user) => {
   const [properties, setProperties] = useState([]);
   const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 4 });
   const [totalItems, setTotalItems] = useState(0);
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [selectedPropertyId, setSelectedPropertyId] = useState(null);
+  const [infoDialog, setInfoDialog] = useState({
+    open: false,
+    title: '',
+    content: ''
+  });
 
   const fetchProperties = async () => {
     try {
@@ -25,9 +34,8 @@ const AdminPropertiesPage = (user) => {
   };
 
   useEffect(() => {
-
     fetchProperties();
-  }, [user.userId,pagination.pageNumber, pagination.pageSize]);
+  }, [user.userId, pagination.pageNumber, pagination.pageSize]);
 
   const handlePageChange = (newPage) => {
     setPagination({
@@ -40,18 +48,47 @@ const AdminPropertiesPage = (user) => {
     try {
       await approveProperty(propertyId);
       await fetchProperties();
+
+      setInfoDialog({
+        open: true,
+        title: 'Property Approved',
+        content: 'Property has been successfully approved.',
+        onConfirm: () => setInfoDialog({ ...infoDialog, open: false }),
+      });
     } catch (error) {
       setError(error.message || 'Error accepting property');
     }
   };
 
-  const handleReject = async (propertyId) => {
+  const handleRejectClick = (propertyId) => {
+    setRejectDialogOpen(true);
+    setSelectedPropertyId(propertyId);
+  };
+
+  const handleReject = async (description) => {
     try {
-      await rejectProperty(propertyId);
+      setRejectDialogOpen(false);
+
+      await rejectProperty(selectedPropertyId, description);
+
+      setSelectedPropertyId(null);
+
       await fetchProperties();
+
+      setInfoDialog({
+        open: true,
+        title: 'Property Rejected',
+        content: `Property has been successfully rejected.`,
+        onConfirm: () => setInfoDialog({ ...infoDialog, open: false }),
+      });
     } catch (error) {
       setError(error.message || 'Error declining property');
     }
+  };
+
+  const handleRejectDialogClose = () => {
+    setRejectDialogOpen(false);
+    setSelectedPropertyId(null);
   };
 
   if (loading) {
@@ -60,7 +97,7 @@ const AdminPropertiesPage = (user) => {
 
   return (
     <div className="admin-properties-container">
-      <BasicPagination 
+      <BasicPagination
         currentPage={pagination.pageNumber}
         pageSize={pagination.pageSize}
         totalItems={totalItems}
@@ -69,11 +106,28 @@ const AdminPropertiesPage = (user) => {
       <div className="admin-property-list-container">
         <div className="admin-property-list">
           {properties.map((property) => (
-            <AdminPropertyCard key={property.id} property={property} onApprove={handleApprove} onReject={handleReject}/>
+            <AdminPropertyCard
+              key={property.id}
+              property={property}
+              onApprove={handleApprove}
+              onReject={() => handleRejectClick(property.id)}
+            />
           ))}
         </div>
       </div>
+      <DescriptionDialog
+        open={rejectDialogOpen}
+        onClose={handleRejectDialogClose}
+        onOk={handleReject}
+      />
+      <InfoDialog
+        open={infoDialog.open}
+        onClose={() => setInfoDialog({ ...infoDialog, open: false })}
+        title={infoDialog.title}
+        content={infoDialog.content}
+      />
     </div>
   );
-}
+};
+
 export default AdminPropertiesPage;
