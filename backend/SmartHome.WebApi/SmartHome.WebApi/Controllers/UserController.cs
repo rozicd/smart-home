@@ -94,6 +94,10 @@ namespace SmartHome.WebApi.Controllers
             {
                 return Unauthorized();
             }
+            if(user.Status == Status.INACTIVE)
+            {
+                return Forbid("Your Account is not activated! Check your e-mail.");
+            }
 
             var claims = new List<Claim>
             {
