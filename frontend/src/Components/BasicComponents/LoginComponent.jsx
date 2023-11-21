@@ -1,5 +1,5 @@
 import React from "react";
-import "./basic-items.css";
+import "./login-component.css";
 import HeaderComponent from "./HeaderComponent";
 import { useState, useEffect } from "react";
 import { signIn } from "../Services/UserService";
@@ -35,8 +35,7 @@ const LoginComponent = () => {
         console.log(userCredentials)
         const response = await signIn(state);
         if(response){
-            window.alert(response['email'])
-            // window.location.reload();
+            window.location.reload();
         }
         
       }
@@ -45,9 +44,10 @@ const LoginComponent = () => {
         <div className="login-component">
             <HeaderComponent name = {"LOGIN"}></HeaderComponent>
             <div className="login-form">
-                <BasicForm template={loginTemplate} callback={handleSubmit} />
-                <p>Don't have account? <a href="/">Sign up Here.</a></p>
+                <BasicForm template={loginTemplate} callback={handleSubmit} /> 
+                <p>Don't have account? <a href="/">Sign up Here.</a></p> 
             </div>
+            
         </div>
     );
 };

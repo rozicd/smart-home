@@ -1,0 +1,38 @@
+.login-component{
+    margin-top: 100px;
+    margin-left: 100px;
+    border-radius: 10px;
+    background-color: snow;
+    width: 450px;
+    height: 500px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
+    -5px 5px 10px rgba(0, 0, 0, 0.1),
+    5px -5px 10px rgba(0, 0, 0, 0.1),
+    -5px -5px 10px rgba(0, 0, 0, 0.1);
+}
+.login-form{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form > .basic-form{
+    width: auto;
+}
+.login-form > p{
+    margin-left: 90px;
+}
+
+.login-form > .basic-form > .form-item > div{
+    width: 350px;
+}
+
+.login-form > .basic-form > button{
+    margin-top: 10px;
+    border-radius: 25px;
+    width: 300px;
+}
+
+.button-container > button{
+    font-size: 12px;
+}

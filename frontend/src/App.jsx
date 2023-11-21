@@ -51,6 +51,16 @@ function App() {
               )
             }
           />
+          <Route
+            path="/properties"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/properties" />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
           <Route path="login" element={<LoginPage />}/>
           <Route path="register" element={<RegisterPage />} />
           {user != null && <Route path="properties" element={<UserPropertiesPage userId={user['userId']} />} />}
