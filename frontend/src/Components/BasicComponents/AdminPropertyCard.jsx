@@ -6,7 +6,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import getStaticContent from '../Services/StaticService';
 import { themeOptions } from '../../themeOptions';
-
+import './AdminPropertyCard.css'
 const AdminPropertyCard = ({ property, onApprove, onReject }) => {
   const [imageData, setImageData] = useState('');
   const [loading, setLoading] = useState(true);
@@ -32,25 +32,26 @@ const AdminPropertyCard = ({ property, onApprove, onReject }) => {
   }
 
   return (
-    <Card style={{ display: 'flex', width: '800px', height: '260px', margin: '20px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
-      <CardMedia component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', minWidth: '260px', maxWidth: '260px' }} image={imageData} />
+    <Card className='admin-property-card' style={{ display: 'flex', width: '39vw', margin:'20px', height: '260px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
+      <CardMedia component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', minWidth: '250px', maxWidth: '250px' }} image={imageData} />
       <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <CardContent style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '20px', backgroundColor: '#ffffff', color: '#000000' }}>
-          <Typography variant="h5" style={{ marginBottom: '10px', flex: '40%' }}>Address: {property.address}</Typography>
-          <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', flex: '100%' }}>
-            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <Typography variant="h5" style={{ marginBottom: '10px', flex: '40%' }}>{property.propertyName}</Typography>
+          <Typography variant="body2" color="textSecondary" style={{ marginBottom: '10px' }}>Address: {property.address}</Typography>
+          <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: '100%' }}>
+            <Box style={{ display: 'flex', flexDirection: 'column'}}>
               <Typography variant="body1" color="textSecondary">City: {property.cityName}</Typography>
               <Typography variant="body1" color="textSecondary">Country: {property.countryName}</Typography>
             </Box>
-            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+            <Box style={{ display: 'flex', flexDirection: 'column', marginLeft:'30px'}}>
               <Typography variant="body1" color="textSecondary">Area: {property.areaSquareMeters} sqm</Typography>
               <Typography variant="body1" color="textSecondary">Floors: {property.numberOfFloors}</Typography>
             </Box>
-            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'right' }}>
-              <Button variant="contained" color="success" onClick={() => onApprove(property.id)} sx={{margin:'10px'}} startIcon={<CheckIcon />}>
+            <Box style={{ display: 'flex', flexDirection: 'column',  textAlign: 'right' }}>
+              <Button variant="contained" color="success" onClick={() => onApprove(property.id)} sx={{ margin: '10px',width:'70%',marginLeft:'30px' }} startIcon={<CheckIcon />}>
                 Approve
               </Button>
-              <Button variant="contained" color="error" onClick={() => onReject(property.id)} sx={{margin:'10px'}}  startIcon={<CloseIcon />}>
+              <Button variant="contained" color="error" onClick={() => onReject(property.id)} sx={{ margin: '10px',width:'70%',marginLeft:'30px' }} startIcon={<CloseIcon />}>
                 Reject
               </Button>
             </Box>
@@ -63,6 +64,7 @@ const AdminPropertyCard = ({ property, onApprove, onReject }) => {
 
 AdminPropertyCard.propTypes = {
   property: PropTypes.shape({
+    propertyName: PropTypes.string,
     address: PropTypes.string,
     cityName: PropTypes.string,
     countryName: PropTypes.string,

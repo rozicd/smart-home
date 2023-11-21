@@ -1,6 +1,6 @@
 .user-properties-container {
   display: flex;
-  margin-top:100px;
+  margin-top: 10px;
   flex-direction: column;
   align-items: center;
 }
@@ -9,13 +9,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 70vw;
 }
 
 .property-list {
   display: flex;
-  width: 90%;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  margin-top: 80px;
+  justify-content: space-between;
+  margin-top: 60px;
+}
+
+@media (max-width: 1600px) {
+  .property-list {
+    width: 60vw;
+    justify-content: center;
+  }
 }

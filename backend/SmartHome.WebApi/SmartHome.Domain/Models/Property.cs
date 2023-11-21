@@ -9,6 +9,7 @@ namespace SmartHome.Domain.Models
     public class Property
     {
         public Guid Id { get; set; }
+        public string PropertyName { get; set; }
         public string Address { get; set; }
         public City City { get; set; }
         public Guid CityId { get; set; }
