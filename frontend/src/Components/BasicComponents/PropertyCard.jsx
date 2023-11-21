@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useFetch from '../Services/useFetch';
-import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Typography, lighten } from '@mui/material';
 import getStaticContent from '../Services/StaticService';
+import { themeOptions } from '../../themeOptions';
 
 const PropertyCard = ({ property }) => {
   const [imageData, setImageData] = useState('');
@@ -34,7 +35,7 @@ const PropertyCard = ({ property }) => {
     borderRadius: '5px',
     height: '100%',
     backgroundColor: getStatusColor(property.status),
-    color: '#ffffff',
+    color: getStatusColor(property.status) === '#ffffff' ? '#000000' : '#ffffff',
     textTransform: 'uppercase',
     display: 'flex',
     flexDirection: 'column',
@@ -42,22 +43,24 @@ const PropertyCard = ({ property }) => {
   };
 
   return (
-    <Card style={{ display: 'flex', flexDirection: 'row', alignItems:'stretch', width: '800px', height: '260px', margin: '20px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
-      <CardMedia component="img"  alt="Property"  style={{ flex: 1, objectFit: 'cover', minWidth: '260px', maxWidth: '260px' }} image={imageData} />
-      <Box style={{ display: 'flex', flexDirection: 'column', width: "100%" }}>
-        <Typography variant="h5" style={{ marginBottom: '10px', marginLeft: '20px', marginTop: '10px' }}>Address: {property.address}</Typography>
-        <CardContent style={{ flex: 1, marginBottom: '40px', alignItems: 'center', display: 'flex', flexDirection: 'row', padding: '20px', backgroundColor: '#ffffff', color: '#692a4f' }}>
-          <Box display='flex' height='50%' flexDirection='column' justifyContent='space-evenly' style={{ flex: 1 }}>
-            <Typography variant="body1" color="textSecondary">City: {property.cityName}</Typography>
-            <Typography variant="body1" color="textSecondary">Country: {property.countryName}</Typography>
-          </Box>
-          <Box display='flex' height='50%' flexDirection='column' justifyContent='space-evenly' style={{ flex: 1 }}>
-            <Typography variant="body1" color="textSecondary">Area: {property.areaSquareMeters} sqm</Typography>
-            <Typography variant="body1" color="textSecondary">Floors: {property.numberOfFloors}</Typography>
-          </Box>
-          <Box display='flex'  height='50%'flexDirection='column' justifyContent='space-evenly' style={{ flex: 1, textAlign: 'right', width: "100%" }}>
-            <Box style={statusStyle}>
-              <Typography fontSize="larger" variant="body1">{getStatusText(property.status)}</Typography>
+    <Card style={{ display: 'flex', width: '800px', height: '260px', margin: '20px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
+      <CardMedia component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', minWidth: '260px', maxWidth: '260px' }} image={imageData} />
+      <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <CardContent style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '20px', backgroundColor: '#ffffff', color: '#000000' }}>
+          <Typography variant="h5" style={{ marginBottom: '10px', flex: '40%' }}>Address: {property.address}</Typography>
+          <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', flex: '100%' }}>
+            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <Typography variant="body1" color="textSecondary">City: {property.cityName}</Typography>
+              <Typography variant="body1" color="textSecondary">Country: {property.countryName}</Typography>
+            </Box>
+            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <Typography variant="body1" color="textSecondary">Area: {property.areaSquareMeters} sqm</Typography>
+              <Typography variant="body1" color="textSecondary">Floors: {property.numberOfFloors}</Typography>
+            </Box>
+            <Box style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'right' }}>
+              <Box style={statusStyle}>
+                <Typography fontSize="larger" variant="body1">{getStatusText(property.status)}</Typography>
+              </Box>
             </Box>
           </Box>
         </CardContent>
@@ -84,13 +87,13 @@ export default PropertyCard;
 const getStatusColor = (status) => {
   switch (status) {
     case 0:
-      return '#ffd700'; // Pending
+      return lighten(themeOptions.palette.primary.main, 0.6); 
     case 1:
-      return '#00ff00'; // Accepted
+      return themeOptions.palette.primary.main; 
     case 2:
-      return '#ff0000'; // Rejected
+      return themeOptions.palette.negative.main; 
     default:
-      return '#ffffff'; // Default to white
+      return '#ffffff'; 
   }
 };
 

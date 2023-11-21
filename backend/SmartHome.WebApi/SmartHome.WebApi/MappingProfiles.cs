@@ -73,6 +73,7 @@ public class MappingProfiles : Profile
         CreateMap<CreateESCDTO, EnvironmentalConditionsSensor>();
         CreateMap<CreateAirConditionerDTO, AirConditioner>();
 
+        CreateMap<PaginationReturnObject<Property>, PropertyResponseDTO>();
         CreateMap<RegisterPropertyRequestDTO, Property>();
         CreateMap<Property, PropertyResponseDTO>().ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City.Country.Name));
         CreateMap<RegisterPropertyRequestDTO, Property>();

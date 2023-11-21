@@ -23,9 +23,9 @@ namespace SmartHome.Application.Services
             await _propertyRepository.Add(property);
         }
 
-        public async Task<IEnumerable<Property>> GetPropertiesByUserId(Guid userId)
+        public async Task<PaginationReturnObject<Property>> GetPropertiesByUserId(Guid userId, Pagination pagination)
         {
-            return await _propertyRepository.GetPropertiesByUserId(userId);
+            return await _propertyRepository.GetPropertiesByUserId(userId, pagination);
         }
 
         public async Task<IEnumerable<Property>> GetPropertiesByStatus(PropertyStatus status)
