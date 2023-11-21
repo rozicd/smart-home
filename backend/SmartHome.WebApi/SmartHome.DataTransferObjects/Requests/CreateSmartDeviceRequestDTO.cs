@@ -13,6 +13,7 @@ namespace SmartHome.DataTransferObjects.Requests
 
         public float EnergySpending { get; set; }
         public IFormFile ImageFile { get; set; }
+        public Guid PropertyId {  get; set; }
 
 
     }

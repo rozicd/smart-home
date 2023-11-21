@@ -64,6 +64,32 @@ namespace SmartHome.Data.Repositories
             return result;
         }
 
+        public async Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page,Guid propertyId)
+        {
+            IQueryable<SmartDeviceEntity> query = _smartDevices;
+
+            query = query.Where(device => device.PropertyId == propertyId);
+
+            var queryWithCountForDevices = new
+            {
+                TotalCount = _smartDevices.Count(),
+                Devices = query
+                .Skip((page.PageNumber - 1) * page.PageSize)
+                .Take(page.PageSize)
+                    .ToList()
+            };
+
+            PaginationReturnObject<SmartDevice> result = new PaginationReturnObject<SmartDevice>(
+                _mapper.Map<IEnumerable<SmartDevice>>(queryWithCountForDevices.Devices),
+                page.PageNumber,
+                page.PageSize,
+                queryWithCountForDevices.TotalCount
+            );
+
+
+            return result;
+        }
+
         public async Task<SmartDevice> TurnOn(Guid id)
         {
             var existingDevice = await _smartDevices.FirstOrDefaultAsync(s => s.Id == id);

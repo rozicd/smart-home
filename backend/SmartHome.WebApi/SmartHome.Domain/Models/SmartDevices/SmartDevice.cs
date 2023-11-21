@@ -20,6 +20,8 @@ namespace SmartHome.Domain.Models.SmartDevices
         public DeviceStatus DeviceStatus { get; set; }
         public User User { get; set; }
         public Guid UserId { get; set; }
+        public virtual Property Property { get; set; }
+        public Guid PropertyId { get; set; }
     }
 
     public enum PowerSupplyType { AUTONOMOUSLY, HOME }

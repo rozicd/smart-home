@@ -1,4 +1,5 @@
-﻿using SmartHome.Domain.Models.SmartDevices;
+﻿using SmartHome.Domain.Models;
+using SmartHome.Domain.Models.SmartDevices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
