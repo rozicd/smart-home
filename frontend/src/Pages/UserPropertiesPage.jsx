@@ -6,6 +6,7 @@ import BasicPagination from '../Components/BasicComponents/BasicPagination';
 import InfoDialog from '../Components/BasicComponents/InfoDialog'; // Import the InfoDialog
 import PropertyStepper from '../Components/BasicComponents/PropertyStepper';
 import './UserPropertiesPage.css';
+import LoadingComponent from '../Components/BasicComponents/LoadingComponent';
 
 const UserPropertiesPage = ({ user }) => {
   const [loading, setLoading] = useState(true);
@@ -68,7 +69,7 @@ const UserPropertiesPage = ({ user }) => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <LoadingComponent/>
   }
 
   return (

@@ -3,6 +3,7 @@ import { authenticateUser } from "../Components/Services/UserService";
 import LoginPage from "./LoginPage";
 import { Navigate, useNavigate } from "react-router-dom";
 import { KeyboardReturnOutlined } from "@mui/icons-material";
+import LoadingComponent from "../Components/BasicComponents/LoadingComponent";
 
 const CheckAuthentication = ({ Component,Component2 }) => {
   return  () => {
@@ -38,7 +39,7 @@ const CheckAuthentication = ({ Component,Component2 }) => {
     }, []);
 
     if(isLoading) {
-        return <p>Loading</p>
+        return <LoadingComponent/>
     }
 
     if (!isAuthenticated) {

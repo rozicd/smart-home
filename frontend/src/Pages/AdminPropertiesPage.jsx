@@ -5,6 +5,7 @@ import BasicPagination from '../Components/BasicComponents/BasicPagination';
 import DescriptionDialog from '../Components/BasicComponents/DescriptionDialog';
 import InfoDialog from '../Components/BasicComponents/InfoDialog'; // Import the InfoDialog
 import './AdminPropertiesPage.css';
+import LoadingComponent from '../Components/BasicComponents/LoadingComponent';
 
 const AdminPropertiesPage = (user) => {
   const [loading, setLoading] = useState(true);
@@ -92,7 +93,7 @@ const AdminPropertiesPage = (user) => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <LoadingComponent/>
   }
 
   return (
