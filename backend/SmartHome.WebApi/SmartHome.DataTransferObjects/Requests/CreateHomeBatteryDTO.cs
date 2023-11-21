@@ -13,5 +13,7 @@ namespace SmartHome.DataTransferObjects.Requests
 
         public IFormFile ImageFile { get; set; }
         public float BatterySize { get; set; }
+        public Guid PropertyId { get; set; }
+
     }
 }

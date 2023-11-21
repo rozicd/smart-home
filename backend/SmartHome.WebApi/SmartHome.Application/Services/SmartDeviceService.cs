@@ -29,9 +29,14 @@ namespace SmartHome.Application.Services
             await _smartDeviceRepository.Connect(id, address);
         }
 
-        public Task<PaginationReturnObject<SmartDevice>> GetAll(Pagination page)
+        public async Task<PaginationReturnObject<SmartDevice>> GetAll(Pagination page)
         {
-            return _smartDeviceRepository.GetAll(page);
+            return await _smartDeviceRepository.GetAll(page);
+        }
+
+        public async Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId)
+        {
+            return await _smartDeviceRepository.GetAllFromProperty(page, propertyId);
         }
 
         public async Task TurnOff(Guid id)

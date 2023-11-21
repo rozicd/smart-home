@@ -19,7 +19,7 @@ const NavbarComponent = ({loggedUser}) => {
             <div className="menu-container">
                 {loggedUser != null && (
                     <>
-                        <Link to = {'/properties'}>
+                        <Link to = {'properties'}>
                             <BasicButton color={'secondary'}    text={"Properties"} variant="outlined"></BasicButton>
                         </Link>
                         <Link>
@@ -40,10 +40,10 @@ const NavbarComponent = ({loggedUser}) => {
                 ) :
                 (
                     <>
-                    <Link to={'login'}>
+                    <Link to={'/login'}>
                         <BasicButton color={'secondary'}  text={ "Login"} variant="contained"></BasicButton>
                     </Link>
-                    <Link to={'register'}>
+                    <Link to={'/register'}>
                         <BasicButton color={'secondary'}  text={"Register"} variant={"outlined"}></BasicButton>
                     </Link>
                 </>)}

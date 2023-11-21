@@ -30,6 +30,16 @@ namespace SmartHome.WebApi.Controllers
 
             return Ok(response);
         }
+        [HttpGet("property")]
+
+        public async Task<IActionResult> GetAll([FromQuery] PropertySmartDeviceRequestDTO request)
+        {
+
+            PaginationReturnObject<SmartDevice> devices = await _smartDeviceService.GetAllFromProperty(request.Page,request.PropertyId);
+            PaginationReturnObject<SmartDeviceResponseDTO> response = new PaginationReturnObject<SmartDeviceResponseDTO>(_mapper.Map<IEnumerable<SmartDeviceResponseDTO>>(devices.Items), devices.PageNumber, devices.PageSize, devices.TotalItems);
+
+            return Ok(response);
+        }
         [HttpPost("connect")]
         public async Task<IActionResult> ConnectDevice([FromForm] ConnectDeviceDTO cd)
         {

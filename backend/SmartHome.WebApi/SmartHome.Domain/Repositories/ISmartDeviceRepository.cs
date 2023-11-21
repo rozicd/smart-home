@@ -13,6 +13,7 @@ namespace SmartHome.Domain.Repositories
         Task<SmartDevice> TurnOn(Guid id);
         Task<SmartDevice> TurnOff(Guid id);
         Task ForceTurnOff(Guid id);
+        Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId);
 
     }
 }

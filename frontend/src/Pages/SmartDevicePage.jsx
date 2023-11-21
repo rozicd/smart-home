@@ -6,7 +6,7 @@ import BasicPagination from '../Components/BasicComponents/BasicPagination'; // 
 import './UserPropertiesPage.css';
 import PropertyStepper from '../Components/BasicComponents/PropertyStepper';
 
-const UserPropertiesPage = ({ user }) => {
+const SmartDevicePage = ({ userId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [properties, setProperties] = useState([]);
@@ -22,7 +22,7 @@ const UserPropertiesPage = ({ user }) => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
-        const userProperties = await getPropertiesByUserId(user.userId, pagination);
+        const userProperties = await getPropertiesByUserId(userId, pagination);
         console.log(pagination)
         console.log(userProperties)
         setProperties(userProperties.items);
@@ -35,7 +35,7 @@ const UserPropertiesPage = ({ user }) => {
     };
 
     fetchProperties();
-  }, [user.userId, pagination.pageNumber, pagination.pageSize]);
+  }, [userId, pagination.pageNumber, pagination.pageSize]);
 
   const handlePageChange = (newPage) => {
     setPagination({
@@ -76,4 +76,4 @@ const UserPropertiesPage = ({ user }) => {
   );
 };
 
-export default UserPropertiesPage;
+export default SmartDevicePage;
