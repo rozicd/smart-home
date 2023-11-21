@@ -17,6 +17,7 @@ import Home from "./Pages/Home";
 import CheckAuthentication from "./Pages/CheckAuthentication";
 import { Login } from "@mui/icons-material";
 import AdminPropertiesPage from "./Pages/AdminPropertiesPage";
+import SmartDevicePage from "./Pages/SmartDevicePage";
 
 const AuthenticatedHome = CheckAuthentication({ Component: Home, Component2:Home });
 const AuthenticatedProperties = CheckAuthentication({ Component: UserPropertiesPage, Component2: AdminPropertiesPage });
@@ -33,7 +34,11 @@ const App = () => {
           
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/*" element={<AuthenticatedHome />} >
-            <Route path="properties" element={<AuthenticatedProperties />} />
+            <Route path="properties" element={<AuthenticatedProperties />} >
+             
+
+              </Route>
+              <Route path="properties/:property" element={<SmartDevicePage />} />
             </Route>
         </Routes>
       </Router>

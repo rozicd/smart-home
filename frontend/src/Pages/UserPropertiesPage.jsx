@@ -5,6 +5,7 @@ import AddButton from '../Components/BasicComponents/AddButton';
 import BasicPagination from '../Components/BasicComponents/BasicPagination';
 import InfoDialog from '../Components/BasicComponents/InfoDialog'; // Import the InfoDialog
 import PropertyStepper from '../Components/BasicComponents/PropertyStepper';
+import { useNavigate } from 'react-router-dom';
 import './UserPropertiesPage.css';
 import LoadingComponent from '../Components/BasicComponents/LoadingComponent';
 
@@ -15,15 +16,24 @@ const UserPropertiesPage = ({ user }) => {
   const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 4 });
   const [totalItems, setTotalItems] = useState(0);
   const [stepperOpen, setStepperOpen] = useState(false);
+  const navigate = useNavigate()
+
+  const ClickedProperty=(id) =>
+  {
+    navigate(id)
+  }
+  const NotAccepted=(id) =>
+  {
+    console.log(id+" Not Accepted")
+  }
+  
   const [infoDialog, setInfoDialog] = useState({
     open: false,
     title: '',
     content: ''
   });
 
-  const ClickedProperty = (id) => {
-    console.log(id);
-  };
+
 
   const fetchProperties = async () => {
     try {
@@ -83,7 +93,7 @@ const UserPropertiesPage = ({ user }) => {
       <div className="property-list-container">
         <div className="property-list">
           {properties.map((property) => (
-            <PropertyCard key={property.id} property={property} callback={ClickedProperty} />
+            <PropertyCard key={property.id} property={property} callback={property.status == 1?ClickedProperty:NotAccepted} />
           ))}
         </div>
       </div>

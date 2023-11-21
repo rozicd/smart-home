@@ -9,7 +9,7 @@ const BasicInput = ({type, label, callback, value, visibility='visible' }) => {
 
         >
         
-            <TextField id={label} 
+            <TextField sx= {{width:"100%"}} id={label} 
             label={label} 
             onChange={callback} 
             variant="standard"

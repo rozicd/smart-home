@@ -8,11 +8,8 @@ namespace SmartHome.DataTransferObjects.Requests
 {
     public class CreateSolarPanelSystemDTO :CreateSmartDeviceRequestDTO
     {
-        public List<CreateSolarPanelDTO> SolarPanels { get; set; }
+        public float Size { get; set; }
+        public float Efficiency { get; set; }
 
-        public CreateSolarPanelSystemDTO()
-        {
-            SolarPanels = new List<CreateSolarPanelDTO>();
-        }
     }
 }
