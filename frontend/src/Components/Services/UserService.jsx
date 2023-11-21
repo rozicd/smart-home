@@ -8,14 +8,8 @@ const signIn = async (credentials) => {
     const response = await axios.post(`${API_BASE_URL}/users/login`, credentials, {withCredentials: true});
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.log(error.response.data)
-      window.alert(error.response.data)
-    } else if (error.request) {
-      window.alert('No response received for the request.');
-    } else {
-      window.alert('Error Message:', error.message);
-    }
+    console.log(error)
+    throw(error)
   }
 };
 
@@ -40,7 +34,7 @@ const register = async (userDTO) => {
     console.log('Response:', response.data);
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw(error)
   }
 };
 
@@ -49,7 +43,7 @@ const logout = async () =>{
     const response = await axios.post(`${API_BASE_URL}/users/logout`, {},{withCredentials: true});
     console.log(response.data);
   }catch(error){
-    console.log(error)
+    throw(error)
   }
 }
 
@@ -64,14 +58,7 @@ const authenticateUser = async () => {
       console.error('Unexpected status code:', response.status);
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response)
-      // window.alert(error.response)
-    } else if (error.request) {
-      window.alert('No response received for the request.');
-    } else {
-      window.alert('Error Message:', error.message);
-    }
+    throw(error)
   }
 };
 
@@ -80,13 +67,7 @@ const activateUser = async(activationTokenRequestDTO) => {
     const response = await axios.put(`${API_BASE_URL}/users/activate`, activationTokenRequestDTO,{withCredentials: true});
     return response.data;
   }catch(error){
-    if (error.response) {
-      window.alert(error.response.data)
-    } else if (error.request) {
-      console.log('No response received for the request.');
-    } else {
-      console.log('Error Message:', error.message);
-    }
+    throw(error)
   }
 }
 
@@ -95,13 +76,7 @@ const activateSuperAdmin = async(changeSuperAdminPasswordDTO) =>{
     const response = await axios.put(`${API_BASE_URL}/users/activate-superAdmin`, changeSuperAdminPasswordDTO,{withCredentials: true});
     return response.data;
   }catch(error){
-    if (error.response) {
-      window.alert(error.response.data)
-    } else if (error.request) {
-      console.log('No response received for the request.');
-    } else {
-      console.log('Error Message:', error.message);
-    }
+    throw(error)
   }
 }
 export { signIn, register, authenticateUser, logout, activateUser, activateSuperAdmin };

@@ -7,7 +7,7 @@ import ProfilePictureUpload from "./ProfilePictureUpload";
 import { useState, useEffect } from "react";
 import { register } from "../Services/UserService";
 import BasicButton from "./BasicButton";
-
+import { useNavigate } from "react-router-dom";
 
 
 const registerTemplate = 
@@ -40,6 +40,7 @@ const registerTemplate =
 ]
 
 const RegisterComponent = ({headerName = "REGISTER"}) => {
+    const navigate = useNavigate();
     const [profilePicture, setProfilePicture] = useState({});
     const [formState, setFormState] = useState({});
 
@@ -60,12 +61,17 @@ const RegisterComponent = ({headerName = "REGISTER"}) => {
             Role: 0
         }
         console.log(userDTO)
-        const response = await register(userDTO)
-        if(response){
-          window.alert("Registration is successful! Check email for account activation.")
+        try{
+          const response = await register(userDTO)
+          if(response){
+            window.alert("Registration is successful!")
+            navigate("/")
+          }
+        }catch(error){
+          console.log(error)
+          window.alert(error.response.data.title)
         }
-        // window.alert(response)
-
+        
       }
     
       

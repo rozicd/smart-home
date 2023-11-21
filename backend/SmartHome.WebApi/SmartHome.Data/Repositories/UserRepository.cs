@@ -149,10 +149,6 @@ namespace SmartHome.Data.Repositories
 
         }
 
-        public Task<bool> UserExists(string email)
-        {
-            U
-        }
     }
 
 }

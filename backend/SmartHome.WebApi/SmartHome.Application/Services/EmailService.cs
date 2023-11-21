@@ -24,9 +24,10 @@ namespace SmartHome.Application.Services
             var subject = "Account activation";
             var to = new EmailAddress(user.Email, user.Name);
             var plainTextContent = "Grettings " + user.Name;
-            var htmlContent = "<strong>userId: "+activationToken.UserId.ToString()+ "</strong>" +
-                "\n<strong>token :" + activationToken.Token +"</strong>" +
-                "<p>Activation Link: http://localhost:3000/activate?id=" + activationToken.UserId.ToString() + "&token="+ activationToken.Token;
+            var htmlTemplate = File.ReadAllText("../SmartHome.Data/EmailTemplates/AccountActivationTemplate.html");
+            htmlTemplate = htmlTemplate.Replace("{{id}}", user.Id.ToString());
+            htmlTemplate = htmlTemplate.Replace("{{token}}", activationToken.Token);
+            var htmlContent = htmlTemplate;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }
@@ -82,9 +83,12 @@ namespace SmartHome.Application.Services
             var subject = "Account activation";
             var to = new EmailAddress(superAdmin.Email, superAdmin.Name);
             var plainTextContent = "Grettings " + superAdmin.Name;
-            var htmlContent = "<strong>email: " + superAdmin.Email + "</strong>\n" +
-                "<strong>password:" + superAdmin.Password + "</strong>\n" +
-                "<strong> Activation Link: </strong> http://localhost:3000/activate-superadmin?id="+superAdmin.Id;
+            var htmlTemplate = File.ReadAllText("../SmartHome.Data/EmailTemplates/SuperAdminActivationTemplate.html");
+            htmlTemplate = htmlTemplate.Replace("{{email}}", superAdmin.Email);
+            htmlTemplate = htmlTemplate.Replace("{{password}}", superAdmin.Password);
+            htmlTemplate = htmlTemplate.Replace("{{id}}", superAdmin.Id.ToString());
+
+            var htmlContent = htmlTemplate;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }

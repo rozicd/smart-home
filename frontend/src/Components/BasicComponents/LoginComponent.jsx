@@ -33,10 +33,20 @@ const LoginComponent = () => {
     const handleSubmit = async (state) =>{
         setUserCredentials(state)
         console.log(userCredentials)
-        const response = await signIn(state);
+        try{
+            const response = await signIn(state);
         if(response){
             window.location.reload();
         }
+        }catch(error){
+            if(error.response.status == 500){
+                console.log("usao")
+                window.alert("Account not activated! Check your email.")
+            }else{
+                window.alert(error.response.data || "Problem occured")
+            } 
+        }
+        
         
       }
 
