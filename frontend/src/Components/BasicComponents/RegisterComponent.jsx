@@ -1,5 +1,5 @@
 import React from "react";
-import "./basic-items.css";
+import "./register-component.css";
 import HeaderComponent from "./HeaderComponent";
 import {Link} from 'react-router-dom'
 import BasicForm from "./BasicForm";
