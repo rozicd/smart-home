@@ -14,6 +14,48 @@ export const GetSmartDevicesByProperty = async (pagination) => {
       throw error;
     }
   };
+  export const turnOn = async (id) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/smart-device/on`,id, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
+  
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  export const turnOff = async (id) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/smart-device/off`,id, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
+  
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  export const connect = async (connection) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/smart-device/connect`,connection, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
+  
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
 
   export const AddSmartDevice = async (device,url) => {
     try {

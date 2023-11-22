@@ -287,7 +287,7 @@ let cc =
 
   return (
     <div className="smart-device-container">
-      <div className="property-list">
+      <div className="device-list">
           {smartDevices.map((device) => (
             <SmartDeviceCard key={device.id} device={device}  />
           ))}

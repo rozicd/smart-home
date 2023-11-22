@@ -23,7 +23,7 @@
 
 }
 
-@media (max-width: 1600px) {
+@media (max-width: 1200px) {
     .admin-property-list  {
       width: 70vw;
       justify-content: center;

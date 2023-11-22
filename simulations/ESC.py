@@ -14,5 +14,5 @@ class ESC(SmartDevice) :
             time.sleep(10)
 
 if __name__ == "__main__":
-    esc = ESC("esc")
+    esc = ESC("test")
     esc.run()
