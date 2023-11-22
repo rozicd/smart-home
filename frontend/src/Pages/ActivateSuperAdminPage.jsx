@@ -53,12 +53,19 @@ const ActivateSuperAdminPage = () => {
             Password: state['password']
         }
         console.log(changeSuperAdminPasswordDTO)
-        const response = await activateSuperAdmin(changeSuperAdminPasswordDTO);
-        if(response){
-            window.alert("Super admin activated");
-            navigate('/');
+        try{
+            const response = await activateSuperAdmin(changeSuperAdminPasswordDTO);
+            if(response){
+                window.alert("Super admin activated");
+                navigate('/');
+            }
+    
+        }catch(error){
+            console.log(error)
+            window.alert(error.response.data)
+            navigate('/')
         }
-
+        
         
     }
 

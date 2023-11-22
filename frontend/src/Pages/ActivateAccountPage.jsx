@@ -14,16 +14,25 @@ const ActivateAccountPage = () => {
     
     useEffect(() => {
         if(id && token){
-
-            console.log({userId:id, token:token})
-            const response = activateUser({userId:id, token:token})
-            if(response){
-                setActivated(true);
-                setTimeout(()=>{
+            const activate = async()=>{
+                try{
+                    const response = await activateUser({userId:id, token:token})
+                    console.log({userId:id, token:token})
+                    if(response){
+                        setActivated(true);
+                        setTimeout(()=>{
+                            navigate('/')
+                        }, 2000)
+                    }
+                }catch(error){
+                    window.alert(error.response.data)
                     navigate('/')
-                }, 2000)
+                }
+                
+            
             }
             
+            activate();
         }else{
             navigate('/')
         }
