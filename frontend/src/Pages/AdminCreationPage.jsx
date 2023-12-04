@@ -1,14 +1,14 @@
 import React from 'react';
 import RegisterComponent from '../Components/BasicComponents/RegisterComponent';
 import './register-page.css'
-
-const RegisterPage = () => {
+const AdminCreationPage = () => {
 
     return (
         <div className='register-page'>
-            <RegisterComponent></RegisterComponent>
+            <RegisterComponent headerName='Create admin'></RegisterComponent>
         </div>
+        
     )
 }
 
-export default RegisterPage;
+export default AdminCreationPage;

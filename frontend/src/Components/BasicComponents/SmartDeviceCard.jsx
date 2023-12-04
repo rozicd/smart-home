@@ -78,7 +78,7 @@ const SmartDeviceCard = ({ device }) => {
       style={{
         display: "flex",
         margin: "20px",
-        maxWidth: "450px",
+        width: "450px",
         height: "160px",
         boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
       }}

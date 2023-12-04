@@ -72,7 +72,7 @@ public class PropertyController : BaseController
     }
 
     [HttpGet("pending")]
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
     public async Task<IActionResult> GetPendingProperties([FromQuery] Pagination page)
     {
         var properties = await _propertyService.GetPropertiesByStatus(PropertyStatus.Pending, page);

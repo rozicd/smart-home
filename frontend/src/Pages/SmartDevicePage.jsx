@@ -7,6 +7,7 @@ import { Container, Dialog } from "@mui/material";
 import BasicSelect from "../Components/BasicComponents/BasicSelect";
 import BasicForm from "../Components/BasicComponents/BasicForm";
 import SmartDeviceCard from "../Components/BasicComponents/SmartDeviceCard";
+import BasicPagination from "../Components/BasicComponents/BasicPagination";
 
 const deviceTypes = [
   { id: 1, name: "Enviromantal condition sensor" },
@@ -42,6 +43,16 @@ const SmartDevicePage = ({}) => {
   const [template,setTemplate] = useState(t);
   const [url,setUrl] = useState("");
   const propertyId = useParams().property;
+  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 4 });
+  const [totalItems, setTotalItems] = useState(0);
+
+
+  const handlePageChange = (newPage) => {
+    setPagination({
+      ...pagination,
+      pageNumber: newPage,
+    });
+  };
 
   const test =async (form)=>
   {
@@ -275,18 +286,28 @@ let cc =
 
       let request = {
         propertyId: propertyId,
+        "page.pageSize":pagination.pageSize,
+        "page.pageNumber":pagination.pageNumber,
       };
       const smartDevicesUser = await GetSmartDevicesByProperty(request);
       console.log(smartDevicesUser)
       setSmartDevices(smartDevicesUser.items);
+      setTotalItems(smartDevicesUser.totalItems);
+
     };
 
     fetch();
     console.log("asdasdasdasd");
-  }, [propertyId]);
+  }, [propertyId,pagination.pageNumber,pagination.pageSize]);
 
   return (
     <div className="smart-device-container">
+      <BasicPagination
+        currentPage={pagination.pageNumber}
+        pageSize={pagination.pageSize}
+        totalItems={totalItems}
+        onPageChange={handlePageChange}
+      />
       <div className="device-list">
           {smartDevices.map((device) => (
             <SmartDeviceCard key={device.id} device={device}  />

@@ -15,7 +15,9 @@ namespace SmartHome.Domain.Repositories
         Task Delete(Guid id);
         Task<User> GetByEmailAndPassword(string email, string password);
 
+        Task<User> FindSuperAdmin();
+        Task UpdateStatus(User user);
+        Task<User> GetSuperAdminByIdAndPass(Guid id, string pass);
  
-
     }
 }

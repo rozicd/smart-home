@@ -36,7 +36,7 @@ namespace SmartHome.Data.Repositories
             UserEntity userEntity = _mapper.Map<UserEntity>(user);
             string salt = "$2a$12$abcdefghijklmno1234567";
             userEntity.Password = BCrypt.Net.BCrypt.HashPassword(userEntity.Password, salt);
-            await _users.AddAsync(userEntity);
+            _users.AddAsync(userEntity);
             await _context.SaveChangesAsync();
             return _mapper.Map<User>(userEntity);
         }
@@ -95,21 +95,27 @@ namespace SmartHome.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
- /*       public void SeedSuperAdmin()
+        public async Task UpdateStatus(User user)
         {
-            if (!_users.Any(u => u.Email == "admin"))
+            UserEntity userEntity = await _users.FirstOrDefaultAsync(p => p.Id == user.Id);
+            if (userEntity == null)
             {
-                string randomPassword = GenerateRandomPassword(12);
-
-                var superAdmin = new UserEntity
-                {
-                    
-                };
-
-                context.Users.Add(superAdmin);
-                context.SaveChanges();
+                throw new ResourceNotFoundException("User not found");
             }
-        }*/
+            userEntity.Status = Status.ACTIVE;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<User> FindSuperAdmin()
+        {
+            UserEntity superAdmin = await _users.FirstOrDefaultAsync(u => u.Name == "admin" && u.Email == "sanduzicro19@gmail.com");
+            if(superAdmin == null)
+            {
+                return null;
+            }
+            return _mapper.Map<User>(superAdmin);
+        }
+
         private string GenerateRandomPassword(int length)
         {
             const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
@@ -129,6 +135,20 @@ namespace SmartHome.Data.Repositories
                 return password.ToString();
             }
         }
+
+        public async Task<User> GetSuperAdminByIdAndPass(Guid id, string pass)
+        {
+            string salt = "$2a$12$abcdefghijklmno1234567";
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(pass, salt);
+            UserEntity superAdmin = await _users.FirstOrDefaultAsync(u => u.Id == id && u.Password == hashedPassword);
+            if (superAdmin == null)
+            {
+                throw new ResourceNotFoundException("Wrong Credentials");
+            }
+            return _mapper.Map<User>(superAdmin);
+
+        }
+
     }
 
 }

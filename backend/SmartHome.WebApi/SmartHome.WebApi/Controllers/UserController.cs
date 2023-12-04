@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SmartHome.Application.Services;
@@ -74,7 +76,7 @@ namespace SmartHome.WebApi.Controllers
             if(_activationTokenService.IsTokenValid(activationToken).Result)
             {
                 user.Status = Status.ACTIVE;
-                await _userService.Update(user);
+                await _userService.UpdateStatus(user);
                 return Ok("Account activated successfuly!");
             }
             else
@@ -85,6 +87,16 @@ namespace SmartHome.WebApi.Controllers
             }
         }
 
+        [HttpPut("activate-superAdmin")]
+        public async Task<IActionResult> ActivateSuperAdmin([FromBody] ChangeSuperAdminPasswordDTO changeSuperAdminPasswordDTO)
+        {
+            User superAdmin = await _userService.getSuperAdminByIdAndOldPass(Guid.Parse(changeSuperAdminPasswordDTO.Id), changeSuperAdminPasswordDTO.OldPassword);
+            superAdmin.Password = changeSuperAdminPasswordDTO.Password;
+            superAdmin.Status = Status.ACTIVE;
+            await _userService.Update(superAdmin);
+            return Ok("Account Activated!");
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest credentials)
         {
@@ -93,6 +105,10 @@ namespace SmartHome.WebApi.Controllers
             if (user == null)
             {
                 return Unauthorized();
+            }
+            if(user.Status == Status.INACTIVE)
+            {
+                return Forbid("Your Account is not activated! Check your e-mail.");
             }
 
             var claims = new List<Claim>
@@ -170,5 +186,6 @@ namespace SmartHome.WebApi.Controllers
             await _userService.Delete(id);
             return Ok("User Deleted!");
         }
+
     }
 }

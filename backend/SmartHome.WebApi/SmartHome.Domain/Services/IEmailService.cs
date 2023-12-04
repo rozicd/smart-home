@@ -12,8 +12,9 @@ namespace SmartHome.Domain.Services
         Task SendActivationEmail(User user, ActivationToken activationToken);
 
         Task SendApprovePropertyEmail(User user, Property property);
-
+        Task SendSuperAdminCredentials(User superAdmin);
         Task SendRejectPropertyEmail(User user, Property property, string description);
+
 
     }
 }

@@ -140,8 +140,12 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<DatabaseContext>();
     if (context.Database.GetPendingMigrations().Any())
     {
-        context.Database.Migrate();
+        await context.Database.MigrateAsync();
     }
+
+    var userService = services.GetRequiredService<IUserService>();
+
+    await userService.GenerateSuperAdmin();
 }
 
 app.UseStaticFiles();

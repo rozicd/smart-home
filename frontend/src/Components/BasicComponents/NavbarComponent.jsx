@@ -1,15 +1,16 @@
 import React from "react";
 import "./navbar.css";
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import { Button } from "@mui/material";
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import BasicButton from "./BasicButton";
 import { logout } from "../Services/UserService";
 
 const NavbarComponent = ({loggedUser}) => {
-
+    const navigate = useNavigate();
     const handleLogout = async ()=>{
         const response = await logout();
+        navigate("/")
         window.location.reload();
     }
 
@@ -25,9 +26,10 @@ const NavbarComponent = ({loggedUser}) => {
                         <Link>
                             <BasicButton color={'secondary'}   text={"Button1"} variant="outlined"></BasicButton>
                         </Link>
-                        <Link>
-                            <BasicButton  color={'secondary'}   text={"Button1"} variant="outlined"></BasicButton>
-                        </Link>
+                        {loggedUser.role == 2 &&
+                        <Link to={'admins'}>
+                            <BasicButton  color={'secondary'}   text={"Admins"} variant="outlined"></BasicButton>
+                        </Link>}
                     </>)}
             </div>
             <div className="menu-container">

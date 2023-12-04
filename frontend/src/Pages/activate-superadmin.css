@@ -1,0 +1,21 @@
+.superadmin-activation{
+    width: 500px;
+    height: 300px;
+    border-radius: 10px;
+    background-color: snow;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
+              -5px 5px 10px rgba(0, 0, 0, 0.1),
+              5px -5px 10px rgba(0, 0, 0, 0.1),
+              -5px -5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.superadmin-activation-form > .basic-form{
+    width: auto;
+}
+
+.superadmin-activation-form > .basic-form > .form-item > div{
+    width: 300px;
+}
+.superadmin-activation-form > .basic-form  > button{
+    width: 250px;
+}

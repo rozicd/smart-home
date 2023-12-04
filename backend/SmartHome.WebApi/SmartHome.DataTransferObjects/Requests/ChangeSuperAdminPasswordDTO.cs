@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace SmartHome.DataTransferObjects.Requests
 {
-    public class ActivationTokenRequestDTO
+    public class ChangeSuperAdminPasswordDTO
     {
-        public string UserId { get; set; }
-        public string Token { get; set; }
+        public string Id { get; set; }
+        public string OldPassword { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -12,34 +12,47 @@ import UserPropertiesPage from "./Pages/UserPropertiesPage";
 import RegisterPage from "./Pages/RegisterPage";
 import LoginPage from "./Pages/LoginPage";
 import NavbarComponent from "./Components/BasicComponents/NavbarComponent";
+import ActivateAccountPage from "./Pages/ActivateAccountPage";
+import ActivateSuperAdminPage from "./Pages/ActivateSuperAdminPage";
 import { authenticateUser } from "./Components/Services/UserService";
 import Home from "./Pages/Home";
 import CheckAuthentication from "./Pages/CheckAuthentication";
 import { Login } from "@mui/icons-material";
 import AdminPropertiesPage from "./Pages/AdminPropertiesPage";
 import SmartDevicePage from "./Pages/SmartDevicePage";
+import AdminCreationPage from "./Pages/AdminCreationPage";
+import CheckForSuperAdmin from "./Pages/CheckForSuperAdmin";
 
-const AuthenticatedHome = CheckAuthentication({ Component: Home, Component2:Home });
-const AuthenticatedProperties = CheckAuthentication({ Component: UserPropertiesPage, Component2: AdminPropertiesPage });
-
-
-
-
+const AuthenticatedHome = CheckAuthentication({
+  Component: Home,
+  Component2: Home,
+});
+const AuthenticatedProperties = CheckAuthentication({
+  Component: UserPropertiesPage,
+  Component2: AdminPropertiesPage,
+});
+const AuthenticatedAdmins = CheckForSuperAdmin({
+  Component: AdminCreationPage,
+});
 
 const App = () => {
   return (
     <ThemeProvider theme={themeOptions}>
       <Router>
         <Routes>
-          
+          <Route path="/activate" element={<ActivateAccountPage />} />
+          <Route
+            path="/activate-superadmin"
+            element={<ActivateSuperAdminPage />}
+          />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/*" element={<AuthenticatedHome />} >
-            <Route path="properties" element={<AuthenticatedProperties />} >
-             
+          <Route path="/*" element={<AuthenticatedHome />}>
+            <Route path="properties" element={<AuthenticatedProperties />} />
 
-              </Route>
-              <Route path="properties/:property" element={<SmartDevicePage />} />
-            </Route>
+            <Route path="properties/:property" element={<SmartDevicePage />} />
+
+            <Route path="admins" element={<AuthenticatedAdmins />} />
+          </Route>
         </Routes>
       </Router>
     </ThemeProvider>
