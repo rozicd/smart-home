@@ -7,7 +7,7 @@ import ProfilePictureUpload from "./ProfilePictureUpload";
 import { useState, useEffect } from "react";
 import { register } from "../Services/UserService";
 import BasicButton from "./BasicButton";
-
+import { useNavigate } from "react-router-dom";
 
 
 const registerTemplate = 
@@ -39,47 +39,52 @@ const registerTemplate =
     
 ]
 
-const RegisterComponent = () => {
-    const [profilePicture, setProfilePicture] = useState([]);
+const RegisterComponent = ({headerName = "REGISTER"}) => {
+    const navigate = useNavigate();
+    const [profilePicture, setProfilePicture] = useState({});
     const [formState, setFormState] = useState({});
-  
-    useEffect(() => {
-        // console.log(profilePicture);
-        console.log(formState);
-      }, [profilePicture, formState]);
-    
+
+
       const handleProfilePictureChange = (picture) => {
         setProfilePicture(picture);
       };
 
       const handleSubmit = async (state) =>{
-        setFormState(state)
+        console.log(state)
         const userDTO = {
-            Name: formState['name'],
-            Surname: formState['surname'],
-            Email: formState['email'],
+            Name: state['name'],
+            Surname: state['surname'],
+            Email: state['email'],
             ImageFile: profilePicture,
-            Password: formState['password'],
+            Password: state['password'],
             Status: 0,
             Role: 0
         }
         console.log(userDTO)
-        const response = await register(userDTO)
-        // window.alert(response)
-
+        try{
+          const response = await register(userDTO)
+          if(response){
+            window.alert("Registration is successful!")
+            navigate("/")
+          }
+        }catch(error){
+          console.log(error)
+          window.alert(error.response.data.title)
+        }
+        
       }
     
       
   
     return (
       <div className="register">
-        <HeaderComponent name="REGISTER" />
+        <HeaderComponent name={headerName} />
         <ProfilePictureUpload onProfilePictureChange={handleProfilePictureChange} />
         <div className="register-form"> 
           <BasicForm template={registerTemplate} callback={handleSubmit} />
         </div>
         <div className="button-container">
-          <Link to={'/login'}>
+          <Link to={'/'}>
             <BasicButton text = {'Go back'} variant={'text'}></BasicButton>
           </Link>
         </div>

@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { KeyboardReturnOutlined } from "@mui/icons-material";
 import LoadingComponent from "../Components/BasicComponents/LoadingComponent";
 
-const CheckAuthentication = ({ Component,Component2 }) => {
+const CheckAuthentication = ({ Component,Component2}) => {
   return  () => {
     const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ const CheckAuthentication = ({ Component,Component2 }) => {
     if (user.role == 0){
       return <Component user={user} />;
     }
-    else if (user.role == 1){
+    else if (user.role == 1 || user.role == 2){
       console.log("ADMIN COMPONENT")
       return <Component2 user={user} />;
     }

@@ -78,6 +78,7 @@ public class MappingProfiles : Profile
         CreateMap<ActivationToken, ActivationTokenEntity>();
         CreateMap<ActivationTokenEntity, ActivationToken>();
         CreateMap<ActivationTokenRequestDTO, ActivationToken>()
+           .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => Guid.Parse(src.UserId)))
            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
            .ForMember(dest => dest.expires, opt => opt.MapFrom(src => (DateTime?)null));
         CreateMap<ActivationToken, ActivationTokenRequestDTO>();

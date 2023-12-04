@@ -19,5 +19,6 @@ namespace SmartHome.DataTransferObjects.Requests
         public float EnergySpending { get; set; }
         public DeviceType DeviceType { get; set; }
         public DeviceStatus DeviceStatus { get; set; }
+        public string Connection { get; set; }
     }
 }
