@@ -62,10 +62,15 @@ const SmartDeviceCard = ({ device }) => {
     setIsChecked(isChecked ? true : false);
     if (isChecked) {
       await turnOn(data);
+      
     }
     if (!isChecked) {
       await turnOff(data);
+      
+
     }
+    device.deviceStatus = !isChecked;
+
   };
 
   if (loading) {
