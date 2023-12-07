@@ -1,4 +1,6 @@
-﻿using SmartHome.Domain.Models;
+﻿using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Writes;
+using SmartHome.Domain.Models;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Repositories;
 using SmartHome.Domain.Services;
@@ -14,13 +16,15 @@ namespace SmartHome.Application.Services
     {
         private readonly ISmartDeviceRepository _smartDeviceRepository;
         private readonly IMqttClientService _mqttClientService;
+        private readonly IInfluxClientService _influxClientService;
         private readonly Dictionary<string, Timer> topicTimers = new Dictionary<string, Timer>();
 
 
-        public SmartDeviceService(ISmartDeviceRepository smartDeviceRepository, IMqttClientService mqttClientService)
+        public SmartDeviceService(ISmartDeviceRepository smartDeviceRepository, IMqttClientService mqttClientService, IInfluxClientService influxClientService)
         {
             _smartDeviceRepository = smartDeviceRepository;
             _mqttClientService = mqttClientService;
+            _influxClientService = influxClientService;
 
 
         }
@@ -71,8 +75,13 @@ namespace SmartHome.Application.Services
             client.ApplicationMessageReceivedAsync += e =>
             {
                 ResetTimer(smartDevice.Connection + "/status");
-
                 Console.WriteLine($"Received message on topic {e.ApplicationMessage.Topic}: {Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment)}");
+                var point = PointData
+                              .Measurement(smartDevice.Name)
+                              .Tag("host", "host1")
+                              .Field("status", 1)
+                              .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
+                _influxClientService.WriteDataAsync(point);
                 return Task.CompletedTask;
             };
             return;

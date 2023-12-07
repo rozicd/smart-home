@@ -60,7 +60,15 @@ builder.Services.AddScoped<IHomeBatteryService, HomeBatteryService>();
 builder.Services.AddScoped<ICarChargerRepository, CarChargerRepository>();
 builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 
+builder.Services.AddSingleton<IInfluxClientService>(provider =>
+{
+    var influxDbUrl = "http://localhost:8086";
+    var token = "7zVD4I8TnL02JuYgNFo14S3Ls-KpBGge3mPvnhUE5Kbjxh95j62Z1RsIHDS2guLtcggZI0nTy_osydlaKgsrJw==";
+    var bucket = "bucket";
+    var organization = "organization";
 
+    return new InfluxClientService(influxDbUrl, token, bucket, organization);
+});
 
 
 
