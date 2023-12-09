@@ -63,7 +63,7 @@ builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
-    var token = "7zVD4I8TnL02JuYgNFo14S3Ls-KpBGge3mPvnhUE5Kbjxh95j62Z1RsIHDS2guLtcggZI0nTy_osydlaKgsrJw==";
+    var token = "5Nqh-5gis9t8Sn8RDou4BxXLpzENxLadcrdKCjr5_wcb9z5zFI31lEBw2NZ_4ziNRTzEMN_zEIp6FGG_iQSvUA==";
     var bucket = "bucket";
     var organization = "organization";
 
@@ -118,6 +118,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
 }, ServiceLifetime.Transient);
+
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var app = builder.Build();

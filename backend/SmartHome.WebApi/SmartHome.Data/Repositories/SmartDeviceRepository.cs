@@ -107,27 +107,6 @@ namespace SmartHome.Data.Repositories
             await _context.SaveChangesAsync();
             return (_mapper.Map<SmartDevice>(existingDevice));
         }
-        public async Task ForceTurnOff(Guid id)
-
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
-            optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
-            DbContextOptions<DatabaseContext> options = optionsBuilder.Options;
-
-            using (var context = new DatabaseContext(options))
-            {
-                SmartDeviceEntity existingDevice = await context.SmartDevices.FirstOrDefaultAsync(s => s.Id == id);
-
-                if (existingDevice == null)
-                {
-                    throw new ResourceNotFoundException($"SmartDevice with Id {id} not found.");
-                }
-
-                existingDevice.DeviceStatus = DeviceStatus.OFFLINE;
-                await context.SaveChangesAsync();
-            }
-
-        }
 
         public async Task<SmartDevice> TurnOff(Guid id)
         {
