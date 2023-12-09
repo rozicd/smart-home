@@ -12,7 +12,6 @@ namespace SmartHome.Domain.Repositories
         Task Connect(Guid id,string address);
         Task<SmartDevice> TurnOn(Guid id);
         Task<SmartDevice> TurnOff(Guid id);
-        Task ForceTurnOff(Guid id);
         Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId);
 
     }
