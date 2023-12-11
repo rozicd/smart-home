@@ -22,7 +22,7 @@ const deviceTypes = [
 ];
 
 
-const SmartDevicePage = ({}) => {
+const SmartDevicesPage = ({}) => {
 
   let t = 
   [
@@ -334,4 +334,4 @@ let cc =
   );
 };
 
-export default SmartDevicePage;
+export default SmartDevicesPage;

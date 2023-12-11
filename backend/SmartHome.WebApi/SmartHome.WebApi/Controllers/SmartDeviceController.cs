@@ -40,6 +40,13 @@ namespace SmartHome.WebApi.Controllers
             return Ok(devices);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTypeById(Guid lampId)
+        {
+            var devices = await _smartDeviceService.GetTypeById(request.Page, request.PropertyId);
+            return Ok(devices);
+        }
+
         [HttpPost("connect")]
         public async Task<IActionResult> ConnectDevice([FromForm] ConnectDeviceDTO cd)
         {
