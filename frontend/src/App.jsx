@@ -19,9 +19,10 @@ import Home from "./Pages/Home";
 import CheckAuthentication from "./Pages/CheckAuthentication";
 import { Login } from "@mui/icons-material";
 import AdminPropertiesPage from "./Pages/AdminPropertiesPage";
-import SmartDevicePage from "./Pages/SmartDevicePage";
+import SmartDevicesPage from "./Pages/SmartDevicesPage";
 import AdminCreationPage from "./Pages/AdminCreationPage";
 import CheckForSuperAdmin from "./Pages/CheckForSuperAdmin";
+import DeviceInfoPage from "./Pages/DeviceInfoPage";
 
 const AuthenticatedHome = CheckAuthentication({
   Component: Home,
@@ -49,7 +50,8 @@ const App = () => {
           <Route path="/*" element={<AuthenticatedHome />}>
             <Route path="properties" element={<AuthenticatedProperties />} />
 
-            <Route path="properties/:property" element={<SmartDevicePage />} />
+            <Route path="properties/:property" element={<SmartDevicesPage />} />
+            <Route path="devices/:deviceType/:deviceId" element={<DeviceInfoPage/>} />
 
             <Route path="admins" element={<AuthenticatedAdmins />} />
           </Route>
