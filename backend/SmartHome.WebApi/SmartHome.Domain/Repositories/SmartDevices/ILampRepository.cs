@@ -10,6 +10,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     public interface ILampRepository
     {
         Task Add(Lamp sensor);
+        Task<Lamp> GetById(Guid lampId);
 
     }
 }

@@ -32,6 +32,11 @@ namespace SmartHome.Application.Services.SmartDevices
             await _lampRepository.Add(lamp);
         }
 
+        public async Task<Lamp> GetById(Guid lampId)
+        {
+            return await _lampRepository.GetById(lampId);
+        }
+
         override public async Task TurnOn(Guid id)
         {
             await base.TurnOn(id);
