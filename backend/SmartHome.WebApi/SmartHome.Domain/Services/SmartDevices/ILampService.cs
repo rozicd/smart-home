@@ -10,6 +10,7 @@ namespace SmartHome.Domain.Services.SmartDevices
     public interface ILampService : ISmartDeviceActionsService
     {
         Task Add(Lamp sensor);
+        Task<Lamp> GetById(Guid lampId);
 
     }
 }

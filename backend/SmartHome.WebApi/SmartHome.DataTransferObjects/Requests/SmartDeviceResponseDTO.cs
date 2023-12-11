@@ -12,13 +12,14 @@ namespace SmartHome.DataTransferObjects.Requests
     {
         public string Id {  get; set; }
         public string Name {  get; set; }
+        public string Type { get; set; }
         public string UserName { get; set; }
         public Guid UserId { get; set; }
         public string ImageUrl {  get; set; }
-        public PowerSupplyType PowerSupply { get; set; }
+        public string PowerSupply { get; set; }
         public float EnergySpending { get; set; }
-        public DeviceType DeviceType { get; set; }
-        public DeviceStatus DeviceStatus { get; set; }
+        public string DeviceType { get; set; }
+        public string DeviceStatus { get; set; }
         public string Connection { get; set; }
     }
 }

@@ -85,7 +85,11 @@ public class MappingProfiles : Profile
         CreateMap<RegisterPropertyRequestDTO, Property>();
         CreateMap<Property, PropertyResponseDTO>().ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City.Country.Name));
         CreateMap<RegisterPropertyRequestDTO, Property>();
-        CreateMap<SmartDevice, SmartDeviceResponseDTO>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Name));
+        CreateMap<SmartDevice, SmartDeviceResponseDTO>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Name))
+            .ForMember(dest => dest.PowerSupply, opt => opt.MapFrom(src => src.PowerSupply.ToString()))
+            .ForMember(dest => dest.DeviceType, opt => opt.MapFrom(src => src.DeviceType.ToString()))
+            .ForMember(dest => dest.DeviceStatus, opt => opt.MapFrom(src => src.DeviceStatus.ToString()));
         CreateMap<ActivationToken, ActivationTokenEntity>();
         CreateMap<ActivationTokenEntity, ActivationToken>();
         CreateMap<ActivationTokenRequestDTO, ActivationToken>()

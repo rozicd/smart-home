@@ -34,6 +34,16 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             return Ok();
         }
+
+        [HttpGet("{lampId}")]
+        public async Task<IActionResult> GetLampById(Guid lampId)
+        {
+            Lamp lamp = await _lampService.GetById(lampId);
+
+            var lampDTO = _mapper.Map<SmartDeviceResponseDTO>(lamp);
+
+            return Ok(lampDTO);
+        }
     }
 
 }
