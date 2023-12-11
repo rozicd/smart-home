@@ -6,6 +6,7 @@ namespace SmartHome.Data.Entities.SmartDevices
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Type { get; set; }
         public string Connection { get; set; }
         public PowerSupplyType PowerSupply { get; set; }
         public float EnergySpending { get; set; }

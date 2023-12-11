@@ -13,53 +13,57 @@ namespace SmartHome.WebApi.Controllers
     [Route("smart-device")]
     public class SmartDeviceController : BaseController
     {
-        private readonly ISmartDeviceService _smartDeviceService;
+        private readonly ISmartDeviceServiceFactory _smartDeviceServiceFactory;
+        private readonly ISmartDeviceService _smartDeviceService; // Use the common interface
 
-
-        public SmartDeviceController(ISmartDeviceService smartDeviceService, IMapper mapper) : base(mapper)
+        public SmartDeviceController(
+            ISmartDeviceServiceFactory smartDeviceServiceFactory,
+            ISmartDeviceService smartDeviceService, // Inject the common service
+            IMapper mapper)
+            : base(mapper)
         {
+            _smartDeviceServiceFactory = smartDeviceServiceFactory;
             _smartDeviceService = smartDeviceService;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> GetAll([FromQuery] Pagination page)
         {
-
-            PaginationReturnObject<SmartDevice> devices =await  _smartDeviceService.GetAll(page);
-            PaginationReturnObject<SmartDeviceResponseDTO> response = new PaginationReturnObject<SmartDeviceResponseDTO>(_mapper.Map<IEnumerable<SmartDeviceResponseDTO>>(devices.Items),devices.PageNumber,devices.PageSize,devices.TotalItems);
-
-            return Ok(response);
+            var devices = await _smartDeviceService.GetAll(page);
+            return Ok(devices);
         }
-        [HttpGet("property")]
 
+        [HttpGet("property")]
         public async Task<IActionResult> GetAll([FromQuery] PropertySmartDeviceRequestDTO request)
         {
-
-            PaginationReturnObject<SmartDevice> devices = await _smartDeviceService.GetAllFromProperty(request.Page,request.PropertyId);
-            PaginationReturnObject<SmartDeviceResponseDTO> response = new PaginationReturnObject<SmartDeviceResponseDTO>(_mapper.Map<IEnumerable<SmartDeviceResponseDTO>>(devices.Items), devices.PageNumber, devices.PageSize, devices.TotalItems);
-
-            return Ok(response);
+            var devices = await _smartDeviceService.GetAllFromProperty(request.Page, request.PropertyId);
+            return Ok(devices);
         }
+
         [HttpPost("connect")]
         public async Task<IActionResult> ConnectDevice([FromForm] ConnectDeviceDTO cd)
         {
             await _smartDeviceService.Connect(cd.Id, cd.Address);
-            return Ok();
 
+            return Ok();
         }
+
         [HttpPost("on")]
         public async Task<IActionResult> PowerOn([FromForm] DevicePowerDTO dp)
         {
-            await _smartDeviceService.TurnOn(dp.Id);
-            return Ok();
+            ISmartDeviceActionsService actionsService = await _smartDeviceServiceFactory.GetServiceAsync(dp.Id);
 
+            await actionsService.TurnOn(dp.Id);
+            return Ok();
         }
+
         [HttpPost("off")]
         public async Task<IActionResult> PowerOff([FromForm] DevicePowerDTO dp)
         {
-            await _smartDeviceService.TurnOff(dp.Id);
-            return Ok();
+            ISmartDeviceActionsService actionsService = await _smartDeviceServiceFactory.GetServiceAsync(dp.Id);
 
+            await actionsService.TurnOff(dp.Id);
+            return Ok();
         }
 
     }

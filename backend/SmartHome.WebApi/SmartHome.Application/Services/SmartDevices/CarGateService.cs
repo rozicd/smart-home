@@ -7,18 +7,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using SmartHome.Domain.Repositories;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
-    public class CarGateService : ICarGateService
+    public class CarGateService : SmartDeviceService,ICarGateService
     {
         private readonly ICarGateRepository _carGateRepository;
-        private readonly IMqttClientService _mqttClientService;
 
-        public CarGateService(ICarGateRepository carGateRepository, IMqttClientService mqttClientService)
+        public CarGateService(
+            ICarGateRepository carGateRepository,
+            ISmartDeviceRepository smartDeviceRepository,
+            IMqttClientService mqttClientService,
+            IInfluxClientService influxClientService,
+            IServiceScopeFactory scopeFactory)
+            : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
             _carGateRepository = carGateRepository;
-            _mqttClientService = mqttClientService;
         }
 
         public async Task Add(CarGate carGate)

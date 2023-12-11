@@ -58,8 +58,6 @@ namespace SmartHome.Data
 
             SeedCountriesAndCities(modelBuilder);
 
-           
-
             modelBuilder.Entity<EnvironmentalConditionsSensorEntity>()
                 .ToTable("EnvironmentalConditionsSensors")
                 .HasBaseType<SmartDeviceEntity>();
@@ -87,7 +85,6 @@ namespace SmartHome.Data
             modelBuilder.Entity<CarChargerEntity>()
                 .ToTable("CarChargers")
                 .HasBaseType<SmartDeviceEntity>();
-
 
 
         }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Azure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Exceptions;
@@ -131,6 +133,19 @@ namespace SmartHome.Data.Repositories
             existingDevice.DeviceStatus = DeviceStatus.OFFLINE;
             await _context.SaveChangesAsync();
             return (_mapper.Map<SmartDevice>(existingDevice));
+        }
+
+        public async Task<string> GetDeviceType(Guid deviceId)
+        {
+            var smartDevice = await _context.SmartDevices.FindAsync(deviceId);
+
+            Console.WriteLine(smartDevice.Type);
+            if (smartDevice != null)
+            {
+                return smartDevice.Type;
+            }
+
+            return null; 
         }
     }
 }

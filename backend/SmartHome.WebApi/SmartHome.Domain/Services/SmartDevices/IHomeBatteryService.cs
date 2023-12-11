@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface IHomeBatteryService
+    public interface IHomeBatteryService : ISmartDeviceActionsService
     {
         Task Add(HomeBattery sensor);
 

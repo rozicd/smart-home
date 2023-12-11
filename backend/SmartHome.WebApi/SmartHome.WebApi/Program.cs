@@ -35,6 +35,9 @@ builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddScoped<ISmartDeviceRepository, SmartDeviceRepository>();
 builder.Services.AddScoped<ISmartDeviceService, SmartDeviceService>();
+builder.Services.AddScoped<ISmartDeviceActionsService, SmartDeviceService>();
+builder.Services.AddScoped<ISmartDeviceServiceFactory, SmartDeviceServiceFactory>();
+
 builder.Services.AddScoped<IWashingMachineRepository, WashingMachineRepository>();
 builder.Services.AddScoped<IWashingMachineService, WashingMachineService>();
 

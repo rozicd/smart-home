@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface ISolarPanelSystemService
+    public interface ISolarPanelSystemService : ISmartDeviceActionsService
     {
         Task Add(SolarPanelSystem sensor);
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface IWashingMachineService
+    public interface IWashingMachineService : ISmartDeviceActionsService
     {
         Task Add(WashingMachine sensor);
 

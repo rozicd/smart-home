@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface ISprinklerService
+    public interface ISprinklerService : ISmartDeviceActionsService
     {
         Task Add(Sprinkler sensor);
 
