@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Application.Services
 {
-    public class SmartDeviceService : ISmartDeviceService
+    public class SmartDeviceService : ISmartDeviceService,ISmartDeviceActionsService
     {
         private readonly ISmartDeviceRepository _smartDeviceRepository;
         private readonly IMqttClientService _mqttClientService;
@@ -47,7 +47,7 @@ namespace SmartHome.Application.Services
             return await _smartDeviceRepository.GetAllFromProperty(page, propertyId);
         }
 
-        public async Task TurnOff(Guid id)
+        virtual public async Task TurnOff(Guid id)
         {
             SmartDevice smartDevice = await _smartDeviceRepository.TurnOff(id);
             if (smartDevice == null) return;
@@ -72,7 +72,7 @@ namespace SmartHome.Application.Services
             return;
         }
 
-        public async Task TurnOn(Guid id)
+        virtual public async Task TurnOn(Guid id)
         {
             SmartDevice smartDevice = await _smartDeviceRepository.TurnOn(id);
             if (smartDevice == null) return;

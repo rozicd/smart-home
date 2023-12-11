@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface ICarChargerService
+    public interface ICarChargerService : ISmartDeviceActionsService
     {
         Task Add(CarCharger sensor);
 

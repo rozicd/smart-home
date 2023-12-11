@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface ILampService
+    public interface ILampService : ISmartDeviceActionsService
     {
         Task Add(Lamp sensor);
 

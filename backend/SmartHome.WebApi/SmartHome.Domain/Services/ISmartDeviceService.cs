@@ -12,8 +12,6 @@ namespace SmartHome.Domain.Services
     {
         Task<PaginationReturnObject<SmartDevice>> GetAll(Pagination page);
         Task Connect(Guid id, string address);
-        Task TurnOn(Guid id);
-        Task TurnOff(Guid id);
         Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId);
 
 

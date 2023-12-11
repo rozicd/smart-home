@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface IAirConditionerService
+    public interface IAirConditionerService : ISmartDeviceActionsService
     {
         Task Add(AirConditioner sensor);
 

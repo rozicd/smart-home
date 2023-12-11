@@ -7,18 +7,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using SmartHome.Domain.Repositories;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
-    public class SolarPanelSystemService : ISolarPanelSystemService
+    public class SolarPanelSystemService : SmartDeviceService, ISolarPanelSystemService
     {
         private readonly ISolarPanelSystemRepository _solarPanelSystemRepository;
-        private readonly IMqttClientService _mqttClientService;
 
-        public SolarPanelSystemService(ISolarPanelSystemRepository solarPanelSystemRepository, IMqttClientService mqttClientService)
+        public SolarPanelSystemService(
+            ISolarPanelSystemRepository solarPanelSystemRepository,
+            ISmartDeviceRepository smartDeviceRepository,
+            IMqttClientService mqttClientService,
+            IInfluxClientService influxClientService,
+            IServiceScopeFactory scopeFactory)
+            : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
             _solarPanelSystemRepository = solarPanelSystemRepository;
-            _mqttClientService = mqttClientService;
         }
 
         public async Task Add(SolarPanelSystem solarPanelSystem)

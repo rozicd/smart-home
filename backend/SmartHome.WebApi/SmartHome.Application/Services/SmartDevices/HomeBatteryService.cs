@@ -7,18 +7,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using SmartHome.Domain.Repositories;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
-    public class HomeBatteryService : IHomeBatteryService
+    public class HomeBatteryService : SmartDeviceService, IHomeBatteryService
     {
         private readonly IHomeBatteryRepository _homeBatteryRepository;
-        private readonly IMqttClientService _mqttClientService;
 
-        public HomeBatteryService(IHomeBatteryRepository homeBatteryRepository, IMqttClientService mqttClientService)
+        public HomeBatteryService(
+            IHomeBatteryRepository homeBatteryRepository,
+            ISmartDeviceRepository smartDeviceRepository,
+            IMqttClientService mqttClientService,
+            IInfluxClientService influxClientService,
+            IServiceScopeFactory scopeFactory)
+            : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
             _homeBatteryRepository = homeBatteryRepository;
-            _mqttClientService = mqttClientService;
         }
 
         public async Task Add(HomeBattery homeBattery)

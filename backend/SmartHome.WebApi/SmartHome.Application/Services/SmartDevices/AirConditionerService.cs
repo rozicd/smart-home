@@ -7,18 +7,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SmartHome.Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
-    public class AirConditionerService : IAirConditionerService
+    public class AirConditionerService : SmartDeviceService, IAirConditionerService
     {
         private readonly IAirConditionerRepository _airConditionerRepository;
-        private readonly IMqttClientService _mqttClientService;
 
-        public AirConditionerService(IAirConditionerRepository airConditionerRepository, IMqttClientService mqttClientService)
+        public AirConditionerService(
+            IAirConditionerRepository airConditionerRepository,
+            ISmartDeviceRepository smartDeviceRepository,
+            IMqttClientService mqttClientService,
+            IInfluxClientService influxClientService,
+            IServiceScopeFactory scopeFactory)
+            : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
             _airConditionerRepository = airConditionerRepository;
-            _mqttClientService = mqttClientService;
         }
 
         public async Task Add(AirConditioner airConditioner)

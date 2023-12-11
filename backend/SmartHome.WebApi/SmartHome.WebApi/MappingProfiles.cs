@@ -17,23 +17,34 @@ public class MappingProfiles : Profile
         CreateMap<SmartDevice, SmartDeviceEntity>();
         CreateMap<SmartDeviceEntity, SmartDevice>();
 
-        CreateMap<EnvironmentalConditionsSensor, EnvironmentalConditionsSensorEntity>();
-        CreateMap<AirConditioner, AirConditionerEntity>();
+        CreateMap<EnvironmentalConditionsSensor, EnvironmentalConditionsSensorEntity>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
+        CreateMap<AirConditioner, AirConditionerEntity>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
         CreateMap<AirConditionerEntity, AirConditioner>();
-        CreateMap<WashingMachine, WashingMachineEntity>();
+        CreateMap<WashingMachine, WashingMachineEntity>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
         CreateMap<WashingMachineEntity, WashingMachine>();
         CreateMap<LampEntity, Lamp>();
-        CreateMap<Lamp, LampEntity>();
+        CreateMap<Lamp, LampEntity>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
         CreateMap<CarGateEntity, CarGate>();
-        CreateMap<CarGate, CarGateEntity>();
+        CreateMap<CarGate, CarGateEntity>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
         CreateMap<CarChargerEntity, CarCharger>();
-        CreateMap<CarCharger, CarChargerEntity>();
+        CreateMap<CarCharger, CarChargerEntity>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
         CreateMap<SprinklerEntity, Sprinkler>();
-        CreateMap<Sprinkler, SprinklerEntity>();
+        CreateMap<Sprinkler, SprinklerEntity>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
         CreateMap<HomeBatteryEntity, HomeBattery>();
-        CreateMap<HomeBattery, HomeBatteryEntity>();
+        CreateMap<HomeBattery, HomeBatteryEntity>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
+
         CreateMap<SolarPanelSystemEntity, SolarPanelSystem>();
-        CreateMap<SolarPanelSystem, SolarPanelSystemEntity>();
+        CreateMap<SolarPanelSystem, SolarPanelSystemEntity>()
+                    .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
+
         CreateMap<WashingMachineModeEntity, WashingMachineMode>();
         CreateMap<WashingMachineMode, WashingMachineModeEntity>();
         CreateMap<SprinkleMode, SprinkleModeEntity>();

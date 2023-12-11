@@ -7,18 +7,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using SmartHome.Domain.Repositories;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
-    public class SprinklerService : ISprinklerService
+    public class SprinklerService : SmartDeviceService, ISprinklerService
     {
         private readonly ISprinklerRepository _sprinklerRepository;
-        private readonly IMqttClientService _mqttClientService;
 
-        public SprinklerService(ISprinklerRepository sprinklerRepository, IMqttClientService mqttClientService)
+        public SprinklerService(
+            ISprinklerRepository sprinklerRepository,
+            ISmartDeviceRepository smartDeviceRepository,
+            IMqttClientService mqttClientService,
+            IInfluxClientService influxClientService,
+            IServiceScopeFactory scopeFactory)
+            : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
             _sprinklerRepository = sprinklerRepository;
-            _mqttClientService = mqttClientService;
         }
 
         public async Task Add(Sprinkler sprinkler)
