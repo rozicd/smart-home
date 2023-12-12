@@ -9,7 +9,7 @@ namespace SmartHome.Domain.Services
 {
     public interface ISmartDeviceActionsService
     {
-        Task<SmartDevice> TurnOn(Guid id);
-        Task TurnOff(Guid id);
+        Task<SmartDevice> Connect(Guid id);
+        Task Disconnect(Guid id);
     }
 }

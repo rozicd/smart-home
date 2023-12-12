@@ -29,34 +29,36 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(SolarPanelSystem solarPanelSystem)
         {
+            solarPanelSystem.Id = Guid.NewGuid();
+            solarPanelSystem.Connection = "property/" + solarPanelSystem.PropertyId + "/device/" + solarPanelSystem.Id;
             await _solarPanelSystemRepository.Add(solarPanelSystem);
         }
         public async Task<SolarPanelSystem> GetById(Guid id)
         {
             return await _solarPanelSystemRepository.GetById(id);
         }
-        override public async Task TurnOff(Guid id)
+        override public async Task Disconnect(Guid id)
 
         {
-            await base.TurnOff(id);
+            await base.Disconnect(id);
         }
 
 
-        override public async Task<SmartDevice> TurnOn(Guid id)
+        override public async Task<SmartDevice> Connect(Guid id)
         {
-            SmartDevice device = await base.TurnOn(id);
+            SmartDevice device = await base.Connect(id);
             Console.WriteLine("U Panelu");
-            SolarPanelSystem sps = await GetById(device.Id);
+            SolarPanelSystem sps;
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+
+                var repository = serviceProvider.GetRequiredService<ISolarPanelSystemRepository>();
+
+                sps = await repository.GetById(device.Id);
+            }
             await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{sps.NumberOfPanels},{sps.Size},{sps.Efficiency}");
             var client = await _mqttClientService.SubscribeAsync(device.Connection + "/power");
-            if (!topics.Contains(device.Connection + "/power"))
-            {
-                topics.Add(device.Connection + "/power");
-            }
-            if (!topics.Contains(device.Connection + "/info"))
-            {
-                topics.Add(device.Connection + "/info");
-            }
 
             client.ApplicationMessageReceivedAsync += e =>
             {

@@ -29,6 +29,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(Lamp lamp)
         {
+            lamp.Id = Guid.NewGuid();
+            lamp.Connection = "property/" + lamp.PropertyId + "/device/" + lamp.Id;
             await _lampRepository.Add(lamp);
         }
 
@@ -37,9 +39,9 @@ namespace SmartHome.Application.Services.SmartDevices
             return await _lampRepository.GetById(lampId);
         }
 
-        override public async Task<SmartDevice> TurnOn(Guid id)
+        override public async Task<SmartDevice> Connect(Guid id)
         {
-            SmartDevice device = await base.TurnOn(id);
+            SmartDevice device = await base.Connect(id);
             Console.WriteLine("U LAMPI SAM");
             return device;
         }

@@ -29,6 +29,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(CarCharger carCharger)
         {
+            carCharger.Id = Guid.NewGuid();
+            carCharger.Connection = "property/" + carCharger.PropertyId + "/device/" + carCharger.Id;
             await _carChargerRepository.Add(carCharger);
         }
 

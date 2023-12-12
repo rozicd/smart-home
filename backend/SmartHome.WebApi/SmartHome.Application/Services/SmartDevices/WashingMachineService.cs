@@ -29,6 +29,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(WashingMachine washingMachine)
         {
+            washingMachine.Id = Guid.NewGuid();
+            washingMachine.Connection = "property/" + washingMachine.PropertyId + "/device/" + washingMachine.Id;
             await _washingMachineRepository.Add(washingMachine);
         }
 

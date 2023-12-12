@@ -13,8 +13,6 @@ namespace SmartHome.Application.Services
     {
         public IMqttClient _mqttClient;
 
-       
-
 
         public async Task ConnectAsync()
         {
@@ -33,7 +31,7 @@ namespace SmartHome.Application.Services
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(payload)
-                .WithRetainFlag()
+                .WithRetainFlag(false)
                 .Build();
 
             return await _mqttClient.PublishAsync(message);

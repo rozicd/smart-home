@@ -14,11 +14,11 @@ namespace SmartHome.WebApi.Controllers
     public class SmartDeviceController : BaseController
     {
         private readonly ISmartDeviceServiceFactory _smartDeviceServiceFactory;
-        private readonly ISmartDeviceService _smartDeviceService; // Use the common interface
+        private readonly ISmartDeviceService _smartDeviceService;
 
         public SmartDeviceController(
             ISmartDeviceServiceFactory smartDeviceServiceFactory,
-            ISmartDeviceService smartDeviceService, // Inject the common service
+            ISmartDeviceService smartDeviceService,
             IMapper mapper)
             : base(mapper)
         {
@@ -40,20 +40,14 @@ namespace SmartHome.WebApi.Controllers
             return Ok(devices);
         }
 
-        [HttpPost("connect")]
-        public async Task<IActionResult> ConnectDevice([FromForm] ConnectDeviceDTO cd)
-        {
-            await _smartDeviceService.Connect(cd.Id, cd.Address);
 
-            return Ok();
-        }
 
         [HttpPost("on")]
         public async Task<IActionResult> PowerOn([FromForm] DevicePowerDTO dp)
         {
             ISmartDeviceActionsService actionsService = await _smartDeviceServiceFactory.GetServiceAsync(dp.Id);
 
-            await actionsService.TurnOn(dp.Id);
+            await actionsService.Connect(dp.Id);
             return Ok();
         }
 
@@ -62,7 +56,7 @@ namespace SmartHome.WebApi.Controllers
         {
             ISmartDeviceActionsService actionsService = await _smartDeviceServiceFactory.GetServiceAsync(dp.Id);
 
-            await actionsService.TurnOff(dp.Id);
+            await actionsService.Disconnect(dp.Id);
             return Ok();
         }
 

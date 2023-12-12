@@ -11,7 +11,6 @@ namespace SmartHome.Domain.Services
     public interface ISmartDeviceService
     {
         Task<PaginationReturnObject<SmartDevice>> GetAll(Pagination page);
-        Task Connect(Guid id, string address);
         Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId);
 
 

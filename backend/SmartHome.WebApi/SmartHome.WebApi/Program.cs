@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 using MQTTnet.Client;
+using SmartHome.Application.HostedServices;
 using SmartHome.Application.Services;
 using SmartHome.Application.Services.SmartDevices;
 using SmartHome.Data;
@@ -47,7 +48,7 @@ builder.Services.AddScoped<IAirConditionerService, AirConditionerService>();
 builder.Services.AddScoped<IAirConditionerRepository, AirConditionerRepository>();
 builder.Services.AddScoped<ILampRepository, LampRepository>();
 builder.Services.AddScoped<ILampService, LampService>();
-builder.Services.AddScoped<IMqttClientService, MqttClientService>();
+builder.Services.AddSingleton<IMqttClientService, MqttClientService>();
 
 builder.Services.AddScoped<ICarGateRepository, CarGateRepository>();
 builder.Services.AddScoped<ICarGateService, CarGateService>();
@@ -109,6 +110,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+builder.Services.AddHostedService<SimulationService>();
+
 
 builder.Services.AddAuthorization(o =>
 {
@@ -120,7 +123,7 @@ builder.Services.AddAuthorization(o =>
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
-}, ServiceLifetime.Transient);
+}, ServiceLifetime.Scoped);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -130,6 +133,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+var mqttClientService = app.Services.GetRequiredService<IMqttClientService>();
+await mqttClientService.ConnectAsync();
 
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();

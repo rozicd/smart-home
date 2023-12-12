@@ -2,12 +2,13 @@ import threading
 import time
 import paho.mqtt.client as mqtt
 import random
-import SmartHome  
+from SmartHome import SmartHome
 
 class Simulation:
     def __init__(self):
         self.broker_address = "localhost"
         self.broker_port = 8883
+
 
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
@@ -16,7 +17,7 @@ class Simulation:
         self.properties = {}
         self.propertyThreads = {}
 
-        self.client.connect(self.broker_address, self.broker_port, 60)
+        self.client.connect(self.broker_address,self.broker_port,60)
 
 
     def on_connect(self, client, userdata, flags, rc):
@@ -26,10 +27,11 @@ class Simulation:
 
     def on_message(self, client, userdata, msg):
         command = msg.payload.decode('utf-8')
-        print(command)
-        self.properties[command]= SmartHome("property"+command)
-        self.propertyThreads[command] = threading.Thread(target=self.properties[command].run())
-        self.propertyThreads[command].start()
+        if command not in self.properties.keys():
+            print(command)
+            self.properties[command]= SmartHome("property/"+command)
+            self.propertyThreads[command] = threading.Thread(target=self.properties[command].run)
+            self.propertyThreads[command].start()
 
 
     def run(self):
@@ -38,8 +40,15 @@ class Simulation:
             pass
 
 
-
 if __name__ == "__main__":
     smart = Simulation()
-    smart.run()
+    try:
 
+        run_thread = threading.Thread(target=smart.run)
+
+        run_thread.start()
+
+        run_thread.join()
+    except KeyboardInterrupt:
+        for thread_name, thread_instance in smart.propertyThreads.items():
+            thread_instance.join()
