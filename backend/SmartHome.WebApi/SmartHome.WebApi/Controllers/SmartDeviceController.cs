@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Application.Services;
 using SmartHome.DataTransferObjects.Requests;
@@ -39,7 +39,6 @@ namespace SmartHome.WebApi.Controllers
             var devices = await _smartDeviceService.GetAllFromProperty(request.Page, request.PropertyId);
             return Ok(devices);
         }
-
 
 
         [HttpPost("on")]

@@ -57,6 +57,19 @@ export const GetSmartDevicesByProperty = async (pagination) => {
     }
   };
 
+  export const getDevice = async (deviceType,deviceId) => {
+    if(deviceType == null){
+      deviceType = "smart-device"
+    }
+    try {
+      const response = await fetch(`${API_BASE_URL}/${deviceType.toLowerCase()}/${deviceId}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw new Error("Error fetching device information");
+    }
+  };
+
   export const AddSmartDevice = async (device,url) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/${url}`,device, {

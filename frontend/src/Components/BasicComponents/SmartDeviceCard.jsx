@@ -14,26 +14,19 @@ import { themeOptions } from "../../themeOptions";
 import "./propertyCard.css";
 import { Switch } from "@mui/material";
 import { turnOn, turnOff, connect } from "../Services/SmartDeviceService";
+import { useNavigate } from "react-router-dom";
 
-const template = [
-  { item: "BasicInput", itemValue: "connection", label: "Connection" },
-];
 
 const SmartDeviceCard = ({ device }) => {
   const [imageData, setImageData] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate()
 
-  const Connect = async (connection) => {
-    const data = new FormData()
-    data.append("id",device.id)
-    data.append("address",connection.connection)
-    await connect(data);
-    setOpenModal(false)
-    device.connection = connection.connection
-  };
+  const clickedDevice = () => {
+    navigate("/devices/"+device.type.toLowerCase()+"/" + device.id);
+  }
   useEffect(() => {
     setIsChecked(device.deviceStatus ? true : false);
 
@@ -90,7 +83,7 @@ const SmartDeviceCard = ({ device }) => {
     >
       <CardMedia
         onClick={() => {
-          setOpenModal(true);
+          clickedDevice()
         }}
         component="img"
         alt="Property"
@@ -100,7 +93,7 @@ const SmartDeviceCard = ({ device }) => {
       <Box style={{ display: "flex", flexDirection: "column", flex: 1 }}>
         <CardContent
           onClick={() => {
-            setOpenModal(true);
+            clickedDevice()
           }}
           style={{
             display: "flex",
@@ -158,19 +151,6 @@ const SmartDeviceCard = ({ device }) => {
           backgroundColor: `${device.deviceStatus ? "green" : "red"}`,
         }}
       ></div>
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <Container
-          sx={{
-            padding: "10px",
-            backgroundColor: "snow",
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
-          <BasicForm template={template} callback={Connect}></BasicForm>
-        </Container>
-      </Dialog>
     </Card>
   );
 };
