@@ -21,8 +21,6 @@ namespace SmartHome.Application.Services
         protected readonly IMqttClientService _mqttClientService;
         protected readonly IInfluxClientService _influxClientService;
         protected readonly IServiceScopeFactory _scopeFactory;
-        private static readonly Dictionary<string, Timer> topicTimers = new Dictionary<string, Timer>();
-
 
 
         public SmartDeviceService(ISmartDeviceRepository smartDeviceRepository, IMqttClientService mqttClientService, IInfluxClientService influxClientService, IServiceScopeFactory scopeFactory)
@@ -72,20 +70,26 @@ namespace SmartHome.Application.Services
             }
             if (smartDevice == null) return null;
 
-            Console.WriteLine($"Turning on {smartDevice.Id}");
-            await _mqttClientService.PublishMessageAsync(smartDevice.Connection + "/recive", "PowerOn");
             var client = await _mqttClientService.SubscribeAsync(smartDevice.Connection + "/status");
 
-            TimeSpan timerInterval = TimeSpan.FromSeconds(15);
-            var timer = new Timer(_ => CheckForNoMessagesAsync(smartDevice, smartDevice.Connection + "/status"), null, timerInterval, timerInterval);
-            topicTimers[smartDevice.Connection + "/status"] = timer;
+
 
             client.ApplicationMessageReceivedAsync += e =>
             {
                 string receivedTopic = e.ApplicationMessage.Topic;
-                if (receivedTopic == smartDevice.Connection + "/status")
+                if (receivedTopic == smartDevice.Connection + "/lastWill")
                 {
-                    ResetTimer(smartDevice.Connection + "/status");
+                    using (var scope = _scopeFactory.CreateScope())
+                    {
+                        var serviceProvider = scope.ServiceProvider;
+
+                        var repository = serviceProvider.GetRequiredService<ISmartDeviceRepository>();
+
+                        repository.TurnOff(smartDevice.Id);
+                    }
+                }
+                else if(receivedTopic == smartDevice.Connection + "/status")
+                {
                     string messageContent = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                     Console.WriteLine($"Received message on topic: {e.ApplicationMessage.Topic}");
                     Console.WriteLine($"Message content: {messageContent}");
@@ -95,37 +99,7 @@ namespace SmartHome.Application.Services
             };
             return smartDevice;
         }
-        private async Task CheckForNoMessagesAsync(SmartDevice smartDevice,string topic)
-        {
-           
-            Console.WriteLine($"No messages received for {smartDevice.Id}. Device not responding.");
-            try
-            {
-                using (var scope = _scopeFactory.CreateScope())
-                {
-                    var serviceProvider = scope.ServiceProvider;
 
-                    var repository = serviceProvider.GetRequiredService<ISmartDeviceRepository>();
-
-                    await repository.TurnOff(smartDevice.Id);
-                }
-            }
-
-            catch(Exception ex) { Console.WriteLine(ex.Message); }
-
-            if (topicTimers.ContainsKey(topic))
-            {
-                topicTimers[topic].Dispose();
-                topicTimers.Remove(topic);
-            }
-
-
-
-        }
-        private void ResetTimer(string topic)
-        {
-            topicTimers[topic].Change(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(15));
-        }
 
 
         private async Task SendInfluxDataAsync(SmartDevice smartDevice, int status)

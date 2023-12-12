@@ -8,8 +8,8 @@ class SmartDevice:
         self.broker_address = "localhost"
         self.broker_port = 8883
         self.topicSend = name + "/status"
+        self.topicLW = name + "/lastWill"
         self.topicRecive = name + "/recive"
-        self.status = 'offline'
         self.name = name
 
         self.client = mqtt.Client()
@@ -17,7 +17,13 @@ class SmartDevice:
         self.client.on_message = self.on_message
         self.send_status_thread = threading.Thread(target=self.sendStatus)
         self.running = True
-        self.client.will_set(self.topicSend, payload=f"{self.name} : offline", qos=2, retain=True)
+        self.client.will_set(self.topicLW, payload=f"{self.name} : offline", qos=2, retain=True)
+
+        self.status = 'online'
+        if self.send_status_thread is None or not self.send_status_thread.is_alive():
+            self.running = True
+            self.send_status_thread = threading.Thread(target=self.sendStatus)
+            self.send_status_thread.start()
 
         self.client.connect(self.broker_address, self.broker_port, 60)
 
@@ -30,14 +36,6 @@ class SmartDevice:
 
     def on_message(self, client, userdata, msg):
         command = msg.payload.decode('utf-8')
-
-        if command == "PowerOn":
-            self.status = 'online'
-            print(self.status)
-            if not self.send_status_thread.is_alive():
-                self.running = True
-                self.send_status_thread = threading.Thread(target=self.sendStatus)
-                self.send_status_thread.start()
 
         if command == "PowerOff":
             if self.send_status_thread.is_alive():

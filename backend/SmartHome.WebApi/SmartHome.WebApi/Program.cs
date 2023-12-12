@@ -48,7 +48,7 @@ builder.Services.AddScoped<IAirConditionerService, AirConditionerService>();
 builder.Services.AddScoped<IAirConditionerRepository, AirConditionerRepository>();
 builder.Services.AddScoped<ILampRepository, LampRepository>();
 builder.Services.AddScoped<ILampService, LampService>();
-builder.Services.AddSingleton<IMqttClientService, MqttClientService>();
+builder.Services.AddScoped<IMqttClientService, MqttClientService>();
 
 builder.Services.AddScoped<ICarGateRepository, CarGateRepository>();
 builder.Services.AddScoped<ICarGateService, CarGateService>();
@@ -67,7 +67,7 @@ builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
-    var token = "ZqgHocXYE-wlr76ucjWaUpjF0qKVmbeWjGme9s-h5zzDdol4qTNCl9tbANULxmKdLKbv5D-SqNwkXHaCBH93Bw==";
+    var token = "4n7cshGBk1EFQX_jON26WqzHw8psv1lnT5Hz_TnoNvbZBDedZEMPCwhycL5NBeIoDv3PemH0i6E-PtTF-SnrZQ==";
     var bucket = "bucket";
     var organization = "organization";
 
@@ -132,9 +132,6 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-var mqttClientService = app.Services.GetRequiredService<IMqttClientService>();
-await mqttClientService.ConnectAsync();
 
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();

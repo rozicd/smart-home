@@ -41,7 +41,7 @@ class SmartHome:
             self.devices[command[0]] = smart_device
             self.devices[command[0]] = threading.Thread(target=self.devices[command[0]].run)
             self.devices[command[0]].start()
-            self.client.publish(self.id+"/device/"+command[0]+"/created", "created")
+
 
 
 

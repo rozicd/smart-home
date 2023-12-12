@@ -54,32 +54,31 @@ namespace SmartHome.Application.HostedServices
 
                 foreach (var property in properties)
                 {
+                    mqttClientService.ConnectAsync().Wait();
                     mqttClientService.PublishMessageAsync("property/create", property.Id.ToString()).Wait();
                 }
 
-                Thread.Sleep(1000);
                 foreach (var property in properties)
                 {
                     var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
                     foreach (var device in devices)
                     {
                         Console.WriteLine(device.Type);
+                        mqttClientService.ConnectAsync().Wait();
                         mqttClientService.PublishMessageAsync("property/" + property.Id.ToString() + "/create", device.Id.ToString() + "," + device.Type).Wait();
-                        var deviceCreationSubscription = mqttClientService.SubscribeAsync("property/" + property.Id.ToString() + "/device/" + device.Id.ToString() + "/created").Result;
-                        ISmartDeviceActionsService smartDeviceActionService = smartDeviceServiceFactory.GetServiceAsync(device.Id).Result;
-                        deviceCreationSubscription.ApplicationMessageReceivedAsync += e =>
-                        {
 
-                            string receivedTopic = e.ApplicationMessage.Topic;
-                            if (receivedTopic == ("property/" + property.Id.ToString() + "/device/" + device.Id.ToString() + "/created"))
-                            {
-                                smartDeviceActionService.Connect(device.Id).Wait();
-                            }
-                            return Task.CompletedTask;
-                        };
                     }
                 }
-         
+                foreach (var property in properties)
+                {
+                    var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
+                    foreach (var device in devices)
+                    {
+                        ISmartDeviceActionsService smartDeviceActionService = smartDeviceServiceFactory.GetServiceAsync(device.Id).Result;
+                        smartDeviceActionService.Connect(device.Id).Wait();
+                    }
+                }
+
             }
         }
 
