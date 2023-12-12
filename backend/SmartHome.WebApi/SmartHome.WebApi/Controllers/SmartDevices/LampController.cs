@@ -4,6 +4,7 @@ using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.DataTransferObjects.Requests;
+using SmartHome.DataTransferObjects.Responses;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -40,7 +41,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         {
             Lamp lamp = await _lampService.GetById(lampId);
 
-            var lampDTO = _mapper.Map<SmartDeviceResponseDTO>(lamp);
+            var lampDTO = _mapper.Map<LampResponseDTO>(lamp);
 
             return Ok(lampDTO);
         }

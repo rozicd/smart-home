@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 using MQTTnet.Client;
 using SmartHome.Application.HostedServices;
+using SmartHome.Application.Hubs;
 using SmartHome.Application.Services;
 using SmartHome.Application.Services.SmartDevices;
 using SmartHome.Data;
@@ -119,6 +120,7 @@ builder.Services.AddAuthorization(o =>
     o.AddPolicy("AdminOnly", p => p.RequireRole("Admin"));
 });
 
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
@@ -142,6 +144,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+
 app.UseMiddleware<ClaimsMiddleware>();
 
 app.MapControllers();
@@ -161,6 +164,8 @@ using (var scope = app.Services.CreateScope())
 
     await userService.GenerateSuperAdmin();
 }
+
+app.MapHub<LampHub>("/lampHub");
 
 app.UseStaticFiles();
 

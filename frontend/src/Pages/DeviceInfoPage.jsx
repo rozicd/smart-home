@@ -1,22 +1,21 @@
+// DeviceInfoPage.jsx
+
 import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { getDevice } from "../Components/Services/SmartDeviceService";
 import LoadingComponent from "../Components/BasicComponents/LoadingComponent";
 import getStaticContent from "../Components/Services/StaticService";
-import { Card, CardMedia, CardContent, Typography, Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import BasicDeviceInfoComponent from "../Components/BasicDeviceInfoComponent";
+import LampCardsComponent from "../Components/LampCardsComponents";
 
-const template = [
-    { item: "BasicInput", itemValue: "connection", label: "Connection" },
-  ];
-
-  
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();
   const [deviceData, setDeviceData] = useState(null);
   const [imageData, setImageData] = useState("");
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+
 
   useEffect(() => {
     const fetchDeviceData = async () => {
@@ -41,10 +40,19 @@ const DeviceInfoPage = () => {
 
   return (
     <Grid container style={{ height: "100%" }}>
-    <BasicDeviceInfoComponent imageData={imageData} deviceData={deviceData} />
+      <BasicDeviceInfoComponent imageData={imageData} deviceData={deviceData} />
 
-    <Grid item xs={12} sm={6}></Grid>
-  </Grid>
+      <Grid container item xs={12} sm={6} paddingRight={"50px"} paddingTop={"50px"}>
+        <Box>
+          {deviceType === "lamp" && (
+            <LampCardsComponent
+              deviceInfo={deviceData}
+            />
+          )}
+          {/* Add other device type checks and load corresponding components */}
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 

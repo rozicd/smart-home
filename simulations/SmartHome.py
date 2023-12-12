@@ -3,6 +3,7 @@ import time
 import paho.mqtt.client as mqtt
 import random
 
+from simulations.Lamp import Lamp
 from simulations.SmartDevice import SmartDevice
 from simulations.SolarPanelSystem import SolarPanelSystem
 
@@ -35,6 +36,8 @@ class SmartHome:
 
             if command[1] == 'SolarPanelSystem' :
                 smart_device = SolarPanelSystem(device_key)
+            elif command[1] == 'Lamp':
+                smart_device = Lamp(device_key)
             else:
                 smart_device = SmartDevice(device_key)
 
