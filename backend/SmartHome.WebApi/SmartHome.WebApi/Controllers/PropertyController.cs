@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartHome.Application.Services;
 using SmartHome.DataTransferObjects.Requests;
 using SmartHome.DataTransferObjects.Responses;
 using SmartHome.Domain.Models;
@@ -15,10 +16,12 @@ public class PropertyController : BaseController
     private readonly IFileService _fileService;
     private readonly IEmailService _emailService;
     private readonly IUserService _userService;
+    private readonly IMqttClientService _mqttClientService;
 
-    public PropertyController(IPropertyService propertyService, IFileService fileService, IEmailService emailService, IUserService userService, IMapper mapper)
+    public PropertyController(IMqttClientService mqttClientService,IPropertyService propertyService, IFileService fileService, IEmailService emailService, IUserService userService, IMapper mapper)
         : base(mapper)
     {
+        _mqttClientService = mqttClientService;
         _propertyService = propertyService;
         _fileService = fileService;
         _emailService = emailService;
@@ -97,7 +100,7 @@ public class PropertyController : BaseController
 
         property.Status = PropertyStatus.Approved;
         await _propertyService.UpdateProperty(property);
-
+        await _mqttClientService.PublishMessageAsync("property/create", property.Id.ToString());
         User userOfProperty = await _userService.GetById(property.UserId);
 
         await _emailService.SendApprovePropertyEmail(userOfProperty, property);

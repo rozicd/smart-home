@@ -85,6 +85,9 @@ const SmartDevicesPage = ({}) => {
       data.append('energySpending', form.energySpending);
       data.append('size', form.size);
       data.append('efficiency', form.efficiency);
+      data.append('numberOfPanels', form.efficiency);
+
+      
 
     }
     if (selectedDevice == 8)
@@ -182,6 +185,12 @@ let sps =
     type :"number",
     itemValue : "size"
 
+  },
+  {
+    item:"BasicInput",
+    label:"Number of panels",
+    type :"number",
+    itemValue : "numberOfPanels"
   },
   {
     item:"BasicInput",

@@ -29,6 +29,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(AirConditioner airConditioner)
         {
+            airConditioner.Id = Guid.NewGuid();
+            airConditioner.Connection = "property/" + airConditioner.PropertyId + "/device/" + airConditioner.Id;
             await _airConditionerRepository.Add(airConditioner);
         }
 

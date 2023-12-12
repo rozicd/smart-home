@@ -29,6 +29,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(HomeBattery homeBattery)
         {
+            homeBattery.Id = Guid.NewGuid();
+            homeBattery.Connection = "property/" + homeBattery.PropertyId + "/device/" + homeBattery.Id;
             await _homeBatteryRepository.Add(homeBattery);
         }
 

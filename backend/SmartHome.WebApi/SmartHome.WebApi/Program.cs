@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 using MQTTnet.Client;
+using SmartHome.Application.HostedServices;
 using SmartHome.Application.Services;
 using SmartHome.Application.Services.SmartDevices;
 using SmartHome.Data;
@@ -66,7 +67,7 @@ builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
-    var token = "5Nqh-5gis9t8Sn8RDou4BxXLpzENxLadcrdKCjr5_wcb9z5zFI31lEBw2NZ_4ziNRTzEMN_zEIp6FGG_iQSvUA==";
+    var token = "4n7cshGBk1EFQX_jON26WqzHw8psv1lnT5Hz_TnoNvbZBDedZEMPCwhycL5NBeIoDv3PemH0i6E-PtTF-SnrZQ==";
     var bucket = "bucket";
     var organization = "organization";
 
@@ -109,6 +110,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+builder.Services.AddHostedService<SimulationService>();
+
 
 builder.Services.AddAuthorization(o =>
 {
@@ -120,7 +123,7 @@ builder.Services.AddAuthorization(o =>
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
-}, ServiceLifetime.Transient);
+}, ServiceLifetime.Scoped);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -129,7 +132,6 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
 
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();

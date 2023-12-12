@@ -29,6 +29,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(CarGate carGate)
         {
+            carGate.Id = Guid.NewGuid();
+            carGate.Connection = "property/" + carGate.PropertyId + "/device/" + carGate.Id;
             await _carGateRepository.Add(carGate);
         }
 

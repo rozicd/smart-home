@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InfluxDB.Client.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Models.SmartDevices;
@@ -14,13 +15,13 @@ namespace SmartHome.Data.Repositories.SmartDevices
     public class SolarPanelSystemRepository : ISolarPanelSystemRepository
     {
         private readonly IMapper _mapper;
-        private readonly DbSet<SmartDeviceEntity> _solarPanelSystems;
+        private readonly DbSet<SolarPanelSystemEntity> _solarPanelSystems;
         private readonly DatabaseContext _context;
 
         public SolarPanelSystemRepository(DatabaseContext context, IMapper mapper)
         {
             _context = context;
-            _solarPanelSystems = context.Set<SmartDeviceEntity>();
+            _solarPanelSystems = context.Set<SolarPanelSystemEntity>();
             _mapper = mapper;
         }
 
@@ -32,6 +33,18 @@ namespace SmartHome.Data.Repositories.SmartDevices
             await _context.SaveChangesAsync();
         }
 
+        public async Task<SolarPanelSystem> GetById(Guid id)
+        {
+            SolarPanelSystemEntity spsEntity = await _solarPanelSystems.FirstOrDefaultAsync(sps => sps.Id == id);
+
+            if (spsEntity == null)
+            {
+                throw new NotFoundException($"Solar Panel System with ID {spsEntity} not found");
+            }
+
+            SolarPanelSystem sps = _mapper.Map<SolarPanelSystem>(spsEntity);
+            return sps;
+        }
     }
 
 }

@@ -101,10 +101,6 @@ namespace SmartHome.Data.Repositories
             {
                 throw new ResourceNotFoundException($"SmartDevice with Id {id} not found.");
             }
-            if (existingDevice.DeviceStatus == DeviceStatus.ONLINE)
-            {
-                return null;
-            }
             existingDevice.DeviceStatus = DeviceStatus.ONLINE;
             await _context.SaveChangesAsync();
             return (_mapper.Map<SmartDevice>(existingDevice));

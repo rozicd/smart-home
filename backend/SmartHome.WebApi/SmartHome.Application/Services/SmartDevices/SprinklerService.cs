@@ -29,6 +29,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(Sprinkler sprinkler)
         {
+            sprinkler.Id = Guid.NewGuid();
+            sprinkler.Connection = "property/" + sprinkler.PropertyId + "/device/" + sprinkler.Id;
             await _sprinklerRepository.Add(sprinkler);
         }
 

@@ -38,6 +38,7 @@ namespace SmartHome.Application.Services
             return await _propertyRepository.GetById(id);
         }
 
+
         public async Task UpdateProperty(Property property)
         {
             await _propertyRepository.Update(property);

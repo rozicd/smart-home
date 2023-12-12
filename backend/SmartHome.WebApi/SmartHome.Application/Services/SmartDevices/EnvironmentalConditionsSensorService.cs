@@ -28,7 +28,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(EnvironmentalConditionsSensor sensor)
         {
- 
+            sensor.Id = Guid.NewGuid();
+            sensor.Connection = "property/" + sensor.PropertyId + "/device/" + sensor.Id;
             await _enviromentalConditionsSensorRepository.Add(sensor);
         }
 

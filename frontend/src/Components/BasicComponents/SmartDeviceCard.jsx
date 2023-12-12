@@ -114,7 +114,6 @@ const SmartDeviceCard = ({ device }) => {
           <Typography style={{ flex: "40%" }}>
             {getTypeText(device.deviceType)}
           </Typography>
-          <Typography style={{ flex: "40%" }}>{device.connection}</Typography>
 
           <Box
             style={{

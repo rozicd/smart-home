@@ -29,18 +29,12 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(CarCharger carCharger)
         {
+            carCharger.Id = Guid.NewGuid();
+            carCharger.Connection = "property/" + carCharger.PropertyId + "/device/" + carCharger.Id;
             await _carChargerRepository.Add(carCharger);
         }
 
-        override public Task TurnOff(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        override public Task TurnOn(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+      
 
     }
 

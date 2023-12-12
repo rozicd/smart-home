@@ -29,7 +29,50 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task Add(SolarPanelSystem solarPanelSystem)
         {
+            solarPanelSystem.Id = Guid.NewGuid();
+            solarPanelSystem.Connection = "property/" + solarPanelSystem.PropertyId + "/device/" + solarPanelSystem.Id;
             await _solarPanelSystemRepository.Add(solarPanelSystem);
+        }
+        public async Task<SolarPanelSystem> GetById(Guid id)
+        {
+            return await _solarPanelSystemRepository.GetById(id);
+        }
+        override public async Task Disconnect(Guid id)
+
+        {
+            await base.Disconnect(id);
+        }
+
+
+        override public async Task<SmartDevice> Connect(Guid id)
+        {
+            SmartDevice device = await base.Connect(id);
+            Console.WriteLine("U Panelu");
+            SolarPanelSystem sps;
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+
+                var repository = serviceProvider.GetRequiredService<ISolarPanelSystemRepository>();
+
+                sps = await repository.GetById(device.Id);
+            }
+            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{sps.NumberOfPanels},{sps.Size},{sps.Efficiency}");
+            var client = await _mqttClientService.SubscribeAsync(device.Connection + "/power");
+
+            client.ApplicationMessageReceivedAsync += e =>
+            {
+
+                string receivedTopic = e.ApplicationMessage.Topic;
+                if (receivedTopic == device.Connection + "/power")
+                {
+                    Console.WriteLine("MASANKURAC");
+                }
+                return Task.CompletedTask;
+            };
+
+
+            return device;
         }
 
     }

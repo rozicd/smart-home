@@ -10,6 +10,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     public interface ISolarPanelSystemRepository
     {
         Task Add(SolarPanelSystem sensor);
+        Task<SolarPanelSystem> GetById(Guid id);
 
     }
 }
