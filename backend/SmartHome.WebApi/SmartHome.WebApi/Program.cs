@@ -66,7 +66,7 @@ builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
-    var token = "5Nqh-5gis9t8Sn8RDou4BxXLpzENxLadcrdKCjr5_wcb9z5zFI31lEBw2NZ_4ziNRTzEMN_zEIp6FGG_iQSvUA==";
+    var token = "ZqgHocXYE-wlr76ucjWaUpjF0qKVmbeWjGme9s-h5zzDdol4qTNCl9tbANULxmKdLKbv5D-SqNwkXHaCBH93Bw==";
     var bucket = "bucket";
     var organization = "organization";
 

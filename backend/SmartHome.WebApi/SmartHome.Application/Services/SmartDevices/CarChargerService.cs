@@ -32,15 +32,7 @@ namespace SmartHome.Application.Services.SmartDevices
             await _carChargerRepository.Add(carCharger);
         }
 
-        override public Task TurnOff(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        override public Task TurnOn(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+      
 
     }
 

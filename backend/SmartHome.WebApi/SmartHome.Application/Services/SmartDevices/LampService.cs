@@ -37,11 +37,11 @@ namespace SmartHome.Application.Services.SmartDevices
             return await _lampRepository.GetById(lampId);
         }
 
-        override public async Task TurnOn(Guid id)
+        override public async Task<SmartDevice> TurnOn(Guid id)
         {
-            await base.TurnOn(id);
+            SmartDevice device = await base.TurnOn(id);
             Console.WriteLine("U LAMPI SAM");
-            return;
+            return device;
         }
 
     }

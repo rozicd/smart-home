@@ -11,6 +11,7 @@ namespace SmartHome.Data.Entities.SmartDevices
     {
 
         public float Size { get; set; }
+        public int NumberOfPanels {  get; set; }
         public float Efficiency { get; set; }
     }
 }

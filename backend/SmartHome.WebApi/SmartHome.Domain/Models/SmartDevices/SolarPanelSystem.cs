@@ -10,6 +10,8 @@ namespace SmartHome.Domain.Models.SmartDevices
     {
         public string Size { get; set; }
         public float Efficiency { get; set; }
+        public int NumberOfPanels { get; set; }
+
 
         public SolarPanelSystem()
         {

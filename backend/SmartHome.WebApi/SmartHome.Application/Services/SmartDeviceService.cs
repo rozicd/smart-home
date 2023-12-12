@@ -1,6 +1,7 @@
 ﻿using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using Microsoft.Extensions.DependencyInjection;
+using MQTTnet.Client;
 using SmartHome.Domain.Models;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Repositories;
@@ -16,11 +17,12 @@ namespace SmartHome.Application.Services
 {
     public class SmartDeviceService : ISmartDeviceService,ISmartDeviceActionsService
     {
-        private readonly ISmartDeviceRepository _smartDeviceRepository;
-        private readonly IMqttClientService _mqttClientService;
-        private readonly IInfluxClientService _influxClientService;
-        private static readonly Dictionary<string, Timer> topicTimers = new Dictionary<string, Timer>();
-        private readonly IServiceScopeFactory _scopeFactory;
+        protected readonly ISmartDeviceRepository _smartDeviceRepository;
+        protected readonly IMqttClientService _mqttClientService;
+        protected readonly IInfluxClientService _influxClientService;
+        protected static readonly Dictionary<string, Timer> topicTimers = new Dictionary<string, Timer>();
+        protected static List<string> topics = new List<string>();
+        protected readonly IServiceScopeFactory _scopeFactory;
 
 
         public SmartDeviceService(ISmartDeviceRepository smartDeviceRepository, IMqttClientService mqttClientService, IInfluxClientService influxClientService, IServiceScopeFactory scopeFactory)
@@ -53,10 +55,18 @@ namespace SmartHome.Application.Services
             if (smartDevice == null) return;
 
             Console.WriteLine($"Turning off {smartDevice.Id}");
-
             await _mqttClientService.ConnectAsync();
+
             await _mqttClientService.PublishMessageAsync(smartDevice.Connection + "/recive", "PowerOff");
-            await _mqttClientService.UnubscribeAsync(smartDevice.Connection + "/status");
+            foreach (var t in topics)
+            {
+                if (t.StartsWith(smartDevice.Connection + "/"))
+                {
+                    Console.WriteLine(t);
+                    await _mqttClientService.UnubscribeAsync(t);
+
+                }
+            }
 
             if (topicTimers.ContainsKey(smartDevice.Connection + "/status"))
             {
@@ -72,16 +82,20 @@ namespace SmartHome.Application.Services
             return;
         }
 
-        virtual public async Task TurnOn(Guid id)
+        virtual public async Task<SmartDevice> TurnOn(Guid id)
         {
             SmartDevice smartDevice = await _smartDeviceRepository.TurnOn(id);
-            if (smartDevice == null) return;
+            if (smartDevice == null) return null;
 
             Console.WriteLine($"Turning on {smartDevice.Id}");
-
             await _mqttClientService.ConnectAsync();
             await _mqttClientService.PublishMessageAsync(smartDevice.Connection + "/recive", "PowerOn");
             var client = await _mqttClientService.SubscribeAsync(smartDevice.Connection + "/status");
+
+            if (!topics.Contains(smartDevice.Connection + "/status"))
+            {
+                topics.Add(smartDevice.Connection + "/status");
+            }
 
             if (topicTimers.ContainsKey(smartDevice.Connection + "/status"))
             {
@@ -96,17 +110,32 @@ namespace SmartHome.Application.Services
 
             client.ApplicationMessageReceivedAsync += e =>
             {
-                ResetTimer(smartDevice.Connection + "/status");
-                SendInfluxDataAsync(smartDevice, 1);
+                string receivedTopic = e.ApplicationMessage.Topic;
+                if (receivedTopic == smartDevice.Connection + "/status")
+                {
+                    string messageContent = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                    Console.WriteLine($"Received message on topic: {e.ApplicationMessage.Topic}");
+                    Console.WriteLine($"Message content: {messageContent}");
+                    ResetTimer(smartDevice.Connection + "/status");
+                    SendInfluxDataAsync(smartDevice, 1);
+                }
                 return Task.CompletedTask;
             };
-            return;
+            return smartDevice;
         }
         private async Task CheckForNoMessagesAsync(SmartDevice smartDevice,string topic)
         {
            
             Console.WriteLine($"No messages received for {smartDevice.Id}. Device not responding.");
-            _mqttClientService.UnubscribeAsync(topic);
+            foreach(var t in topics)
+            {
+                if (t.StartsWith(smartDevice.Connection+"/"))
+                {
+                    Console.WriteLine(t);
+                    await _mqttClientService.UnubscribeAsync(t);
+
+                }
+            }
             try
             {
                 using (var scope = _scopeFactory.CreateScope())
@@ -131,6 +160,7 @@ namespace SmartHome.Application.Services
             topicTimers[topic] = timer;
 
         }
+
         private void ResetTimer(string topic)
         {
             topicTimers[topic].Change(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(15));

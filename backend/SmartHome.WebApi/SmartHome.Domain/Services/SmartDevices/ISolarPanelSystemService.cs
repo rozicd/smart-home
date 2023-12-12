@@ -10,6 +10,8 @@ namespace SmartHome.Domain.Services.SmartDevices
     public interface ISolarPanelSystemService : ISmartDeviceActionsService
     {
         Task Add(SolarPanelSystem sensor);
+        Task<SolarPanelSystem> GetById(Guid id);
+
 
     }
 }
