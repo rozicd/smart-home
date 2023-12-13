@@ -2,6 +2,7 @@
 using InfluxDB.Client.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities.SmartDevices;
+using SmartHome.Domain.Exceptions;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Repositories.SmartDevices;
 using System;
@@ -27,8 +28,15 @@ namespace SmartHome.Data.Repositories.SmartDevices
 
         public async Task Add(SolarPanelSystem device)
         {
-            
+            SolarPanelSystemEntity spsEntity = await _solarPanelSystems.FirstOrDefaultAsync(sps => sps.PropertyId == device.PropertyId);
+            if (spsEntity != null)
+            {
+                throw new DeviceAlreadyExistsException($"Property Already Has Solar Panel System");
+
+            }
+
             SolarPanelSystemEntity solarPanelSystemEntity = _mapper.Map<SolarPanelSystemEntity>(device);
+
             await _solarPanelSystems.AddAsync(solarPanelSystemEntity);
             await _context.SaveChangesAsync();
         }

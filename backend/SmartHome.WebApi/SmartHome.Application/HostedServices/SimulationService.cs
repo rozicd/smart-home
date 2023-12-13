@@ -56,6 +56,8 @@ namespace SmartHome.Application.HostedServices
                 {
                     mqttClientService.ConnectAsync().Wait();
                     mqttClientService.PublishMessageAsync("property/create", property.Id.ToString()).Wait();
+                    propertiesService.ListenOnCharge(property);
+
                 }
 
                 foreach (var property in properties)

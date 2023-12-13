@@ -4,11 +4,13 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.Application.Services.SmartDevices;
+using SmartHome.DataTransferObjects.Responses;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("solar-panel-system")]
+    [Route("solarpanelsystem")]
     public class SolarPanelSystemController : BaseController
     {
         private readonly ISolarPanelSystemService _solarPanelSystemService;
@@ -33,6 +35,15 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             await _solarPanelSystemService.Add(response);
 
             return Ok();
+        }
+        [HttpGet("{systemId}")]
+        public async Task<IActionResult> GetSystemById(Guid systemId)
+        {
+            SolarPanelSystem system = await _solarPanelSystemService.GetById(systemId);
+
+            var systemDTO = _mapper.Map<SolarPanelSystemResponseDTO>(system);
+
+            return Ok(systemDTO);
         }
     }
 

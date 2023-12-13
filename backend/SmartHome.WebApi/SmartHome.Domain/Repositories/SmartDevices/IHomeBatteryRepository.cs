@@ -10,6 +10,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     public interface IHomeBatteryRepository
     {
         Task Add(HomeBattery sensor);
+        Task<HomeBattery> GetById(Guid id);
 
     }
 }
