@@ -13,6 +13,7 @@ using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using Microsoft.AspNetCore.SignalR;
 using SmartHome.Application.Hubs;
+using SmartHome.Domain.Exceptions;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -106,6 +107,63 @@ namespace SmartHome.Application.Services.SmartDevices
                           .Field("power", powerState)
                           .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
+        }
+
+
+        public async Task TurnOn(Guid lampId)
+        {
+            var lamp = await _lampRepository.GetById(lampId);
+            ValidateMode(lamp, LampMode.MANUAL);
+
+            await _mqttClientService.PublishMessageAsync(lamp.Connection + "/turnOn", $"off");
+        }
+
+        public async Task TurnOff(Guid lampId)
+        {
+            var lamp = await _lampRepository.GetById(lampId);
+            ValidateMode(lamp, LampMode.MANUAL);
+
+            await _mqttClientService.PublishMessageAsync(lamp.Connection + "/turnOff", $"off");
+        }
+
+        public async Task ChangeThreshold(Guid lampId, float newThreshold)
+        {
+            var lamp = await _lampRepository.GetById(lampId);
+
+            lamp.LightThreshold = newThreshold;
+            await SaveAndPublishChanges(lamp, "/thresholdUpdate");
+        }
+
+        public async Task ChangeMode(Guid lampId, LampMode newMode)
+        {
+            var lamp = await _lampRepository.GetById(lampId);
+            ValidateModeChange(lamp,newMode);
+
+            lamp.LampMode = newMode;
+            await SaveAndPublishChanges(lamp, "/modeUpdate");
+        }
+
+        private async Task SaveAndPublishChanges(Lamp lamp, string topic)
+        {
+            await _lampRepository.Update(lamp);
+            await _mqttClientService.PublishMessageAsync(lamp.Connection + topic, $"{lamp.LightThreshold},{lamp.LampMode}");
+        }
+
+        private void ValidateMode(Lamp lamp, LampMode requiredMode)
+        {
+            if (lamp.LampMode != requiredMode)
+            {
+                throw new RequestValuesException($"Cannot perform operation. Lamp is in {lamp.LampMode} mode.");
+            }
+        }
+
+
+        private void ValidateModeChange(Lamp lamp,LampMode newMode)
+        {
+            if (lamp.LampMode == newMode)
+            {
+                throw new RequestValuesException($"Cannot change mode. Lamp is already in {lamp.LampMode} mode.");
+            }
         }
 
     }

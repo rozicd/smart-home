@@ -12,7 +12,8 @@ class SmartDevice:
         self.topicRecive = name + "/recive"
         self.name = name
 
-        self.client = mqtt.Client()
+        self.client = mqtt.Client(clean_session=True)
+        self.client.unsubscribe("#")
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.send_status_thread = threading.Thread(target=self.sendStatus)
