@@ -32,7 +32,7 @@ class SmartHome:
     def on_message(self, client, userdata, msg):
         command = msg.payload.decode('utf-8').split(',')
         device_key = self.id+"/device/"+command[0]
-        if device_key not in self.devices.keys():
+        if command[0] not in self.devices.keys():
 
             if command[1] == 'SolarPanelSystem' :
                 smart_device = SolarPanelSystem(device_key)
