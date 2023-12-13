@@ -166,6 +166,10 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapHub<LampHub>("/lampHub");
+app.MapHub<SolarPanelSystemHub>("/panelHub");
+app.MapHub<HomeBatteryHub>("/batteryHub");
+
+
 
 app.UseStaticFiles();
 

@@ -9,22 +9,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using SmartHome.Domain.Repositories;
+using Microsoft.AspNetCore.SignalR;
+using SmartHome.Application.Hubs;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
     public class SolarPanelSystemService : SmartDeviceService, ISolarPanelSystemService
     {
         private readonly ISolarPanelSystemRepository _solarPanelSystemRepository;
+        private readonly IHubContext<SolarPanelSystemHub> _hubContext;
 
         public SolarPanelSystemService(
             ISolarPanelSystemRepository solarPanelSystemRepository,
             ISmartDeviceRepository smartDeviceRepository,
             IMqttClientService mqttClientService,
             IInfluxClientService influxClientService,
+            IHubContext<SolarPanelSystemHub> hubContext,
             IServiceScopeFactory scopeFactory)
             : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
             _solarPanelSystemRepository = solarPanelSystemRepository;
+            _hubContext = hubContext;
         }
 
         public async Task Add(SolarPanelSystem solarPanelSystem)
@@ -60,15 +65,26 @@ namespace SmartHome.Application.Services.SmartDevices
             await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{sps.NumberOfPanels},{sps.Size},{sps.Efficiency}");
             var client = await _mqttClientService.SubscribeAsync(device.Connection + "/power");
 
-            client.ApplicationMessageReceivedAsync += e =>
+            client.ApplicationMessageReceivedAsync += async e =>
             {
 
                 string receivedTopic = e.ApplicationMessage.Topic;
                 if (receivedTopic == device.Connection + "/power")
                 {
-                    Console.WriteLine("MASANKURAC");
+                    Console.Write(Encoding.UTF8.GetString(e.ApplicationMessage.Payload));
+                    string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                    if (float.TryParse(payload, out float powerPerMinute))
+                    {
+                        await _hubContext.Clients.All.SendAsync(device.Connection, powerPerMinute);
+                    
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid sps  format");
+                    }
+
                 }
-                return Task.CompletedTask;
             };
 
 

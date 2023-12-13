@@ -19,6 +19,7 @@ namespace SmartHome.Domain.Models.SmartDevices
             DeviceStatus = DeviceStatus.OFFLINE;
             DeviceType = DeviceType.BED;
             Connection = "";
+            EnergySpending = 0;
         }
     }
 }

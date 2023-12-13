@@ -77,6 +77,10 @@ public class MappingProfiles : Profile
 
 
         CreateMap<Lamp, LampResponseDTO>();
+        CreateMap<SolarPanelSystem, SolarPanelSystemResponseDTO>();
+        CreateMap<HomeBattery, HomeBatteryResponseDTO>();
+
+
 
         CreateMap<CreateESCDTO, EnvironmentalConditionsSensor>();
         CreateMap<CreateAirConditionerDTO, AirConditioner>();
