@@ -45,6 +45,34 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             return Ok(lampDTO);
         }
+
+        [HttpPost("turnOn")]
+        public async Task<IActionResult> TurnOn([FromBody] TurnOnOffDTO turnOnDTO)
+        {
+            await _lampService.TurnOn(turnOnDTO.LampId);
+            return Ok();
+        }
+
+        [HttpPost("turnOff")]
+        public async Task<IActionResult> TurnOff([FromBody] TurnOnOffDTO turnOffDTO)
+        {
+            await _lampService.TurnOff(turnOffDTO.LampId);
+            return Ok();
+        }
+
+        [HttpPost("changeThreshold")]
+        public async Task<IActionResult> ChangeThreshold([FromBody] ChangeThresholdDTO changeThresholdDTO)
+        {
+            await _lampService.ChangeThreshold(changeThresholdDTO.LampId, changeThresholdDTO.NewThreshold);
+            return Ok();
+        }
+
+        [HttpPost("changeMode")]
+        public async Task<IActionResult> ChangeMode([FromBody] ChangeLampModeDTO changeModeDTO)
+        {
+            await _lampService.ChangeMode(changeModeDTO.LampId, changeModeDTO.Mode);
+            return Ok();
+        }
     }
 
 }

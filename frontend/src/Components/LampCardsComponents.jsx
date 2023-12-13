@@ -1,5 +1,4 @@
 // LampCardsComponent.jsx
-
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -18,6 +17,7 @@ import {
   TextField,
 } from "@mui/material";
 import { hubConnection } from "../Components/Sockets/LightSocketService";
+import { changeMode, turnOn, turnOff, changeThreshold } from "../Components/Services/LampService"; 
 
 const LampCardsComponent = ({ deviceInfo }) => {
   const [lightData, setLightData] = useState({ lightStrength: 0, powerState: 0 });
@@ -25,8 +25,8 @@ const LampCardsComponent = ({ deviceInfo }) => {
   const [lightThreshold, setLightThreshold] = useState(deviceInfo.lightThreshold);
   const [isThresholdDialogOpen, setThresholdDialogOpen] = useState(false);
   const [newThreshold, setNewThreshold] = useState("");
+  const [thresholdError, setThresholdError] = useState("");
 
-  console.log(deviceInfo);
   useEffect(() => {
     async function connect() {
       if (hubConnection.state === "Disconnected") {
@@ -40,17 +40,32 @@ const LampCardsComponent = ({ deviceInfo }) => {
     connect();
   }, []);
 
-  const handleLampModeChange = (event) => {
+  const handleLampModeChange = async (event) => {
     const newLampMode = event.target.value;
+    console.log(newLampMode);
     setLampMode(newLampMode);
-    // You may need to send the updated mode to the server here
+
+    try {
+      await changeMode(deviceInfo.id, newLampMode);
+    } catch (error) {
+      console.error("Error changing lamp mode:", error);
+    }
   };
 
-  const handleSwitchChange = () => {
-    if (lampMode === "Manual") {
+  const handleSwitchChange = async () => {
+    if (lampMode === 0) {
       const newPowerState = lightData.powerState === 1 ? 0 : 1;
       setLightData((prevLightData) => ({ ...prevLightData, powerState: newPowerState }));
-      // You may need to send the updated power state to the server here
+
+      try {
+        if (newPowerState === 1) {
+          await turnOn(deviceInfo.id);
+        } else {
+          await turnOff(deviceInfo.id);
+        }
+      } catch (error) {
+        console.error("Error turning on/off lamp:", error);
+      }
     }
   };
 
@@ -60,12 +75,24 @@ const LampCardsComponent = ({ deviceInfo }) => {
 
   const handleThresholdDialogClose = () => {
     setThresholdDialogOpen(false);
+    setThresholdError("");
   };
 
-  const handleThresholdSave = () => {
-    // You may need to send the updated threshold to the server here
-    setLightThreshold(parseFloat(newThreshold));
-    setThresholdDialogOpen(false);
+  const handleThresholdSave = async () => {
+    const thresholdValue = parseFloat(newThreshold);
+    if (isNaN(thresholdValue) || thresholdValue < 0 || thresholdValue > 100) {
+      setThresholdError("Threshold must be a number between 0 and 100");
+      return;
+    }
+
+    try {
+      await changeThreshold(deviceInfo.id, thresholdValue);
+      setLightThreshold(thresholdValue);
+      setThresholdDialogOpen(false);
+      setThresholdError("");
+    } catch (error) {
+      console.error("Error changing lamp threshold:", error);
+    }
   };
 
   return (
@@ -132,7 +159,7 @@ const LampCardsComponent = ({ deviceInfo }) => {
         </Card>
       </Grid>
 
-      <Dialog open={isThresholdDialogOpen} onClose={handleThresholdDialogClose}>
+      <Dialog open={isThresholdDialogOpen} onClose={handleThresholdDialogClose} fullWidth>
         <DialogTitle>Change Light Threshold</DialogTitle>
         <DialogContent>
           <TextField
@@ -140,6 +167,8 @@ const LampCardsComponent = ({ deviceInfo }) => {
             type="number"
             value={newThreshold}
             onChange={(e) => setNewThreshold(e.target.value)}
+            error={!!thresholdError}
+            helperText={thresholdError}
           />
         </DialogContent>
         <DialogActions>

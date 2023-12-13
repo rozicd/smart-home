@@ -14,7 +14,8 @@ class SmartHome:
         self.broker_address = "localhost"
         self.broker_port = 8883
 
-        self.client = mqtt.Client()
+        self.client = mqtt.Client(clean_session=True)
+        self.client.unsubscribe("#")
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.topicRecive = self.id+"/create"
@@ -32,7 +33,7 @@ class SmartHome:
     def on_message(self, client, userdata, msg):
         command = msg.payload.decode('utf-8').split(',')
         device_key = self.id+"/device/"+command[0]
-        if device_key not in self.devices.keys():
+        if command[0] not in self.devices.keys():
 
             if command[1] == 'SolarPanelSystem' :
                 smart_device = SolarPanelSystem(device_key)
@@ -42,8 +43,9 @@ class SmartHome:
                 smart_device = SmartDevice(device_key)
 
             self.devices[command[0]] = smart_device
-            self.devices[command[0]] = threading.Thread(target=self.devices[command[0]].run)
-            self.devices[command[0]].start()
+            if command[0] not in self.deviceThreads:
+                self.deviceThreads[command[0]] = threading.Thread(target=self.devices[command[0]].run)
+                self.deviceThreads[command[0]].start()
 
 
 
