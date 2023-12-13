@@ -6,7 +6,7 @@ from datetime import datetime
 import paho.mqtt.client as mqtt
 import random
 
-from simulations.SmartDevice import SmartDevice
+from SmartDevice import SmartDevice
 
 
 class Lamp(SmartDevice):
