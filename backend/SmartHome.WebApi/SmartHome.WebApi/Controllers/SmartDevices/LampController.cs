@@ -4,6 +4,7 @@ using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.DataTransferObjects.Requests;
+using SmartHome.DataTransferObjects.Responses;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -40,9 +41,37 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         {
             Lamp lamp = await _lampService.GetById(lampId);
 
-            var lampDTO = _mapper.Map<SmartDeviceResponseDTO>(lamp);
+            var lampDTO = _mapper.Map<LampResponseDTO>(lamp);
 
             return Ok(lampDTO);
+        }
+
+        [HttpPost("turnOn")]
+        public async Task<IActionResult> TurnOn([FromBody] TurnOnOffDTO turnOnDTO)
+        {
+            await _lampService.TurnOn(turnOnDTO.LampId);
+            return Ok();
+        }
+
+        [HttpPost("turnOff")]
+        public async Task<IActionResult> TurnOff([FromBody] TurnOnOffDTO turnOffDTO)
+        {
+            await _lampService.TurnOff(turnOffDTO.LampId);
+            return Ok();
+        }
+
+        [HttpPost("changeThreshold")]
+        public async Task<IActionResult> ChangeThreshold([FromBody] ChangeThresholdDTO changeThresholdDTO)
+        {
+            await _lampService.ChangeThreshold(changeThresholdDTO.LampId, changeThresholdDTO.NewThreshold);
+            return Ok();
+        }
+
+        [HttpPost("changeMode")]
+        public async Task<IActionResult> ChangeMode([FromBody] ChangeLampModeDTO changeModeDTO)
+        {
+            await _lampService.ChangeMode(changeModeDTO.LampId, changeModeDTO.Mode);
+            return Ok();
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHome.Domain.Models.SmartDevices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace SmartHome.Data.Entities.SmartDevices
 {
     public class LampEntity :SmartDeviceEntity
     {
-        public float CurrentLight { get; set; }
+        public LampMode LampMode { get; set; }
         public float LightThreshold { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     {
         Task Add(Lamp sensor);
         Task<Lamp> GetById(Guid lampId);
+        Task Update(Lamp lamp);
 
     }
 }

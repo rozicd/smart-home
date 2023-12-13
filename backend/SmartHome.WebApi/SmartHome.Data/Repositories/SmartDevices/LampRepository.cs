@@ -45,6 +45,22 @@ namespace SmartHome.Data.Repositories.SmartDevices
             return lamp;
         }
 
+        public async Task Update(Lamp device)
+        {
+            LampEntity existingLampEntity = await _lamps.FirstOrDefaultAsync(lamp => lamp.Id == device.Id);
+
+            if (existingLampEntity == null)
+            {
+                throw new NotFoundException($"Lamp with ID {device.Id} not found");
+            }
+
+            existingLampEntity.Name = device.Name;
+            existingLampEntity.LightThreshold = device.LightThreshold;
+            existingLampEntity.LampMode = device.LampMode;
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 
 }

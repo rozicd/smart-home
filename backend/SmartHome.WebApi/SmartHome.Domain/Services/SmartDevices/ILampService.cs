@@ -11,6 +11,9 @@ namespace SmartHome.Domain.Services.SmartDevices
     {
         Task Add(Lamp sensor);
         Task<Lamp> GetById(Guid lampId);
-
+        Task TurnOn(Guid lampId);
+        Task TurnOff(Guid lampId);
+        Task ChangeThreshold(Guid lampId, float newThreshold);
+        Task ChangeMode(Guid lampId, LampMode mode);
     }
 }

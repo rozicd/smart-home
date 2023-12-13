@@ -42,9 +42,6 @@ const BasicDeviceInfoComponent = ({ imageData, deviceData }) => {
                 Device Type: {deviceData.type}
                 </Typography>
                 <Typography variant="body1" width={"100%"} marginBottom={"8px"} color="text.secondary">
-                Connection: {deviceData.connection}
-                </Typography>
-                <Typography variant="body1" width={"100%"} marginBottom={"8px"} color="text.secondary">
                 Power Supply: {deviceData.powerSupply}
                 </Typography>
                 <Typography variant="body1" width={"100%"} marginBottom={"8px"} color="text.secondary">
@@ -70,14 +67,6 @@ const BasicDeviceInfoComponent = ({ imageData, deviceData }) => {
                     backgroundColor: `${deviceData.deviceStatus ? "green" : "red"}`,
                     }}
                 ></div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setOpenModal(true)}
-                    style={{ width:"100%", fontSize: "0.8rem" }}
-                >
-                    Set Connection
-                </Button>
             </div>
             </CardContent>
         </Card>

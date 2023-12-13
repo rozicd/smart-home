@@ -8,7 +8,7 @@ namespace SmartHome.Domain.Models.SmartDevices
 {
     public class Lamp : SmartDevice
     {
-        public float CurrentLight { get; set; }
+        public LampMode LampMode { get; set; }
         public float LightThreshold { get; set; }
 
         public Lamp()
@@ -16,8 +16,10 @@ namespace SmartHome.Domain.Models.SmartDevices
             PowerSupply = PowerSupplyType.HOME;
             DeviceStatus = DeviceStatus.OFFLINE;
             DeviceType = DeviceType.ESD;
+            LampMode = LampMode.AUTO;
             Connection = "";
-            CurrentLight = 0;
         }
     }
+
+    public enum LampMode { MANUAL,AUTO}
 }
