@@ -19,15 +19,15 @@ class SolarPanelSystem(SmartDevice):
 
     def on_message(self, client, userdata, msg):
         if msg.topic == self.name +"/recive":
-            print("kara")
             super().on_message(client, userdata, msg)
+            
         if self.running :
             if msg.topic == self.name +"/info":
                 spsInfo = msg.payload.decode('utf-8')  
                 numberOfPanels, size, efficiency = spsInfo.split(',')
                 self.number_of_panels = float(numberOfPanels)
                 self.size_per_panel = float(size)
-                self.efficiency = float(efficiency)
+                self.efficiency = float(efficiency)/1000
                 if self.send_power_thread is None or not self.send_power_thread.is_alive():
                     self.send_power_thread = threading.Thread(target=self.sendEnergyPerMinute)
                     self.send_power_thread.start()

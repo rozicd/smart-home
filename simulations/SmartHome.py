@@ -3,9 +3,10 @@ import time
 import paho.mqtt.client as mqtt
 import random
 
-from simulations.Lamp import Lamp
-from simulations.SmartDevice import SmartDevice
-from simulations.SolarPanelSystem import SolarPanelSystem
+from Lamp import Lamp
+from SmartDevice import SmartDevice
+from SolarPanelSystem import SolarPanelSystem
+from HomeBattery import HomeBattery
 
 
 class SmartHome:
@@ -22,6 +23,11 @@ class SmartHome:
         self.devices = {}
         self.deviceThreads = {}
         self.running = True
+        self.home_battery = None
+        self.from_grid = 0
+        self.house_power_topic = self.id + "/house_power"
+        self.battery_level_topic = self.id + "/battery_level"
+        self.panel_system = None
 
         self.client.connect(self.broker_address, self.broker_port, 60)
 
@@ -31,21 +37,47 @@ class SmartHome:
         print(f"Subscribed to topic: {self.topicRecive}")
 
     def on_message(self, client, userdata, msg):
-        command = msg.payload.decode('utf-8').split(',')
-        device_key = self.id+"/device/"+command[0]
-        if command[0] not in self.devices.keys():
+        recived = msg.payload.decode('utf-8')
+        if msg.topic.endswith("/power"):
+            print("RECIVED POWER",recived)
+            if self.home_battery is not None and self.home_battery.capacity != 0:
+                self.home_battery.current_level += (float(recived)/self.home_battery.capacity)*100
+                if self.home_battery.current_level > 100 :
+                    self.home_battery.current_level = 100
+                print("LEVEL= ",self.home_battery.current_level)
+                self.client.publish(self.house_power_topic, f"Battery Charged To {self.home_battery.current_level}%")
+                self.client.publish(self.battery_level_topic, f"{round(self.home_battery.current_level,1)}")
 
-            if command[1] == 'SolarPanelSystem' :
-                smart_device = SolarPanelSystem(device_key)
-            elif command[1] == 'Lamp':
-                smart_device = Lamp(device_key)
-            else:
-                smart_device = SmartDevice(device_key)
 
-            self.devices[command[0]] = smart_device
-            if command[0] not in self.deviceThreads:
-                self.deviceThreads[command[0]] = threading.Thread(target=self.devices[command[0]].run)
-                self.deviceThreads[command[0]].start()
+            else :
+                self.from_grid += float(recived)
+                self.client.publish(self.house_power_topic, f"No Battery, {recived} sent to Grid")
+
+        else :
+            command = recived.split(',')
+            device_key = self.id+"/device/"+command[0]
+            smart_device = None
+            if command[0] not in self.devices.keys():
+
+                if command[1] == 'SolarPanelSystem' :
+                    if self.panel_system == None :
+                        smart_device = SolarPanelSystem(device_key)
+                        self.panel_system = smart_device
+                    self.client.subscribe(device_key+'/power')
+                elif command[1] == 'HomeBattery' :
+                    if self.home_battery == None :
+                        smart_device = HomeBattery(device_key)
+                        self.home_battery = smart_device
+
+                elif command[1] == 'Lamp':
+                    smart_device = Lamp(device_key)
+                else:
+                    smart_device = SmartDevice(device_key)
+
+                self.devices[command[0]] = smart_device
+                if command[0] not in self.deviceThreads and smart_device != None:
+                    self.deviceThreads[command[0]] = threading.Thread(target=self.devices[command[0]].run)
+                    self.deviceThreads[command[0]].start()
 
 
 
