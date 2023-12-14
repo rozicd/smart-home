@@ -166,6 +166,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapHub<LampHub>("/lampHub");
+app.MapHub<ECSHub>("/ECSHub");
 
 app.UseStaticFiles();
 

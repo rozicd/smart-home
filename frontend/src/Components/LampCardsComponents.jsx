@@ -16,7 +16,7 @@ import {
   DialogActions,
   TextField,
 } from "@mui/material";
-import { hubConnection } from "../Components/Sockets/LightSocketService";
+import { lampHubConnection } from "../Components/Sockets/SocketService";
 import { changeMode, turnOn, turnOff, changeThreshold } from "../Components/Services/LampService"; 
 
 const LampCardsComponent = ({ deviceInfo }) => {
@@ -29,11 +29,11 @@ const LampCardsComponent = ({ deviceInfo }) => {
 
   useEffect(() => {
     async function connect() {
-      if (hubConnection.state === "Disconnected") {
-        await hubConnection.start();
+      if (lampHubConnection.state === "Disconnected") {
+        await lampHubConnection.start();
       }
 
-      hubConnection.on(deviceInfo.connection, (lightStrength, powerState) => {
+      lampHubConnection.on(deviceInfo.connection, (lightStrength, powerState) => {
         setLightData({ lightStrength, powerState });
       });
     }

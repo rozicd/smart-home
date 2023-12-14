@@ -245,7 +245,7 @@ let cc =
     if (selectedDevice == 1)
     {
       setTemplate(t.concat(ecs))
-      setUrl("conditions-sensor")
+      setUrl("environmentalconditionssensor")
     }
     if (selectedDevice == 2)
     {

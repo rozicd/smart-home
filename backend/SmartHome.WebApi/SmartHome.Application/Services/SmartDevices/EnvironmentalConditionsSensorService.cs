@@ -1,7 +1,9 @@
 ﻿using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using MQTTnet;
+using SmartHome.Application.Hubs;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Repositories;
 using SmartHome.Domain.Repositories.SmartDevices;
@@ -18,16 +20,20 @@ namespace SmartHome.Application.Services.SmartDevices
     public class EnvironmentalConditionsSensorService : SmartDeviceService, IEnvironmentalConditionsSensorService
     {
         private readonly IEnvironmentalConditionsSensorRepository _enviromentalConditionsSensorRepository;
+        private readonly IHubContext<ECSHub> _hubContext;
 
         public EnvironmentalConditionsSensorService(
             IEnvironmentalConditionsSensorRepository enviromentalConditionsSensorRepository,
             ISmartDeviceRepository smartDeviceRepository,
             IMqttClientService mqttClientService,
             IInfluxClientService influxClientService,
-            IServiceScopeFactory scopeFactory)
+            IServiceScopeFactory scopeFactory,
+            IHubContext<ECSHub> hubContext)
             : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
             _enviromentalConditionsSensorRepository = enviromentalConditionsSensorRepository;
+            _hubContext = hubContext;
+        
         }
 
         public async Task Add(EnvironmentalConditionsSensor sensor)
@@ -77,7 +83,7 @@ namespace SmartHome.Application.Services.SmartDevices
                             Console.WriteLine($"RoomTemperature: {roomTemperature} degrees");
                             Console.WriteLine($"AirHumidity: {airHumidity} %");
                             Console.WriteLine(device.Connection);
-
+                            await _hubContext.Clients.All.SendAsync(device.Connection, airHumidity, roomTemperature);
                             await SendInfluxDataAsync(environmentalConditionsSensor, airHumidity, roomTemperature);
                         }
                         else
@@ -103,6 +109,11 @@ namespace SmartHome.Application.Services.SmartDevices
               .Field("RoomTemperature", roomTemperature)
               .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
+        }
+
+        public async Task GetInfluxData(string name, string start, string stop)
+        {
+
         }
 
 

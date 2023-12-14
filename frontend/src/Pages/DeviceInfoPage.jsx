@@ -8,6 +8,8 @@ import getStaticContent from "../Components/Services/StaticService";
 import { Grid, Box } from "@mui/material";
 import BasicDeviceInfoComponent from "../Components/BasicDeviceInfoComponent";
 import LampCardsComponent from "../Components/LampCardsComponents";
+import ECSCardsComponent from "../Components/ECSCardsComponents";
+
 
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();
@@ -19,8 +21,11 @@ const DeviceInfoPage = () => {
 
   useEffect(() => {
     const fetchDeviceData = async () => {
+      console.log(deviceType, deviceId)
       try {
         const deviceInfo = await getDevice(deviceType, deviceId);
+        console.log("MOJ UREDJAJ:")
+        console.log(deviceInfo)
         setDeviceData(deviceInfo);
         const propertyImage = await getStaticContent(deviceInfo.imageUrl);
         setImageData(propertyImage);
@@ -46,6 +51,11 @@ const DeviceInfoPage = () => {
         <Box>
           {deviceType === "lamp" && (
             <LampCardsComponent
+              deviceInfo={deviceData}
+            />
+          )}
+          {deviceType === "environmentalconditionssensor" && (
+            <ECSCardsComponent
               deviceInfo={deviceData}
             />
           )}
