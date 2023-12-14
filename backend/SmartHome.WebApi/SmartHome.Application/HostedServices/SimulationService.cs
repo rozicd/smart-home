@@ -64,6 +64,10 @@ namespace SmartHome.Application.HostedServices
                     foreach (var device in devices)
                     {
                         Console.WriteLine(device.Type);
+                        Console.WriteLine(device.Id);
+                        Console.WriteLine(device.Name);
+                        Console.WriteLine(device.Connection);
+
                         mqttClientService.ConnectAsync().Wait();
                         mqttClientService.PublishMessageAsync("property/" + property.Id.ToString() + "/create", device.Id.ToString() + "," + device.Type).Wait();
 

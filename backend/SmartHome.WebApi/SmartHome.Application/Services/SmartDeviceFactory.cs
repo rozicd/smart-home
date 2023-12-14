@@ -30,7 +30,8 @@ public class SmartDeviceServiceFactory : ISmartDeviceServiceFactory
             case "CarGate":
                 return _serviceProvider.GetRequiredService<ICarGateService>();
 
-            case "EnviromentalConditionsSensor":
+            case "EnvironmentalConditionsSensor":
+                Console.WriteLine("DOOOOBAR CASEEEEEEEEE");
                 return _serviceProvider.GetRequiredService<IEnvironmentalConditionsSensorService>();
 
             case "HomeBattery":

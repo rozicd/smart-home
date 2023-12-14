@@ -3,6 +3,7 @@ import time
 import paho.mqtt.client as mqtt
 import random
 
+from simulations.EnvironmentalConditionsSensor import EnvironmentalConditionsSensor
 from simulations.Lamp import Lamp
 from simulations.SmartDevice import SmartDevice
 from simulations.SolarPanelSystem import SolarPanelSystem
@@ -33,12 +34,15 @@ class SmartHome:
     def on_message(self, client, userdata, msg):
         command = msg.payload.decode('utf-8').split(',')
         device_key = self.id+"/device/"+command[0]
+        print(command)
         if command[0] not in self.devices.keys():
 
-            if command[1] == 'SolarPanelSystem' :
+            if command[1] == 'SolarPanelSystem':
                 smart_device = SolarPanelSystem(device_key)
             elif command[1] == 'Lamp':
                 smart_device = Lamp(device_key)
+            elif command[1] == 'EnvironmentalConditionsSensor':
+                smart_device = EnvironmentalConditionsSensor(device_key)
             else:
                 smart_device = SmartDevice(device_key)
 

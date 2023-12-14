@@ -36,6 +36,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             response.EnergySpending = esc.EnergySpending;
             response.UserId = _user.UserId;
             response.ImageUrl = imagePath;
+            response.PropertyId = esc.PropertyId;
             await _ecsService.Add(response);
 
             return Ok();

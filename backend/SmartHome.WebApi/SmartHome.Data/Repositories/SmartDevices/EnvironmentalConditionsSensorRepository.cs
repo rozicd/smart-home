@@ -15,13 +15,13 @@ namespace SmartHome.Data.Repositories.SmartDevices
     public class EnvironmentalConditionsSensorRepository : IEnvironmentalConditionsSensorRepository
     {
         private readonly IMapper _mapper;
-        private readonly DbSet<SmartDeviceEntity> _environmentalConditionsSensors;
+        private readonly DbSet<EnvironmentalConditionsSensorEntity> _environmentalConditionsSensors;
         private readonly DatabaseContext _context;
 
         public EnvironmentalConditionsSensorRepository(DatabaseContext context, IMapper mapper)
         {
             _context = context;
-            _environmentalConditionsSensors = context.Set<SmartDeviceEntity>();
+            _environmentalConditionsSensors = context.Set<EnvironmentalConditionsSensorEntity>();
             _mapper = mapper;
         }
 
@@ -46,8 +46,15 @@ namespace SmartHome.Data.Repositories.SmartDevices
             return _mapper.Map<EnvironmentalConditionsSensor>(sensor);
         }
 
-
-
-
+        public async Task Update(EnvironmentalConditionsSensor environmentalConditionsSensor)
+        {
+            var sensor = await _environmentalConditionsSensors.FirstOrDefaultAsync(s => s.Id == environmentalConditionsSensor.Id);
+            if (sensor == null)
+            {
+                throw new ResourceNotFoundException($"EnvironmentalConditionsSensor with Id {environmentalConditionsSensor.Id} not found.");
+            }
+            sensor.AirHumidity = environmentalConditionsSensor.AirHumidity;
+            sensor.RoomTemperature = environmentalConditionsSensor.RoomTemperature;
+        }
     }
 }
