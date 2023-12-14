@@ -34,6 +34,7 @@ const LampCardsComponent = ({ deviceInfo }) => {
       }
 
       hubConnection.on(deviceInfo.connection, (lightStrength, powerState) => {
+        console.log(lightStrength,powerState)
         setLightData({ lightStrength, powerState });
       });
     }

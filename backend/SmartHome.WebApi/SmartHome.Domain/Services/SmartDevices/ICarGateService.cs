@@ -10,6 +10,8 @@ namespace SmartHome.Domain.Services.SmartDevices
     public interface ICarGateService : ISmartDeviceActionsService
     {
         Task Add(CarGate sensor);
+        Task<CarGate> GetById(Guid carGateId);
+
 
     }
 }

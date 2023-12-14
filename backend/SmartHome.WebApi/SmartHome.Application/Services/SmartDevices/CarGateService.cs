@@ -34,6 +34,12 @@ namespace SmartHome.Application.Services.SmartDevices
             await _carGateRepository.Add(carGate);
         }
 
+        public async Task<CarGate> GetById(Guid lampId)
+        {
+            return await _carGateRepository.GetById(lampId);
+        }
+
+
     }
 
 }

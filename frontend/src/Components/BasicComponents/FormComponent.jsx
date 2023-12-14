@@ -6,6 +6,7 @@ import MapComponent from "./MapComponent";
 import Dropzone from "react-dropzone";
 import { Box } from "@mui/material";
 import {Typography} from "@mui/material";
+import RegistrationInput from "./RegistrationInput";
 
 const FormComponent = ({ props, form, change }) => {
   const [imageFile, setImageFile] = useState(null);
@@ -73,8 +74,8 @@ const FormComponent = ({ props, form, change }) => {
                 cursor: "pointer",
                 padding: "20px",
                 marginTop: "20px",
-                width: "150px",
-                height: "100px",
+                width: "20vw",
+                height: "20vw",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -94,6 +95,13 @@ const FormComponent = ({ props, form, change }) => {
             </Box>
           )}
         </Dropzone>
+      );
+    case "RegistrationInput":
+      return (
+        <RegistrationInput
+          onRegistrationChange={(value) => change(props.itemValue, value)}
+          onAddRegistration={(registrations) => change("AllowedLicensePlates", registrations)}
+        />
       );
     default:
       return null;

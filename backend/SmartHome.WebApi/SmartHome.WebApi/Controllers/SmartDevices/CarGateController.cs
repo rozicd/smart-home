@@ -4,11 +4,13 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.Application.Services.SmartDevices;
+using SmartHome.DataTransferObjects.Responses;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("car-gate")]
+    [Route("cargate")]
     public class CarGateController : BaseController
     {
         private readonly ICarGateService _carGateService;
@@ -33,6 +35,16 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             await _carGateService.Add(response);
 
             return Ok();
+        }
+
+        [HttpGet("{carGateId}")]
+        public async Task<IActionResult> GetCarGateById(Guid carGateId)
+        {
+            CarGate carGate = await _carGateService.GetById(carGateId);
+
+            var carGateDTO = _mapper.Map<CarGateResponseDTO>(carGate);
+
+            return Ok(carGateDTO);
         }
     }
 

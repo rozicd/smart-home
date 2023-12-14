@@ -17,7 +17,7 @@ class Lamp(SmartDevice):
         self.light_threshold = 50
         self.power_state = 0
         self.auto_mode = True
-        self.amplitude = 50
+        self.amplitude = 120
         self.period = 24 * 60
         self.topicLight = name+"/light"
         self.send_lamp_tick_thread = None
@@ -97,6 +97,8 @@ class Lamp(SmartDevice):
                 elif self.light_strength >= self.light_threshold and self.power_state == 1:
                     self.turn_off()
             print(self.light_strength)
+            print(self.power_state)
+            print(self.light_threshold)
             self.client.publish(self.topicLight, f"{self.light_strength},{self.power_state}")
 
             time.sleep(10)
