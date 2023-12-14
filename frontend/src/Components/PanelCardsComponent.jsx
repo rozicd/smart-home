@@ -18,9 +18,28 @@ import {
   TextField,
 } from "@mui/material";
 import { panelHubConnection } from "./Sockets/LightSocketService";
+import { turnOff,turnOn } from "./Services/PanelService";
 
 const PanelCardsComponent = ({ deviceInfo }) => {
   const [power,setPower] = useState(0);
+  const [panelStatus,setPanelStatus] = useState(true);
+
+  const handleSwitchChange = async () => {
+      const newPowerState = panelStatus? 0 : 1;
+      try {
+        if (newPowerState === 1) {
+          await turnOn(deviceInfo.id);
+
+        } else {
+          await turnOff(deviceInfo.id);
+          setPower(0)
+        }
+      } catch (error) {
+        console.error("Error turning on/off panel:", error);
+      }
+    
+  };
+
 
 
   useEffect(() => {
@@ -37,6 +56,18 @@ const PanelCardsComponent = ({ deviceInfo }) => {
     connect();
   }, []);
 
+  useEffect(() => {
+    if (power == 0)
+    {
+      setPanelStatus(false)
+    }
+    else 
+    {
+      setPanelStatus(true)
+    }
+    
+  }, [power]);
+
  
  
 
@@ -44,8 +75,8 @@ const PanelCardsComponent = ({ deviceInfo }) => {
     <Container sx = {{width : "100%"}}>
 
     <Grid container spacing={2}>
-      <Grid item  md={12}>
-        <Card style={{ height: "20vh" }}>
+      <Grid item  md={6}>
+      <Card style={{ height: "20vh", padding : "20px" }}>
           <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
             <Typography variant="h6">Power Per Minute</Typography>
             <Typography align="center" variant="h4">
@@ -54,6 +85,21 @@ const PanelCardsComponent = ({ deviceInfo }) => {
           </CardContent>
         </Card>
       </Grid>
+
+      <Grid item  md={6}>
+      <Card style={{ height: "20vh", padding : "20px" }}>
+          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%"  }}>
+            <Typography variant="h6">Status</Typography>
+            <FormControlLabel
+              style={{ width: "80%", height:"20%" }}
+              control={<Switch checked={panelStatus} onChange={handleSwitchChange} size="medium"/>}
+              label={panelStatus ? "ON" : "OFF"}
+
+            />
+          </CardContent>
+        </Card>
+        </Grid>
+
       
     </Grid>
     </Container>

@@ -44,6 +44,7 @@ class SmartHome:
                 self.home_battery.current_level += (float(recived)/self.home_battery.capacity)*100
                 if self.home_battery.current_level > 100 :
                     self.home_battery.current_level = 100
+                    self.from_grid += float(recived)
                 print("LEVEL= ",self.home_battery.current_level)
                 self.client.publish(self.house_power_topic, f"Battery Charged To {self.home_battery.current_level}%")
                 self.client.publish(self.battery_level_topic, f"{round(self.home_battery.current_level,1)}")

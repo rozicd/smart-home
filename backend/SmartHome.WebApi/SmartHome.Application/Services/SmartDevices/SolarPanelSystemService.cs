@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SmartHome.Domain.Repositories;
 using Microsoft.AspNetCore.SignalR;
 using SmartHome.Application.Hubs;
+using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Writes;
+using SmartHome.Domain.Models;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -76,7 +79,9 @@ namespace SmartHome.Application.Services.SmartDevices
                     if (float.TryParse(payload, out float powerPerMinute))
                     {
                         await _hubContext.Clients.All.SendAsync(device.Connection, powerPerMinute);
-                    
+                        await SendPowerInfluxDataAsync(device.Name, powerPerMinute);
+
+
 
                     }
                     else
@@ -89,6 +94,38 @@ namespace SmartHome.Application.Services.SmartDevices
 
 
             return device;
+        }
+        public async Task TurnOn(Guid lampId, LoggedUser user)
+        {
+            var sps = await _solarPanelSystemRepository.GetById(lampId);
+            await _mqttClientService.PublishMessageAsync(sps.Connection + "/turnOn", $"on");
+            await SendInfluxDataAsync(user, sps.Name, "on");
+
+        }
+
+        public async Task TurnOff(Guid lampId, LoggedUser user)
+        {
+            var sps = await _solarPanelSystemRepository.GetById(lampId);
+            await _mqttClientService.PublishMessageAsync(sps.Connection + "/turnOff", $"off");
+            await SendInfluxDataAsync(user, sps.Name, "off");
+
+        }
+        private async Task SendInfluxDataAsync(LoggedUser user,string messurement, string command)
+        {
+            var point = PointData
+                          .Measurement(messurement)
+                          .Field("user", user.Name)
+                          .Field("command", command)
+                          .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
+            await _influxClientService.WriteDataAsync(point);
+        }
+        private async Task SendPowerInfluxDataAsync(string messurement, float power)
+        {
+            var point = PointData
+                          .Measurement(messurement)
+                          .Field("power", power)
+                          .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
+            await _influxClientService.WriteDataAsync(point);
         }
 
     }
