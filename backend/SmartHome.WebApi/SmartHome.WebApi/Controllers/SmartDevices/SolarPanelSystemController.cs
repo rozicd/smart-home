@@ -45,6 +45,21 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             return Ok(systemDTO);
         }
+        [HttpPost("turnOn")]
+
+        public async Task<IActionResult> TurnOn([FromBody] TurnOnOffDTO turnOnDTO)
+        {
+            await _solarPanelSystemService.TurnOn(turnOnDTO.LampId,_user);
+            return Ok();
+        }
+
+        [HttpPost("turnOff")]
+        public async Task<IActionResult> TurnOff([FromBody] TurnOnOffDTO turnOffDTO)
+        {
+            await _solarPanelSystemService.TurnOff(turnOffDTO.LampId,_user);
+            return Ok();
+        }
+
     }
 
 }
