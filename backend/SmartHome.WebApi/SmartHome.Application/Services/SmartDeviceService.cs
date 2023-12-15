@@ -91,8 +91,7 @@ namespace SmartHome.Application.Services
                 else if(receivedTopic == smartDevice.Connection + "/status")
                 {
                     string messageContent = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-                    Console.WriteLine($"Received message on topic: {e.ApplicationMessage.Topic}");
-                    Console.WriteLine($"Message content: {messageContent}");
+                    
                     SendInfluxDataAsync(smartDevice, 1);
                 }
                 return Task.CompletedTask;

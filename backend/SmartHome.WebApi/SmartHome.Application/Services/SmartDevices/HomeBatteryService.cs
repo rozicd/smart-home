@@ -53,7 +53,7 @@ namespace SmartHome.Application.Services.SmartDevices
                 battery = await repository.GetById(device.Id);
             }
             await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{battery.BatterySize}");
-            string batteryTopic = "property/" + device.PropertyId + "/battery_level";
+            string batteryTopic = device.Connection + "/battery_level";
             Console.WriteLine(batteryTopic);
             var client = await _mqttClientService.SubscribeAsync(batteryTopic);
 
