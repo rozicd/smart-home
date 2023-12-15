@@ -28,12 +28,7 @@ namespace SmartHome.Data.Repositories.SmartDevices
 
         public async Task Add(HomeBattery device)
         {
-            HomeBatteryEntity batteryEntity = await _homeBatteries.FirstOrDefaultAsync(sps => sps.PropertyId == device.PropertyId);
-            if (batteryEntity != null)
-            {
-                throw new DeviceAlreadyExistsException($"Property Already Has HomeBattery!");
-
-            }
+            
             HomeBatteryEntity homeBatteryEntity = _mapper.Map<HomeBatteryEntity>(device);
             await _homeBatteries.AddAsync(homeBatteryEntity);
             await _context.SaveChangesAsync();
