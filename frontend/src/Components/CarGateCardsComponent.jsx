@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -24,11 +24,15 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import EventLogCard from "./BasicComponents/EventLogCard";
+import { openGate, closeGate, changeMode, addLicensePlate, removeLicensePlate } from './Services/CarGateService';
+import { carGateHubConnection } from "./Sockets/LightSocketService";
 
 const CarGateCardsComponent = ({ deviceData }) => {
+  console.log(deviceData)
   const [gateData, setGateData] = useState({
-    mode: "PRIVATE",
-    status: "CLOSED",
+    mode: deviceData.mode,
+    state: deviceData.state,
     allowedLicensePlates: [...deviceData.allowedLicensePlates],
   });
   const [isSwitchDisabled, setSwitchDisabled] = useState(false);
@@ -36,12 +40,29 @@ const CarGateCardsComponent = ({ deviceData }) => {
   const [newLicensePlate, setNewLicensePlate] = useState("");
 
   const handleSwitchChange = () => {
-    // Implement switch change logic when services are available
+
+    if (gateData.state === "OPEN") {
+      closeGate(deviceData.id);
+      setGateData((prevGateData) => ({ ...prevGateData, state: "CLOSING" }));
+
+    } else if (gateData.state === "CLOSED") {
+      openGate(deviceData.id);
+      setGateData((prevGateData) => ({ ...prevGateData, state: "OPENING" }));
+
+    }
   };
 
   const handleModeChange = (event) => {
-    const newMode = event.target.value;
+    let newMode = event.target.value;
     setGateData((prevGateData) => ({ ...prevGateData, mode: newMode }));
+    console.log(newMode)
+    if(newMode === "PUBLIC"){
+      newMode = 0
+    }
+    else{
+      newMode = 1
+    }
+    changeMode(deviceData.id,newMode)
   };
 
   const handleAddLicensePlate = () => {
@@ -52,13 +73,34 @@ const CarGateCardsComponent = ({ deviceData }) => {
       }));
       setNewLicensePlate("");
     }
+
+    addLicensePlate(deviceData.id,newLicensePlate)
+
   };
+
+  useEffect(() => {
+    async function connect() {
+      if (carGateHubConnection.state === "Disconnected") {
+        await carGateHubConnection.start();
+      }
+
+      carGateHubConnection.on(deviceData.connection, (gateState) => {
+        console.log(gateState)
+        setGateData((prevGateData) => ({
+          ...prevGateData,
+          state: gateState,
+        }));
+      });
+    }
+    connect();
+  }, []);
 
   const handleRemoveLicensePlate = (index) => {
     setGateData((prevGateData) => ({
       ...prevGateData,
       allowedLicensePlates: prevGateData.allowedLicensePlates.filter((_, i) => i !== index),
     }));
+    removeLicensePlate(deviceData.id,gateData.allowedLicensePlates[index])
   };
 
   const handleDialogOpen = () => {
@@ -70,13 +112,13 @@ const CarGateCardsComponent = ({ deviceData }) => {
     setNewLicensePlate("");
   };
 
-  const handleSaveAllowedLicensePlates = () => {
-    // Implement save logic when services are available
-    setDialogOpen(false);
-  };
+
+  useEffect(() => {
+    setSwitchDisabled(gateData.state === "CLOSING" || gateData.state === "OPENING");
+  }, [gateData.state]);
 
   const renderLicensePlatesTable = () => (
-    <TableContainer style={{ margin: '2vh', width: '80%' }}>
+    <TableContainer style={{ margin: '2vh', width: '80%',height:'50%' }}>
       <Table>
         <TableBody>
           {gateData.allowedLicensePlates.map((plate, index) => (
@@ -111,8 +153,8 @@ const CarGateCardsComponent = ({ deviceData }) => {
               height: "80%",
             }}
           >
-            <Typography variant="h6">Gate Status</Typography>
-            <Typography variant="h4">{gateData.status}</Typography>
+            <Typography variant="h6">Gate State</Typography>
+            <Typography variant="h4">{gateData.state}</Typography>
           </CardContent>
         </Card>
       </Grid>
@@ -152,8 +194,8 @@ const CarGateCardsComponent = ({ deviceData }) => {
             <Typography variant="h6">Gate Switch</Typography>
             <FormControlLabel
               style={{ width: "80%", height: "20%" }}
-              control={<Switch checked={!isSwitchDisabled} onChange={handleSwitchChange} size="medium" />}
-              label={isSwitchDisabled ? "Close" : "Open"}
+              control={<Switch checked={(gateData.state == "OPEN" || gateData.state == "OPENING")} onChange={handleSwitchChange} size="medium" />}
+              label={(gateData.state == "OPEN" || gateData.state == "OPENING") ? "Open" : "Closed"}
               disabled={isSwitchDisabled}
             />
           </CardContent>
@@ -161,7 +203,7 @@ const CarGateCardsComponent = ({ deviceData }) => {
       </Grid>
       {/* Card for displaying and interacting with allowed license plates */}
       <Grid item xs={12} md={12}>
-        <Card style={{ height: "30vh", width: "90%", margin: "auto" }}>
+        <Card style={{ height: "35vh", width: "85%", margin: "auto" }}>
           <CardContent
             style={{
               display: "flex",
@@ -181,7 +223,9 @@ const CarGateCardsComponent = ({ deviceData }) => {
           </CardContent>
         </Card>
       </Grid>
-
+      <Grid item xs={12} md={12}>
+        <EventLogCard />
+      </Grid>
 
      
 

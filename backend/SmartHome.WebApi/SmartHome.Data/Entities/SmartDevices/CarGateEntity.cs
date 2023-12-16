@@ -11,6 +11,8 @@ namespace SmartHome.Data.Entities.SmartDevices
     {
         public CarGateMode Mode { get; set; }
         public List<string> AllowedLicensePlates { get; set; }
+        public CarGateState State { get; set; }
+
 
     }
 }

@@ -11,6 +11,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     {
         Task Add(CarGate sensor);
         Task<CarGate> GetById(Guid carGateId);
+        Task Update(CarGate carGate);
 
     }
 }

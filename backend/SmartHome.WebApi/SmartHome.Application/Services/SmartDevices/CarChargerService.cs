@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using SmartHome.Domain.Repositories;
+using Microsoft.AspNetCore.SignalR;
+using SmartHome.Application.Hubs;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -25,6 +27,7 @@ namespace SmartHome.Application.Services.SmartDevices
             : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
             _carChargerRepository = carChargerRepository;
+            
         }
 
         public async Task Add(CarCharger carCharger)

@@ -20,7 +20,8 @@ namespace SmartHome.DataTransferObjects.Responses
         public string DeviceType { get; set; }
         public string DeviceStatus { get; set; }
         public string Connection { get; set; }
-        public CarGateMode Mode { get; set; }
+        public string Mode { get; set; }
+        public string State { get; set; }
         public List<string> AllowedLicensePlates { get; set; }
     }
 }

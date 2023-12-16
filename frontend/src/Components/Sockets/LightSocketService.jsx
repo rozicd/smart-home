@@ -6,4 +6,9 @@ const hubConnection = new signalR.HubConnectionBuilder()
   .build();
 
 
-export { hubConnection };
+const carGateHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl("http://localhost:5090/carGateHub",{withCredentials:true})
+  .withAutomaticReconnect()
+  .build();
+
+export { hubConnection,carGateHubConnection};

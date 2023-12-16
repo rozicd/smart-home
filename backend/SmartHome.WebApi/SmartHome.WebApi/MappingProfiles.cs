@@ -77,8 +77,9 @@ public class MappingProfiles : Profile
 
 
         CreateMap<Lamp, LampResponseDTO>();
-        CreateMap<CarGate, CarGateResponseDTO>();
-
+        CreateMap<CarGate, CarGateResponseDTO>()
+                   .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State.ToString()))
+                   .ForMember(dest => dest.Mode, opt => opt.MapFrom(src => src.Mode.ToString()));
 
         CreateMap<CreateESCDTO, EnvironmentalConditionsSensor>();
         CreateMap<CreateAirConditionerDTO, AirConditioner>();

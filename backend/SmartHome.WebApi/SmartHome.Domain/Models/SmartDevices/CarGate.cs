@@ -9,6 +9,7 @@ namespace SmartHome.Domain.Models.SmartDevices
     public class CarGate : SmartDevice
     {
         public CarGateMode Mode { get; set; }
+        public CarGateState State { get; set; }
         public List<string> AllowedLicensePlates {  get; set; }
 
         public CarGate()
@@ -20,5 +21,6 @@ namespace SmartHome.Domain.Models.SmartDevices
             AllowedLicensePlates = new List<string>();
         }
         public enum CarGateMode { PUBLIC, PRIVATE }
+        public enum CarGateState { OPEN,CLOSED,OPENING,CLOSING}
     }
 }

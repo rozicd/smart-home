@@ -68,7 +68,7 @@ builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
-    var token = "4n7cshGBk1EFQX_jON26WqzHw8psv1lnT5Hz_TnoNvbZBDedZEMPCwhycL5NBeIoDv3PemH0i6E-PtTF-SnrZQ==";
+    var token = "iPsYVH4Y3S8hNyhzZbziOw0T7FXMvJIKwxz3M5KZKy_bOMPDtr3yAJRNNbTVKF0vmV751xnEoNLjSAeTcInK8Q==";
     var bucket = "bucket";
     var organization = "organization";
 
@@ -166,6 +166,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapHub<LampHub>("/lampHub");
+app.MapHub<CarGateHub>("/carGateHub");
 
 app.UseStaticFiles();
 

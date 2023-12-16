@@ -45,6 +45,23 @@ namespace SmartHome.Data.Repositories.SmartDevices
             return carGate;
         }
 
+        public async Task Update(CarGate updatedCarGate)
+        {
+            CarGateEntity carGateEntity = await _carGates.FirstOrDefaultAsync(carGate => carGate.Id == updatedCarGate.Id);
+
+            if (carGateEntity == null)
+            {
+                throw new NotFoundException($"Car Gate with ID {updatedCarGate.Id} not found");
+            }
+
+            carGateEntity.Name = updatedCarGate.Name;
+            carGateEntity.AllowedLicensePlates = updatedCarGate.AllowedLicensePlates;
+            carGateEntity.Mode = updatedCarGate.Mode;
+            carGateEntity.State = updatedCarGate.State;
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 
 }
