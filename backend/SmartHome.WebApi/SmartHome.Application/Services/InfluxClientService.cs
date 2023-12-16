@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SmartHome.Domain.Services;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services
 {
@@ -20,6 +21,12 @@ namespace SmartHome.Application.Services
             _client = new InfluxDBClient(influxDbUrl, token);
             _bucket = bucket;
             _organization = organization;
+        }
+        public async Task<List<FluxTable>> GetInfluxData(string query)
+        {
+            var queryApi = _client.GetQueryApi();
+            var queryResult = await queryApi.QueryAsync(query, "organization");
+            return queryResult;
         }
 
         public async Task WriteDataAsync(PointData pointData)

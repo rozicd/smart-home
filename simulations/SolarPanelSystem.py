@@ -91,7 +91,7 @@ class SolarPanelSystem(SmartDevice):
                 power = str(round(self.calculate_energy_production(),2))
             print(power)
             self.client.publish(self.power_topic, power)
-            time.sleep(10)
+            time.sleep(60)
         self.client.publish(self.power_topic, "disconnected")
         return
 
