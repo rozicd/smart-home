@@ -14,5 +14,10 @@ const panelHubConnection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
 
+const carGateHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl("http://localhost:5090/carGateHub",{withCredentials:true})
+  .withAutomaticReconnect()
+  .build();
 
-export { hubConnection,panelHubConnection,BatteryHubConnection };
+
+export { hubConnection,panelHubConnection,BatteryHubConnection,carGateHubConnection };

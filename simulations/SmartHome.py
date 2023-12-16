@@ -3,6 +3,7 @@ import time
 import paho.mqtt.client as mqtt
 import random
 
+from CarGate import CarGate
 from Lamp import Lamp
 from SmartDevice import SmartDevice
 from SolarPanelSystem import SolarPanelSystem
@@ -58,9 +59,6 @@ class SmartHome:
                 self.from_grid -= float(recived)
                 self.client.publish(self.house_power_topic, f"No Battery, {recived} spent from Grid")
 
-
-
-
         elif msg.topic.endswith("/power"):
             print("RECIVED POWER",recived)
             
@@ -97,7 +95,8 @@ class SmartHome:
                 elif command[1] == 'HomeBattery' :
                     smart_device = HomeBattery(device_key)
                     self.home_batteries[command[0]] = smart_device
-
+                elif command[1] == "CarGate":
+                    smart_device = CarGate(device_key)
                 elif command[1] == 'Lamp':
                     smart_device = Lamp(device_key)
                     self.client.subscribe(device_key+'/spending')
@@ -108,8 +107,6 @@ class SmartHome:
                 if command[0] not in self.deviceThreads and smart_device != None:
                     self.deviceThreads[command[0]] = threading.Thread(target=self.devices[command[0]].run)
                     self.deviceThreads[command[0]].start()
-
-
 
 
 

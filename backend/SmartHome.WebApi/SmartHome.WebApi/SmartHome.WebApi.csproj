@@ -32,4 +32,8 @@
     <ProjectReference Include="..\SmartHome.Domain\SmartHome.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\static\properties\" />
+  </ItemGroup>
+
 </Project>

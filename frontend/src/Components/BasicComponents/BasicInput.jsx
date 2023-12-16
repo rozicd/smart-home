@@ -8,11 +8,10 @@ const BasicInput = ({type, label, callback, value, visibility='visible' }) => {
         className="form-item"
 
         >
-        
+            
             <TextField sx= {{width:"100%"}} id={label} 
             label={label} 
             onChange={callback} 
-            variant="standard"
             visibility={visibility}
              type = {type} 
              value ={value?value:""}/>
