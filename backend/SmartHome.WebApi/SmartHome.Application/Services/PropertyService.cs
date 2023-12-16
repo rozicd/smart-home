@@ -12,10 +12,12 @@ namespace SmartHome.Application.Services
     public class PropertyService : IPropertyService
     {
         private readonly IPropertyRepository _propertyRepository;
+        private readonly IMqttClientService _mqttClientService;
 
-        public PropertyService(IPropertyRepository propertyRepository)
+        public PropertyService(IPropertyRepository propertyRepository, IMqttClientService mqttClientService)
         {
             _propertyRepository = propertyRepository;
+            _mqttClientService = mqttClientService;
         }
 
         public async Task AddProperty(Property property)
@@ -42,6 +44,25 @@ namespace SmartHome.Application.Services
         public async Task UpdateProperty(Property property)
         {
             await _propertyRepository.Update(property);
+        }
+
+        public async Task ListenOnCharge(Property property)
+        {
+            string topic = "property/" + property.Id + "/house_power";
+            var client = await _mqttClientService.SubscribeAsync(topic);
+
+            client.ApplicationMessageReceivedAsync += e =>
+            {
+
+                string receivedTopic = e.ApplicationMessage.Topic;
+                if (receivedTopic == topic)
+                {
+                    string messageContent = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                    Console.WriteLine($"Received message on topic: {e.ApplicationMessage.Topic}");
+                    Console.WriteLine($"{messageContent}");
+                }
+                return Task.CompletedTask;
+            };
         }
     }
 }

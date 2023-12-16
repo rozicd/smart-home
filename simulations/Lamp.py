@@ -6,7 +6,7 @@ from datetime import datetime
 import paho.mqtt.client as mqtt
 import random
 
-from simulations.SmartDevice import SmartDevice
+from SmartDevice import SmartDevice
 
 
 class Lamp(SmartDevice):
@@ -19,6 +19,7 @@ class Lamp(SmartDevice):
         self.auto_mode = True
         self.amplitude = 120
         self.period = 24 * 60
+        self.energy_spending = 0
         self.topicLight = name+"/light"
         self.send_lamp_tick_thread = None
         self.is_send_lamp_thread_running = False
@@ -29,8 +30,9 @@ class Lamp(SmartDevice):
         command = msg.payload.decode('utf-8')
         if msg.topic == self.name + "/info":
             lampInfo = msg.payload.decode('utf-8')
-            light_treshold, mode = lampInfo.split(',')
+            light_treshold, mode,energy_spending = lampInfo.split(',')
             self.light_threshold = int(light_treshold)
+            self.energy_spending = float(energy_spending)/1000
             if mode == "MANUAL":
                 self.auto_mode = False
             else:
@@ -100,6 +102,8 @@ class Lamp(SmartDevice):
             print(self.power_state)
             print(self.light_threshold)
             self.client.publish(self.topicLight, f"{self.light_strength},{self.power_state}")
+            self.client.publish(self.name +"/spending", f"{self.energy_spending}")
+
 
             time.sleep(10)
         self.is_send_lamp_thread_running = False

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using SmartHome.Data.Entities;
 using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.DataTransferObjects.Requests;
@@ -80,6 +80,8 @@ public class MappingProfiles : Profile
         CreateMap<CarGate, CarGateResponseDTO>()
                    .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State.ToString()))
                    .ForMember(dest => dest.Mode, opt => opt.MapFrom(src => src.Mode.ToString()));
+        CreateMap<SolarPanelSystem, SolarPanelSystemResponseDTO>();
+        CreateMap<HomeBattery, HomeBatteryResponseDTO>();
 
         CreateMap<CreateESCDTO, EnvironmentalConditionsSensor>();
         CreateMap<CreateAirConditionerDTO, AirConditioner>();

@@ -8,6 +8,8 @@ import BasicSelect from "../Components/BasicComponents/BasicSelect";
 import BasicForm from "../Components/BasicComponents/BasicForm";
 import SmartDeviceCard from "../Components/BasicComponents/SmartDeviceCard";
 import BasicPagination from "../Components/BasicComponents/BasicPagination";
+import InfoDialog from "../Components/BasicComponents/InfoDialog";
+import { Title } from "@mui/icons-material";
 
 const deviceTypes = [
   { id: 1, name: "Enviromantal condition sensor" },
@@ -39,6 +41,10 @@ const SmartDevicesPage = ({}) => {
 
   ]
   const [openModal, setOpenModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+
+
   const [selectedDevice, setSelectedDevice] = useState();
   const [template,setTemplate] = useState(t);
   const [url,setUrl] = useState("");
@@ -109,7 +115,18 @@ const SmartDevicesPage = ({}) => {
     for(var pair of data.entries()) {
       console.log(pair[0]+', '+pair[1]);
     }
-    await AddSmartDevice(data,url)
+    try {
+      const response = await AddSmartDevice(data,url);
+  
+ 
+  
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(error.response.data);
+        setErrorModal(true)
+       
+      } 
+      }
     setOpenModal(false)
 
   }
@@ -184,13 +201,7 @@ let ac =
 ]
 let sps = 
 [
-  {
-    item:"BasicInput",
-    label:"Energy Spending",
-    type :"number",
-    itemValue : "energySpending"
-
-  },
+  
   {
     item:"BasicInput",
     label:"Area",
@@ -287,13 +298,13 @@ let cc =
     if (selectedDevice == 7)
     {
       setTemplate(t.concat(sps))
-      setUrl("solar-panel-system")
+      setUrl("solarpanelsystem")
 
     }
     if (selectedDevice == 8)
     {
       setTemplate(t.concat(hb))
-      setUrl("home-battery")
+      setUrl("homebattery")
 
     }
     if (selectedDevice == 9)
@@ -357,6 +368,7 @@ let cc =
           <BasicForm style={{width:"70%"}} template={template} callback={test}></BasicForm>
         </Container>
       </Dialog>
+      <InfoDialog open={errorModal} onClose={()=>setErrorModal(false)} title = {"Error"} content={errorMessage} ></InfoDialog>
     </div>
   );
 };

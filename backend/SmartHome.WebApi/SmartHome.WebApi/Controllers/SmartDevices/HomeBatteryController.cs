@@ -4,11 +4,13 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.Application.Services.SmartDevices;
+using SmartHome.DataTransferObjects.Responses;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("home-battery")]
+    [Route("homebattery")]
     public class HomeBatteryController : BaseController
     {
         private readonly IHomeBatteryService _homeBatteryService;
@@ -33,6 +35,15 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             await _homeBatteryService.Add(response);
 
             return Ok();
+        }
+        [HttpGet("{batteryId}")]
+        public async Task<IActionResult> GetSystemById(Guid batteryId)
+        {
+            HomeBattery battery = await _homeBatteryService.GetById(batteryId);
+
+            var batteryDTO = _mapper.Map<HomeBatteryResponseDTO>(battery);
+
+            return Ok(batteryDTO);
         }
     }
 

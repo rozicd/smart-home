@@ -61,7 +61,7 @@ namespace SmartHome.Application.Services.SmartDevices
 
                 lamp = await repository.GetById(device.Id);
             }
-            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{lamp.LightThreshold},{lamp.LampMode}");
+            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{lamp.LightThreshold},{lamp.LampMode},{lamp.EnergySpending}");
             var client = await _mqttClientService.SubscribeAsync(device.Connection + "/light");
 
             client.ApplicationMessageReceivedAsync += async e =>

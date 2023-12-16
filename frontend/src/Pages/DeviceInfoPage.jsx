@@ -9,6 +9,8 @@ import { Grid, Box } from "@mui/material";
 import BasicDeviceInfoComponent from "../Components/BasicDeviceInfoComponent";
 import LampCardsComponent from "../Components/LampCardsComponents";
 import CarGateCardsComponent from "../Components/CarGateCardsComponent";
+import PanelCardComponent from "../Components/PanelCardsComponent";
+import BatteryCardsComponent from "../Components/BatteryCardsComponent";
 
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();
@@ -55,6 +57,18 @@ const DeviceInfoPage = () => {
             deviceData={deviceData}
             ></CarGateCardsComponent>
           )}
+          {deviceType === "solarpanelsystem" && (
+            <PanelCardComponent
+              deviceInfo={deviceData}
+            />
+          )
+          }
+          {deviceType === "homebattery" && (
+            <BatteryCardsComponent
+              deviceInfo={deviceData}
+            />
+          )
+          }
           {/* Add other device type checks and load corresponding components */}
         </Box>
       </Grid>
