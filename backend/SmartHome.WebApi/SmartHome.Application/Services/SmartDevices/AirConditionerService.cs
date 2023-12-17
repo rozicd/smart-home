@@ -34,6 +34,10 @@ namespace SmartHome.Application.Services.SmartDevices
             await _airConditionerRepository.Add(airConditioner);
         }
 
+        public Task<AirConditioner> GetById(Guid id)
+        {
+            return _airConditionerRepository.GetById(id);
+        }
     }
 
 }

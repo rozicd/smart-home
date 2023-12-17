@@ -9,7 +9,7 @@ import { Grid, Box } from "@mui/material";
 import BasicDeviceInfoComponent from "../Components/BasicDeviceInfoComponent";
 import LampCardsComponent from "../Components/LampCardsComponents";
 import ECSCardsComponent from "../Components/ECSCardsComponents";
-
+import ACCardsComponents from "../Components/ACCardsComponents";
 
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();
@@ -59,6 +59,13 @@ const DeviceInfoPage = () => {
               deviceInfo={deviceData}
             />
           )}
+          {deviceType === "airconditioner" &&(
+            <ACCardsComponents
+              deviceInfo={deviceData}
+            />
+          )
+
+          }
           {/* Add other device type checks and load corresponding components */}
         </Box>
       </Grid>

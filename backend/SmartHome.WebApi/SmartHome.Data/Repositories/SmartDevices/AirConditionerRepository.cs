@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities.SmartDevices;
+using SmartHome.Domain.Exceptions;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Repositories.SmartDevices;
 using System;
@@ -31,6 +32,16 @@ namespace SmartHome.Data.Repositories.SmartDevices
             await _context.SaveChangesAsync();
         }
 
+        public async Task<AirConditioner> GetById(Guid id)
+        {
+            var airConditioner = await _airConditioners.FirstOrDefaultAsync(ac => ac.Id == id);
+            if (airConditioner == null)
+            {
+                throw new ResourceNotFoundException($"AC with Id {id} not found.");
+            }
+            return _mapper.Map<AirConditioner>(airConditioner);
+
+        }
     }
 
 }

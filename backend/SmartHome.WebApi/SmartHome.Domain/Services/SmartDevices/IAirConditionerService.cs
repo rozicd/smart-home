@@ -10,6 +10,7 @@ namespace SmartHome.Domain.Services.SmartDevices
     public interface IAirConditionerService : ISmartDeviceActionsService
     {
         Task Add(AirConditioner sensor);
+        Task<AirConditioner> GetById(Guid id);
 
     }
 }

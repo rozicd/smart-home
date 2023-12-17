@@ -10,6 +10,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     public interface IAirConditionerRepository
     {
         Task Add(AirConditioner sensor);
+        Task<AirConditioner> GetById(Guid id);
 
     }
 }

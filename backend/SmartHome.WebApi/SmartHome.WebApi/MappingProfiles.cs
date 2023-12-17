@@ -78,6 +78,7 @@ public class MappingProfiles : Profile
 
         CreateMap<Lamp, LampResponseDTO>();
         CreateMap<EnvironmentalConditionsSensor, EnvironmentalContitionsSensorResponseDTO>();
+        CreateMap<AirConditioner, AirConditionerResponseDTO>();
 
         CreateMap<CreateESCDTO, EnvironmentalConditionsSensor>();
         CreateMap<CreateAirConditionerDTO, AirConditioner>();

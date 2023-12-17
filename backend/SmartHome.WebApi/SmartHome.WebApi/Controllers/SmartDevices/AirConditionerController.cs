@@ -4,11 +4,12 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.DataTransferObjects.Responses;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("air-conditioner")]
+    [Route("airconditioner")]
     public class AirConditionerController : BaseController
     {
         private readonly IAirConditionerService _airConditionerService;
@@ -34,6 +35,16 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             await _airConditionerService.Add(response);
 
             return Ok();
+        }
+
+        [HttpGet("{airConditionId}")]
+        public async Task<IActionResult> GetACById(Guid airConditionId)
+        {
+            AirConditioner ac = await _airConditionerService.GetById(airConditionId);
+            AirConditionerResponseDTO response = _mapper.Map<AirConditionerResponseDTO>(ac);
+
+            return Ok(response);
+
         }
     }
 
