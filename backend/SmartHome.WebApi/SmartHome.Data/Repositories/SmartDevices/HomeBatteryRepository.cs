@@ -46,6 +46,19 @@ namespace SmartHome.Data.Repositories.SmartDevices
             HomeBattery battery = _mapper.Map<HomeBattery>(batteryEntity);
             return battery;
         }
+
+        public async Task UpdateCurrentPower(Guid id, float power)
+        {
+            HomeBatteryEntity batteryEntity = await _homeBatteries.FirstOrDefaultAsync(sps => sps.Id == id);
+            if (batteryEntity == null)
+            {
+                throw new NotFoundException($"Solar Panel System with ID {batteryEntity} not found");
+            }
+            batteryEntity.BatteryLevel = power;
+            await _context.SaveChangesAsync();
+
+
+        }
     }
 
 }

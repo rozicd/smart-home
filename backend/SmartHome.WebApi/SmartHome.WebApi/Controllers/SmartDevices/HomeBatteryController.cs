@@ -6,6 +6,7 @@ using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.Application.Services.SmartDevices;
 using SmartHome.DataTransferObjects.Responses;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -45,6 +46,32 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             return Ok(batteryDTO);
         }
+        [HttpPost("power")]
+        public async Task<IActionResult> GetPowerInLastHour([FromBody] BatteryHistoryRequestDTO bh)
+        {
+            List<FluxTable> fluxTables = await _homeBatteryService.GetInfluxDataAsync(bh.Id.ToString(),bh.Hours);
+
+            var influxData = new List<BatteryPowerResponseDTO>();
+
+            foreach (var fluxTable in fluxTables)
+            {
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+
+                    var data = new BatteryPowerResponseDTO
+                    {
+
+                        Energy = fluxRecord.Values["energy"].ToString(),
+                        Timestamp = fluxRecord.GetTimeInDateTime()
+                    };
+
+                    influxData.Add(data);
+                }
+            }
+
+            return Ok(influxData);
+        }
+
     }
 
 }

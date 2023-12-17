@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.SignalR;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using SmartHome.Application.Hubs;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -199,6 +200,15 @@ namespace SmartHome.Application.Services.SmartDevices
             carGate.AllowedLicensePlates.Remove(licensePlate);
             await _mqttClientService.PublishMessageAsync(carGate.Connection + "/setAllowedVehicles", string.Join(",", carGate.AllowedLicensePlates));
             await _carGateRepository.Update(carGate);
+        }
+
+        public async Task<List<FluxTable>> GetCarGateInfluxDataAsync(Guid carGateId, DateTime startDate, DateTime endDate)
+        {
+            var query = $"from(bucket:\"bucket\") |> range(start: {startDate:yyyy-MM-dd'T'HH:mm:ss.fff'Z'}, stop: {endDate:yyyy-MM-dd'T'HH:mm:ss.fff'Z'}) |> filter(fn: (r) => r[\"_measurement\"] == \"Car actions\") |> filter(fn: (r) => r[\"Id\"] == \"{carGateId}\") |> sort(columns: [\"_time\"], desc: false)  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+
+            var fluxTable = await _influxClientService.GetInfluxData(query);
+
+            return fluxTable;
         }
 
 

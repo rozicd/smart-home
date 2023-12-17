@@ -1,4 +1,5 @@
-﻿using SmartHome.Domain.Models.SmartDevices;
+﻿using InfluxDB.Client.Core.Flux.Domain;
+using SmartHome.Domain.Models.SmartDevices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace SmartHome.Domain.Services.SmartDevices
         Task ChangeMode(Guid carGateId, CarGateMode newMode);
         Task AddLicensePlate(Guid carGateId, string licensePlate);
         Task RemoveLicensePlate(Guid carGateId, string licensePlate);
+        Task<List<FluxTable>> GetCarGateInfluxDataAsync(Guid carGateId, DateTime startDate, DateTime endDate);
 
 
     }

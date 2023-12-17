@@ -40,7 +40,6 @@ class SmartHome:
         recived = msg.payload.decode('utf-8')
         from_battery = False
         if msg.topic.lower().endswith("/spending"):
-            print("RECIVED SPENT",recived)
             if  self.home_batteries:
                 for key, battery in self.home_batteries.items():
                     if battery.capacity == 0 :
@@ -49,6 +48,7 @@ class SmartHome:
                     if battery.current_level < procentage :
                         continue
                     battery.current_level -= procentage
+                    print("ENERGY SPENT FROM",battery.name)
                     from_battery = True
                     self.client.publish(battery.name+"/battery_level", f"{round(battery.current_level,2)}")
                     break

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SmartHome.Domain.Services;
+
 using SmartHome.Domain.Models.SmartDevices;
 using InfluxDB.Client.Core.Flux.Domain;
 
@@ -23,6 +24,12 @@ namespace SmartHome.Application.Services
             _bucket = bucket;
             _organization = organization;
         }
+        public async Task<List<FluxTable>> GetInfluxData(string query)
+        {
+            var queryApi = _client.GetQueryApi();
+            var queryResult = await queryApi.QueryAsync(query, "organization");
+            return queryResult;
+        }
 
         public async Task WriteDataAsync(PointData pointData)
         {
@@ -31,13 +38,6 @@ namespace SmartHome.Application.Services
             await writeApi.WritePointAsync(pointData,this._bucket, this._organization);
         }
 
-        public async Task<List<FluxTable>> GetCarGateInfluxDataAsync(Guid carGateId, DateTime startDate, DateTime endDate)
-        {
-            var query = $"from(bucket:\"{_bucket}\") |> range(start: {startDate:yyyy-MM-dd'T'HH:mm:ss.fff'Z'}, stop: {endDate:yyyy-MM-dd'T'HH:mm:ss.fff'Z'}) |> filter(fn: (r) => r[\"_measurement\"] == \"Car actions\") |> filter(fn: (r) => r[\"Id\"] == \"{carGateId}\") |> sort(columns: [\"_time\"], desc: false)  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
-
-            var fluxTable = await _client.GetQueryApi().QueryAsync(query, _organization);
-
-            return fluxTable;
-        }
+        
     }
 }

@@ -68,11 +68,8 @@ builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
-<<<<<<< backend/SmartHome.WebApi/SmartHome.WebApi/Program.cs
-    var token = "iPsYVH4Y3S8hNyhzZbziOw0T7FXMvJIKwxz3M5KZKy_bOMPDtr3yAJRNNbTVKF0vmV751xnEoNLjSAeTcInK8Q==";
-=======
+
     var token = "ZqgHocXYE-wlr76ucjWaUpjF0qKVmbeWjGme9s-h5zzDdol4qTNCl9tbANULxmKdLKbv5D-SqNwkXHaCBH93Bw==";
->>>>>>> backend/SmartHome.WebApi/SmartHome.WebApi/Program.cs
     var bucket = "bucket";
     var organization = "organization";
 

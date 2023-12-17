@@ -19,18 +19,18 @@ namespace SmartHome.Application.HostedServices
     public class SimulationService : IHostedService, IDisposable
     {
         private readonly IServiceProvider _serviceProvider;
-        private Timer _timer;
 
-        public SimulationService(
-            IServiceProvider serviceProvider)
+        public SimulationService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+            // Call DoWork directly when the service starts
+            DoWork(null);
 
+            // Return a completed task
             return Task.CompletedTask;
         }
 
@@ -45,10 +45,10 @@ namespace SmartHome.Application.HostedServices
                 var smartDeviceServiceFactory = scope.ServiceProvider.GetRequiredService<ISmartDeviceServiceFactory>();
 
                 Pagination pagination = new Pagination
-                        {
-                            PageNumber = 1,
-                            PageSize = int.MaxValue
-                        };
+                {
+                    PageNumber = 1,
+                    PageSize = int.MaxValue
+                };
 
                 var properties = propertiesService.GetPropertiesByStatus(Domain.Models.PropertyStatus.Approved, pagination).Result.Items;
 
@@ -57,7 +57,6 @@ namespace SmartHome.Application.HostedServices
                     mqttClientService.ConnectAsync().Wait();
                     mqttClientService.PublishMessageAsync("property/create", property.Id.ToString()).Wait();
                     propertiesService.ListenOnCharge(property);
-
                 }
 
                 foreach (var property in properties)
@@ -68,9 +67,9 @@ namespace SmartHome.Application.HostedServices
                         Console.WriteLine(device.Type);
                         mqttClientService.ConnectAsync().Wait();
                         mqttClientService.PublishMessageAsync("property/" + property.Id.ToString() + "/create", device.Id.ToString() + "," + device.Type).Wait();
-
                     }
                 }
+
                 foreach (var property in properties)
                 {
                     var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
@@ -80,20 +79,20 @@ namespace SmartHome.Application.HostedServices
                         smartDeviceActionService.Connect(device.Id).Wait();
                     }
                 }
-
             }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _timer?.Change(Timeout.Infinite, 0);
+            // No need to stop anything since there is no timer
             return Task.CompletedTask;
         }
 
         public void Dispose()
         {
-            _timer?.Dispose();
+            // No need to dispose anything since there is no timer
         }
     }
+
 
 }

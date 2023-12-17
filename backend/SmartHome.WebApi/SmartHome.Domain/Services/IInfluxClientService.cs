@@ -10,7 +10,8 @@ namespace SmartHome.Domain.Services
 {
     public interface IInfluxClientService
     {
-        Task<List<FluxTable>> GetCarGateInfluxDataAsync(Guid carGateId, DateTime startDate, DateTime endDate);
         Task WriteDataAsync(PointData pointData);
+        Task<List<FluxTable>> GetInfluxData(string query);
+
     }
 }

@@ -3,7 +3,7 @@ import time
 from random import random, randint, choice
 
 import paho.mqtt.client as mqtt
-from simulations.SmartDevice import SmartDevice
+from SmartDevice import SmartDevice
 
 class CarGate(SmartDevice):
     def __init__(self, name):

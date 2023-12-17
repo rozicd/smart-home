@@ -11,6 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using SmartHome.Domain.Repositories;
 using Microsoft.AspNetCore.SignalR;
 using SmartHome.Application.Hubs;
+using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Writes;
+using SmartHome.Domain.Models;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -52,7 +56,7 @@ namespace SmartHome.Application.Services.SmartDevices
 
                 battery = await repository.GetById(device.Id);
             }
-            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{battery.BatterySize}");
+            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{battery.BatterySize},{battery.BatteryLevel}");
             string batteryTopic = device.Connection + "/battery_level";
             Console.WriteLine(batteryTopic);
             var client = await _mqttClientService.SubscribeAsync(batteryTopic);
@@ -70,7 +74,18 @@ namespace SmartHome.Application.Services.SmartDevices
                     if (float.TryParse(payload, out float batteryLevel))
                     {
                         await _hubContext.Clients.All.SendAsync(device.Connection, batteryLevel);
-                    
+                        await SendInfluxDataAsync(device.Id.ToString(), batteryLevel);
+
+                        using (var scope = _scopeFactory.CreateScope())
+                        {
+                            var serviceProvider = scope.ServiceProvider;
+
+                            var repository = serviceProvider.GetRequiredService<IHomeBatteryRepository>();
+
+                            await repository.UpdateCurrentPower(device.Id, batteryLevel);
+                        }
+
+
 
                     }
                     else
@@ -90,6 +105,27 @@ namespace SmartHome.Application.Services.SmartDevices
         public async Task<HomeBattery> GetById(Guid id)
         {
             return await _homeBatteryRepository.GetById(id);
+        }
+        public  async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
+        {
+            string query = $"from(bucket: \"bucket\")" +
+                               $"|> range(start: -{h})" +
+                               $"|> filter(fn: (r) => r._measurement == \"Energy\" and r.id == \"{id}\")" +
+                               $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+            var result = await _influxClientService.GetInfluxData(query);
+
+
+            return result;
+        }
+
+        private async Task SendInfluxDataAsync(string id, float energy)
+        {
+            var point = PointData
+                          .Measurement("Energy")
+                          .Tag("id",id)
+                          .Field("energy", energy)
+                          .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
+            await _influxClientService.WriteDataAsync(point);
         }
     }
 

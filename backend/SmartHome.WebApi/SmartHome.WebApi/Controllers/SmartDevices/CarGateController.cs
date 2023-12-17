@@ -135,7 +135,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
                     endDate = DateTime.UtcNow;
                 }
 
-                var fluxTables = await _influxClientService.GetCarGateInfluxDataAsync(carGateId, startDate.Value, endDate.Value);
+                var fluxTables = await _carGateService.GetCarGateInfluxDataAsync(carGateId, startDate.Value, endDate.Value);
                 var influxData = new List<CarGateActionsDTO>();
 
                 foreach (var fluxTable in fluxTables)
