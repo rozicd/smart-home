@@ -46,10 +46,10 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             return Ok(batteryDTO);
         }
-        [HttpGet("power/{batteryId}")]
-        public async Task<IActionResult> GetPowerInLastHour(Guid batteryId)
+        [HttpPost("power")]
+        public async Task<IActionResult> GetPowerInLastHour([FromBody] BatteryHistoryRequestDTO bh)
         {
-            List<FluxTable> fluxTables = await _homeBatteryService.GetInfluxDataAsync(batteryId.ToString());
+            List<FluxTable> fluxTables = await _homeBatteryService.GetInfluxDataAsync(bh.Id.ToString(),bh.Hours);
 
             var influxData = new List<BatteryPowerResponseDTO>();
 

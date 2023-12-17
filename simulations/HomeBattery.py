@@ -15,8 +15,11 @@ class HomeBattery(SmartDevice):
         if msg.topic == self.name +"/recive":
             super().on_message(client, userdata, msg)
         if msg.topic == self.name +"/info":
-            capacity = float(msg.payload.decode('utf-8'))
+            info = msg.payload.decode('utf-8').split(',')
+            capacity = float(info[0])
+            level = float(info[1])
             self.capacity = capacity
+            self.current_level = level
 
 
 

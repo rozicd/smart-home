@@ -11,6 +11,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     {
         Task Add(HomeBattery sensor);
         Task<HomeBattery> GetById(Guid id);
+        Task UpdateCurrentPower(Guid id,float power);
 
     }
 }

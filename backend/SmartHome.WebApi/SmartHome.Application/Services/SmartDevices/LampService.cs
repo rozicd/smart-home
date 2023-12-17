@@ -14,6 +14,7 @@ using InfluxDB.Client.Writes;
 using Microsoft.AspNetCore.SignalR;
 using SmartHome.Application.Hubs;
 using SmartHome.Domain.Exceptions;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -165,6 +166,7 @@ namespace SmartHome.Application.Services.SmartDevices
                 throw new RequestValuesException($"Cannot change mode. Lamp is already in {lamp.LampMode} mode.");
             }
         }
+       
 
     }
 

@@ -18,9 +18,13 @@ import {
   TextField,
 } from "@mui/material";
 import { BatteryHubConnection, panelHubConnection } from "./Sockets/LightSocketService";
+import BasicGraph from "./BasicComponents/BasicGraph";
+import { GetPowerGraphData } from "./Services/BatteryService";
+import PowerSpentHistory from "./BasicComponents/PowerSpentHistory";
 
 const BatteryCardsComponent = ({ deviceInfo }) => {
-  const [level,setLevel] = useState(0);
+  const [level,setLevel] = useState(deviceInfo.batteryLevel);
+  const [powerData,setPowerData] = useState([])
 
 
   useEffect(() => {
@@ -37,6 +41,29 @@ const BatteryCardsComponent = ({ deviceInfo }) => {
     connect();
   }, []);
 
+  useEffect(() => {
+
+    const fetchData = async () => {
+      console.log("data")
+
+      try {
+        let search = { 'id': deviceInfo.id, 'hours': '1h' };
+        let data = await GetPowerGraphData(search)
+        console.log("data")
+
+        console.log(data)
+        setPowerData(data)
+        console.log("data")
+
+      } catch (error) {
+        console.log(error)
+      } 
+    };
+
+    fetchData();
+  }, [level]);
+
+  
  
  
 
@@ -61,6 +88,20 @@ const BatteryCardsComponent = ({ deviceInfo }) => {
             <Typography align="center" variant="h4">
               {deviceInfo.batterySize}kWh
             </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item  lg={12}>
+        <Card style={{  }}>
+          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
+            <BasicGraph data = {powerData}></BasicGraph>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item  lg={12}>
+        <Card style={{  }}>
+          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
+            <PowerSpentHistory deviceInfo={deviceInfo}/>
           </CardContent>
         </Card>
       </Grid>

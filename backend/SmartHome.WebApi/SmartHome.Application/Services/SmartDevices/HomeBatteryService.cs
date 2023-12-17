@@ -56,7 +56,7 @@ namespace SmartHome.Application.Services.SmartDevices
 
                 battery = await repository.GetById(device.Id);
             }
-            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{battery.BatterySize}");
+            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{battery.BatterySize},{battery.BatteryLevel}");
             string batteryTopic = device.Connection + "/battery_level";
             Console.WriteLine(batteryTopic);
             var client = await _mqttClientService.SubscribeAsync(batteryTopic);
@@ -76,7 +76,16 @@ namespace SmartHome.Application.Services.SmartDevices
                         await _hubContext.Clients.All.SendAsync(device.Connection, batteryLevel);
                         await SendInfluxDataAsync(device.Id.ToString(), batteryLevel);
 
-                    
+                        using (var scope = _scopeFactory.CreateScope())
+                        {
+                            var serviceProvider = scope.ServiceProvider;
+
+                            var repository = serviceProvider.GetRequiredService<IHomeBatteryRepository>();
+
+                            await repository.UpdateCurrentPower(device.Id, batteryLevel);
+                        }
+
+
 
                     }
                     else
@@ -97,10 +106,10 @@ namespace SmartHome.Application.Services.SmartDevices
         {
             return await _homeBatteryRepository.GetById(id);
         }
-        public  async Task<List<FluxTable>> GetInfluxDataAsync(string id)
+        public  async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
         {
             string query = $"from(bucket: \"bucket\")" +
-                               $"|> range(start: -1h)" +
+                               $"|> range(start: -{h})" +
                                $"|> filter(fn: (r) => r._measurement == \"Energy\" and r.id == \"{id}\")" +
                                $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
             var result = await _influxClientService.GetInfluxData(query);

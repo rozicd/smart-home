@@ -4,7 +4,7 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const BasicSelect = ({ label, callback, selected, collection, valueParam, nameParam, visibility='visible' }) => {
     return (
-        <FormControl className="form-item" sx={{ m: 1, minWidth: 120,maxHeight:40,marginTop:"20px",visibility:visibility }}
+        <FormControl className="form-item" sx={{ m: 1, minWidth: 120,maxHeight:40,marginTop:"20px",visibility:visibility,width:"20vw" }}
         >
             <Select
                 id={label + "-select"}

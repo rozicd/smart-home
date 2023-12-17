@@ -12,7 +12,7 @@ namespace SmartHome.Domain.Services.SmartDevices
     {
         Task Add(HomeBattery sensor);
         Task<HomeBattery> GetById(Guid id);
-        Task<List<FluxTable>> GetInfluxDataAsync(string id);
+        Task<List<FluxTable>> GetInfluxDataAsync(string id,string h);
 
     }
 }

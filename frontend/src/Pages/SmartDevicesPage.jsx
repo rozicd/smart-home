@@ -82,6 +82,11 @@ const SmartDevicesPage = ({}) => {
       data.append('energySpending', form.energySpending);
       data.append('lightThreshold', form.lightThreshold);
     }
+    if (selectedDevice == 5){
+      for (var i = 0; i < form.AllowedLicensePlates.length; i++) {
+        data.append('allowedLicensePlates', form.AllowedLicensePlates[i]);
+      }
+    }
     if (selectedDevice == 6)
     {
       data.append('energySpending', form.energySpending);
@@ -151,6 +156,13 @@ let ecs =
     type :"number",
     itemValue : "energySpending"
 
+  }
+]
+
+let cg = [
+  {
+    item: "RegistrationInput",
+    itemValue : "AllowedLicensePlates"
   }
 ]
 let s = 
@@ -271,6 +283,11 @@ let cc =
       setUrl("lamp")
 
     }
+
+    if (selectedDevice == 5){
+      setTemplate(t.concat(cg))
+      setUrl("cargate")
+    }
     
     if (selectedDevice == 6)
     {
@@ -337,9 +354,10 @@ let cc =
         className="add-property-button"
         onClick={() => setOpenModal(true)}
       />
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <Container sx={{ padding: "10px", backgroundColor:"snow", display :"flex", alignItems:"center", flexDirection:"column"}}>
+      <Dialog open={openModal} onClose={() => setOpenModal(false)} style={{width:"100%",minWidth:"100%"}} fullWidth={true} minWidth="100%" >
+        <Container sx={{ padding: "10px", backgroundColor:"snow", display :"flex", alignItems:"center", flexDirection:"column"}} style={{minWidth:"70%",padding:"10%",alignItems:"center"}} >
           <BasicSelect
+            style={{width:"5vw"}}
             label={"Sensor Type"}
             collection={deviceTypes}
             valueParam={"id"}
@@ -347,7 +365,7 @@ let cc =
             selected={selectedDevice}
             callback={(e) => setSelectedDevice(e.target.value)}
           ></BasicSelect>
-          <BasicForm template={template} callback={test}></BasicForm>
+          <BasicForm style={{width:"70%"}} template={template} callback={test}></BasicForm>
         </Container>
       </Dialog>
       <InfoDialog open={errorModal} onClose={()=>setErrorModal(false)} title = {"Error"} content={errorMessage} ></InfoDialog>

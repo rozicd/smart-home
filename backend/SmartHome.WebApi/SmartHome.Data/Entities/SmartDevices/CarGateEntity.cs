@@ -10,9 +10,9 @@ namespace SmartHome.Data.Entities.SmartDevices
     public class CarGateEntity :SmartDeviceEntity
     {
         public CarGateMode Mode { get; set; }
-        public string LicensePlate { get; set; }
-        public bool isCarClose { get; set; }
         public List<string> AllowedLicensePlates { get; set; }
+        public CarGateState State { get; set; }
+
 
     }
 }

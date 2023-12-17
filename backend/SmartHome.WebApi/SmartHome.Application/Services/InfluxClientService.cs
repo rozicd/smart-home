@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SmartHome.Domain.Services;
+
+using SmartHome.Domain.Models.SmartDevices;
 using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services
@@ -35,5 +37,7 @@ namespace SmartHome.Application.Services
 
             await writeApi.WritePointAsync(pointData,this._bucket, this._organization);
         }
+
+        
     }
 }
