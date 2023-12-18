@@ -140,8 +140,10 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
                 foreach (var fluxTable in fluxTables)
                 {
+                    int i = 0;
                     foreach( var fluxRecord in fluxTable.Records)
                     {
+                        Console.WriteLine(fluxRecord.Values);
 
                         var data = new CarGateActionsDTO
                         {
@@ -150,6 +152,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
                             Timestamp = fluxRecord.GetTimeInDateTime()
                         };
 
+                        Console.WriteLine(i);
                         influxData.Add(data);
                     }
                 }
