@@ -23,7 +23,7 @@ const EventLogCard = ({ eventData, setEndDate, setStartDate }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const eventsPerPage = 4;
 
@@ -69,7 +69,8 @@ const EventLogCard = ({ eventData, setEndDate, setStartDate }) => {
   const indexOfLastEvent = currentPage * eventsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
   const currentEvents = sortedEvents.slice(indexOfFirstEvent, indexOfLastEvent);
-
+  
+  const today = new Date().toISOString().split("T")[0];
   return (
     <Card style={{ height: "auto", width: "85%", margin: "auto" }}>
       <CardContent
@@ -101,6 +102,7 @@ const EventLogCard = ({ eventData, setEndDate, setStartDate }) => {
             value={fromDate}
             onChange={(e) => handleStartDateChange(e.target.value)}
             InputLabelProps={{ shrink: true }}
+            inputProps={{ max: today }}
           />
           <TextField
             label="To Date"
@@ -108,6 +110,7 @@ const EventLogCard = ({ eventData, setEndDate, setStartDate }) => {
             value={toDate}
             onChange={(e) => handleEndDateChange(e.target.value)}
             InputLabelProps={{ shrink: true }}
+            inputProps={{ max: today }} 
           />
         </div>
         <TableContainer style={{ margin: "2vh", width: "80%", maxHeight: "200px" }}>

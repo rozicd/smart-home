@@ -25,3 +25,19 @@ export const removeLicensePlate = async (carGateId, licensePlate) => {
     data: { LicensePlate: licensePlate }
   });
 };
+
+export const getCarActions = async (id, startDate, endDate) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/${id}/history`, {
+      params: {
+        startDate: startDate, 
+        endDate: endDate,     
+      },
+      withCredentials: true,
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

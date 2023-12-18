@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SmartHome.DataTransferObjects.Requests
 {
-    public class BatteryHistoryDateRequestDTO
+    public class DeviceHistoryRequestDTO
     {
         public Guid Id { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public string Hours {  get; set; }
     }
 }

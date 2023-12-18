@@ -92,18 +92,9 @@ const BatteryCardsComponent = ({ deviceInfo }) => {
         </Card>
       </Grid>
       <Grid item  lg={12}>
-        <Card style={{  }}>
-          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
-            <BasicGraph data = {powerData}></BasicGraph>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item  lg={12}>
-        <Card style={{  }}>
-          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
-            <PowerSpentHistory deviceInfo={deviceInfo}/>
-          </CardContent>
-        </Card>
+        
+            <PowerSpentHistory deviceInfo={deviceInfo} RealTimeGraph={<BasicGraph data = {powerData} datakey={"energy"}></BasicGraph>}/>
+          
       </Grid>
       
     </Grid>

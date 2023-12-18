@@ -136,7 +136,7 @@ public class PropertyController : BaseController
     }
 
     [HttpPost("power")]
-    public async Task<IActionResult> GetPowerInLastHour([FromBody] BatteryHistoryRequestDTO bh)
+    public async Task<IActionResult> GetPowerInLastHour([FromBody] DeviceHistoryRequestDTO bh)
     {
         List<FluxTable> fluxTables = await _propertyService.GetPropertyPowerInfluxData(bh.Id.ToString(), bh.Hours);
 
@@ -162,7 +162,7 @@ public class PropertyController : BaseController
         return Ok(influxData);
     }
     [HttpPost("power/date")]
-    public async Task<IActionResult> GetPowerDateRange([FromBody] BatteryHistoryDateRequestDTO bh)
+    public async Task<IActionResult> GetPowerDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
     {
         TimeSpan dateRange = bh.EndDate - bh.StartDate;
         if (dateRange.TotalDays > 30)
