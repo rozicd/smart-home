@@ -17,67 +17,87 @@ import {
   Container,
   Button,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import InfoDialog from "./InfoDialog";
+
 import BasicGraph from "./BasicGraph";
 import BasicSelect from "./BasicSelect";
-import BasicButton from "./BasicButton";
-import { GetPowerGraphData } from "../Services/BatteryService";
+import {
+  GetPowerGraphData,
+  GetPowerGraphDataDate,
+} from "../Services/BatteryService";
 const searchOptions = [
-  { key: "1", value: "6h" },
-  { key: "2", value: "12h" },
-  { key: "3", value: "24h" },
-  { key: "4", value: "7d" },
-  { key: "5", value: "30d" },
-  { key: "6", value: "Date Range" },
+  { key: "1", value: "5m" },
+  { key: "2", value: "1h" },
+  { key: "3", value: "6h" },
+  { key: "4", value: "12h" },
+  { key: "5", value: "24h" },
+  { key: "6", value: "7d" },
+  { key: "7", value: "30d" },
+  { key: "8", value: "Date Range" },
 ];
-const PowerSpentHistory = ({deviceInfo}) => {
+const PowerSpentHistory = ({ deviceInfo }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [selectedSearch, setSelectedSearch] = useState();
   const [dateVisibility, setDateVisibility] = useState(false);
-  const [powerData,setPowerData] = useState([])
+  const [powerData, setPowerData] = useState([]);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
 
+  const fetchData = async (hrs) => {
+    console.log("data");
 
+    try {
+      let search = { id: deviceInfo.id, hours: hrs };
+      let data = await GetPowerGraphData(search);
 
-  
-
-    const fetchData = async (hrs) => {
-      console.log("data")
-
-      try {
-        let search = { 'id': deviceInfo.id, 'hours': hrs };
-        let data = await GetPowerGraphData(search)
-        console.log("data")
-
-        console.log(data)
-        setPowerData(data)
-        console.log("data")
-
-      } catch (error) {
-        console.log(error)
-      } 
-    };
-
+      setPowerData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSearchChange = (value) => {
-    const foundOption = searchOptions.find(option => option.key === value);
-    console.log(foundOption)
+    
+    const foundOption = searchOptions.find((option) => option.key === value);
+    console.log(foundOption);
     setDateVisibility(false);
     setSelectedSearch(value);
-    if (value == "6") setDateVisibility(true);
-    else 
-    {
-        fetchData(foundOption.value)
+    if (value == "x") return;
+
+    if (value == "8") setDateVisibility(true);
+    else {
+      fetchData(foundOption.value);
+    }
+  };
+
+  const handleSearchClick = async () => {
+    if (toDate == "" || fromDate == "") {
+      setErrorModal(true)
+      setErrorMessage("Please Select Valis Dates");
+      return
+    }
+    let search = {
+      id: deviceInfo.id,
+      startDate: fromDate,
+      endDate: toDate,
+    };
+    try {
+      let data = await GetPowerGraphDataDate(search);
+
+      setPowerData(data);
+    } catch (error) {
+      if (error.response) {
+        setErrorModal(true)
+        setErrorMessage(error.response.data);
+      }
     }
   };
 
   return (
     <Grid container spacing={2}>
-
       <Grid item xs={12}>
         <Card>
           <CardContent
@@ -151,7 +171,7 @@ const PowerSpentHistory = ({deviceInfo}) => {
                     />
                   </Grid>
                   <Grid item xs={4}>
-                    <Button >Search</Button>
+                    <Button onClick={() => handleSearchClick()}>Search</Button>
                   </Grid>
                 </Grid>
               )}
@@ -159,6 +179,12 @@ const PowerSpentHistory = ({deviceInfo}) => {
           </CardContent>
         </Card>
       </Grid>
+      <InfoDialog
+        open={errorModal}
+        onClose={() => setErrorModal(false)}
+        title={"Error"}
+        content={errorMessage}
+      ></InfoDialog>
     </Grid>
   );
 };

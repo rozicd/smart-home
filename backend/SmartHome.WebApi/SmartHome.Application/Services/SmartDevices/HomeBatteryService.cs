@@ -117,6 +117,20 @@ namespace SmartHome.Application.Services.SmartDevices
 
             return result;
         }
+        public async Task<List<FluxTable>> GetInfluxDataDateRangeAsync(string id, DateTime startDate, DateTime endDate)
+        {
+            string start = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string end = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+            string query = $"from(bucket: \"bucket\")" +
+                           $"|> range(start: {start}, stop: {end})" +
+                           $"|> filter(fn: (r) => r._measurement == \"Energy\" and r.id == \"{id}\")" +
+                           $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+
+            var result = await _influxClientService.GetInfluxData(query);
+
+            return result;
+        }
 
         private async Task SendInfluxDataAsync(string id, float energy)
         {

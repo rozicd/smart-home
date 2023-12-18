@@ -17,3 +17,12 @@ Link
 {
   direction: none;
 }
+/* For Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 12px; /* Set the width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: transparent; /* Set the background color of the scrollbar thumb */
+}
+
