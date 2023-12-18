@@ -10,6 +10,15 @@ const GetPowerGraphData = async (search) => {
       throw error;
     }
   };
+  const GetPowerGraphDataDate = async (search) => {
+    try {
+        console.log(search)
+      const response = await axios.post(`${API_BASE_URL}/homebattery/power/date`, search , { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
   
 
-  export { GetPowerGraphData };
+  export { GetPowerGraphData,GetPowerGraphDataDate };

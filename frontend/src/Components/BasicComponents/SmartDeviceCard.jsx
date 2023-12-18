@@ -16,17 +16,16 @@ import { Switch } from "@mui/material";
 import { turnOn, turnOff, connect } from "../Services/SmartDeviceService";
 import { useNavigate } from "react-router-dom";
 
-
 const SmartDeviceCard = ({ device }) => {
   const [imageData, setImageData] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const clickedDevice = () => {
-    navigate("/devices/"+device.type.toLowerCase()+"/" + device.id);
-  }
+    navigate("/devices/" + device.type.toLowerCase() + "/" + device.id);
+  };
   useEffect(() => {
     setIsChecked(device.deviceStatus ? true : false);
 
@@ -55,15 +54,11 @@ const SmartDeviceCard = ({ device }) => {
     setIsChecked(isChecked ? true : false);
     if (isChecked) {
       await turnOn(data);
-      
     }
     if (!isChecked) {
       await turnOff(data);
-      
-
     }
     device.deviceStatus = !isChecked;
-
   };
 
   if (loading) {
@@ -75,7 +70,6 @@ const SmartDeviceCard = ({ device }) => {
       className="property-card"
       style={{
         display: "flex",
-        margin: "20px",
         width: "450px",
         height: "160px",
         boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
@@ -83,17 +77,17 @@ const SmartDeviceCard = ({ device }) => {
     >
       <CardMedia
         onClick={() => {
-          clickedDevice()
+          clickedDevice();
         }}
         component="img"
         alt="Property"
-        style={{ flex: 1, objectFit: "cover", maxWidth: "260px" }}
+        style={{ objectFit: "contain",width: "260px", height: "160px", border: "1px solid #f1f2f3" }}
         image={imageData}
       />
       <Box style={{ display: "flex", flexDirection: "column", flex: 1 }}>
         <CardContent
           onClick={() => {
-            clickedDevice()
+            clickedDevice();
           }}
           style={{
             display: "flex",
@@ -102,6 +96,8 @@ const SmartDeviceCard = ({ device }) => {
             padding: "20px",
             backgroundColor: "#ffffff",
             color: "#000000",
+            justifyContent:"center"
+
           }}
         >
           <Typography
@@ -112,8 +108,12 @@ const SmartDeviceCard = ({ device }) => {
             {device.name}
           </Typography>
           <Typography style={{ flex: "40%" }}>
-            {getTypeText(device.deviceType)}
+            <Chip
+              label={getTypeText(device.deviceType)}
+              style={{ padding :"0",borderRadius : "5px", color :"black", height:"20px", marginBottom:"5px"}}
+            />
           </Typography>
+          <Typography style={{ flex: "40%" }}>{device.type}</Typography>
 
           <Box
             style={{
@@ -129,15 +129,6 @@ const SmartDeviceCard = ({ device }) => {
           </Box>
         </CardContent>
       </Box>
-      <Switch
-        checked={isChecked}
-        onChange={handleChange}
-        sx={{
-          position: "apsolute",
-          top: "10",
-          left: "10",
-        }}
-      />
 
       <div
         style={{
@@ -158,7 +149,7 @@ const SmartDeviceCard = ({ device }) => {
 const getTypeChipColor = (status) => {
   switch (status) {
     case 0:
-      return "default";
+      return "#2e7d32";
     case 1:
       return "success";
     case 2:
@@ -171,11 +162,11 @@ const getTypeChipColor = (status) => {
 const getTypeText = (status) => {
   switch (status) {
     case 0:
-      return "House smart device";
+      return "HSM";
     case 1:
-      return "Outdorr smart device";
+      return "OSM";
     case 2:
-      return "Big energy device";
+      return "BED";
     default:
       return "Unknown";
   }

@@ -28,7 +28,7 @@ class Simulation:
     def on_message(self, client, userdata, msg):
         command = msg.payload.decode('utf-8')
         if command not in self.properties.keys():
-            print(command)
+            print(command + "HEREEE")
             self.properties[command]= SmartHome("property/"+command)
             self.propertyThreads[command] = threading.Thread(target=self.properties[command].run)
             self.propertyThreads[command].start()

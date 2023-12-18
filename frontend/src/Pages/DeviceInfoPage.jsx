@@ -19,7 +19,6 @@ const DeviceInfoPage = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
-
   useEffect(() => {
     const fetchDeviceData = async () => {
       try {
@@ -45,30 +44,34 @@ const DeviceInfoPage = () => {
     <Grid container style={{ height: "100%" }}>
       <BasicDeviceInfoComponent imageData={imageData} deviceData={deviceData} />
 
-      <Grid container item xs={12} sm={6} paddingRight={"50px"} paddingTop={"50px"}>
-        <Box>
+      <Grid
+        container
+        item
+        xs={12}
+        sm={6}
+        paddingRight={"50px"}
+        paddingTop={"50px"}
+      >
+        <Box
+          style={{
+            overflow: "scroll",
+            height :"85vh"
+          }}
+        >
           {deviceType === "lamp" && (
-            <LampCardsComponent
-              deviceInfo={deviceData}
-            />
+            <LampCardsComponent deviceInfo={deviceData} />
           )}
-          {deviceType === "cargate" &&(
+          {deviceType === "cargate" && (
             <CarGateCardsComponent
-            deviceData={deviceData}
+              deviceData={deviceData}
             ></CarGateCardsComponent>
           )}
           {deviceType === "solarpanelsystem" && (
-            <PanelCardComponent
-              deviceInfo={deviceData}
-            />
-          )
-          }
+            <PanelCardComponent deviceInfo={deviceData} />
+          )}
           {deviceType === "homebattery" && (
-            <BatteryCardsComponent
-              deviceInfo={deviceData}
-            />
-          )
-          }
+            <BatteryCardsComponent deviceInfo={deviceData} />
+          )}
           {/* Add other device type checks and load corresponding components */}
         </Box>
       </Grid>

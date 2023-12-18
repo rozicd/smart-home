@@ -75,7 +75,7 @@ namespace SmartHome.Data.Repositories
             var queryWithCountForDevices = new
             {
 
-                TotalCount = _smartDevices.Count(),
+                TotalCount = query.Count(),
                 Devices = query
                 .OrderByDescending(device => device) 
                 .Skip((page.PageNumber - 1) * page.PageSize)

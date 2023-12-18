@@ -17,12 +17,18 @@ import {
   DialogActions,
   TextField,
 } from "@mui/material";
+import EventLogCard from "./BasicComponents/EventLogCard";
 import { panelHubConnection } from "./Sockets/LightSocketService";
-import { turnOff,turnOn } from "./Services/PanelService";
+import { getPanelActions, turnOff,turnOn } from "./Services/PanelService";
 
 const PanelCardsComponent = ({ deviceInfo }) => {
   const [power,setPower] = useState(0);
   const [panelStatus,setPanelStatus] = useState(true);
+  const [panelHistory,setPanelHistory] = useState([]);
+  const [toDate,setToDate] = useState("");
+  const [fromDate,setFromDate] = useState("");
+
+
 
   const handleSwitchChange = async () => {
       const newPowerState = panelStatus? 0 : 1;
@@ -39,6 +45,24 @@ const PanelCardsComponent = ({ deviceInfo }) => {
       }
     
   };
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      console.log("data")
+
+      try {
+        let data = await getPanelActions(deviceInfo.id,fromDate,toDate)
+        console.log(data);
+        setPanelHistory(data)
+
+      } catch (error) {
+        console.log(error)
+      } 
+    };
+
+    fetchData();
+  }, [toDate,fromDate]);
 
 
 
@@ -99,6 +123,9 @@ const PanelCardsComponent = ({ deviceInfo }) => {
           </CardContent>
         </Card>
         </Grid>
+        <Grid item xs={12} md={12}>
+        <EventLogCard eventData= {panelHistory} setEndDate={setToDate} setStartDate={setFromDate}/>
+      </Grid>
 
       
     </Grid>

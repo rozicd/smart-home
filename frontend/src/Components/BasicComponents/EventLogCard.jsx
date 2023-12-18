@@ -11,53 +11,67 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  IconButton,
-  InputAdornment,
   Button,
+  InputAdornment,
+  Pagination,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
-const eventData = [
-  { id: 1, user: "User1", action: "Action1", date: "2023-01-01" },
-];
-
-const EventLogCard = () => {
+const EventLogCard = ({ eventData, setEndDate, setStartDate }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const eventsPerPage = 4;
 
   const handleSortChange = () => {
     setSortOrder((prevSortOrder) => (prevSortOrder === "asc" ? "desc" : "asc"));
+  };
+  const handleStartDateChange = (value) => {
+    setFromDate(value);
+    setStartDate(value);
+  };
+  const handleEndDateChange = (value) => {
+    setToDate(value);
+    setEndDate(value);
   };
 
   const filteredEvents = eventData.filter(
     (event) =>
       event.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.date.includes(searchTerm)
+      event.timestamp.toString().includes(searchTerm)
   );
 
-  const dateFilteredEvents = filteredEvents.filter((event) => {
-    if (fromDate && toDate) {
-      return event.date >= fromDate && event.date <= toDate;
-    } else {
-      return true;
-    }
-  });
+  const dateFilteredEvents = filteredEvents.filter(() => true);
 
   const sortedEvents = dateFilteredEvents.sort((a, b) => {
+    const timestampA = new Date(a.timestamp).getTime();
+    const timestampB = new Date(b.timestamp).getTime();
+
     if (sortOrder === "asc") {
-      return a.date.localeCompare(b.date);
+      return timestampA - timestampB;
     } else {
-      return b.date.localeCompare(a.date);
+      return timestampB - timestampA;
     }
   });
 
+  // Calculate total number of pages
+  const totalPages = Math.ceil(sortedEvents.length / eventsPerPage);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const currentEvents = sortedEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+
   return (
-    <Card style={{ height: "40vh", width: "85%", margin: "auto" }}>
+    <Card style={{ height: "auto", width: "85%", margin: "auto" }}>
       <CardContent
         style={{
           display: "flex",
@@ -80,42 +94,44 @@ const EventLogCard = () => {
             ),
           }}
         />
-        <div style={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", width: "80%",marginTop:"20px" }}>
           <TextField
             label="From Date"
             type="date"
             value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
+            onChange={(e) => handleStartDateChange(e.target.value)}
             InputLabelProps={{ shrink: true }}
           />
           <TextField
             label="To Date"
             type="date"
             value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
+            onChange={(e) => handleEndDateChange(e.target.value)}
             InputLabelProps={{ shrink: true }}
           />
         </div>
-        <TableContainer style={{ margin: "2vh", width: "80%", height: "50%" }}>
+        <TableContainer style={{ margin: "2vh", width: "80%", maxHeight: "200px" }}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>User</TableCell>
                 <TableCell>Action</TableCell>
-                <TableCell>Date</TableCell>
+                <TableCell>Timestamp</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedEvents.map((event) => (
+              {currentEvents.map((event) => (
                 <TableRow key={event.id}>
                   <TableCell>{event.user}</TableCell>
                   <TableCell>{event.action}</TableCell>
-                  <TableCell>{event.date}</TableCell>
+                  <TableCell>{new Date(event.timestamp).toLocaleString()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        {/* Pagination component */}
+        <Pagination style = {{marginBottom:'10px'}}count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" />
         <Button variant="outlined" size="large" onClick={handleSortChange}>
           Sort {sortOrder === "asc" ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
         </Button>

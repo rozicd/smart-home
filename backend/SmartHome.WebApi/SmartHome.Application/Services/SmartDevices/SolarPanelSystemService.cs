@@ -14,6 +14,7 @@ using SmartHome.Application.Hubs;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using SmartHome.Domain.Models;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -79,7 +80,7 @@ namespace SmartHome.Application.Services.SmartDevices
                     if (float.TryParse(payload, out float powerPerMinute))
                     {
                         await _hubContext.Clients.All.SendAsync(device.Connection, powerPerMinute);
-                        await SendPowerInfluxDataAsync(device.Name, powerPerMinute);
+                        await SendPowerInfluxDataAsync(device.Id.ToString(), powerPerMinute);
 
 
 
@@ -99,7 +100,7 @@ namespace SmartHome.Application.Services.SmartDevices
         {
             var sps = await _solarPanelSystemRepository.GetById(lampId);
             await _mqttClientService.PublishMessageAsync(sps.Connection + "/turnOn", $"on");
-            await SendInfluxDataAsync(user, sps.Name, "on");
+            await SendInfluxDataAsync(user, sps.Id.ToString(), "On");
 
         }
 
@@ -107,25 +108,35 @@ namespace SmartHome.Application.Services.SmartDevices
         {
             var sps = await _solarPanelSystemRepository.GetById(lampId);
             await _mqttClientService.PublishMessageAsync(sps.Connection + "/turnOff", $"off");
-            await SendInfluxDataAsync(user, sps.Name, "off");
+            await SendInfluxDataAsync(user, sps.Id.ToString(), "Off");
 
         }
-        private async Task SendInfluxDataAsync(LoggedUser user,string messurement, string command)
+        private async Task SendInfluxDataAsync(LoggedUser user,string id, string command)
         {
             var point = PointData
-                          .Measurement(messurement)
+                          .Measurement("Panel actions")
+                          .Tag("id", id)
                           .Field("user", user.Name)
                           .Field("command", command)
                           .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
         }
-        private async Task SendPowerInfluxDataAsync(string messurement, float power)
+        private async Task SendPowerInfluxDataAsync(string id, float power)
         {
             var point = PointData
-                          .Measurement(messurement)
+                          .Measurement("Panel")
+                          .Tag("id", id)
                           .Field("power", power)
                           .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
+        }
+        public async Task<List<FluxTable>> GetSPSInfluxDataAsync(Guid id, DateTime startDate, DateTime endDate)
+        {
+            var query = $"from(bucket:\"bucket\") |> range(start: {startDate:yyyy-MM-dd'T'HH:mm:ss.fff'Z'}, stop: {endDate:yyyy-MM-dd'T'HH:mm:ss.fff'Z'}) |> filter(fn: (r) => r[\"_measurement\"] == \"Panel actions\") |> filter(fn: (r) => r[\"id\"] == \"{id}\") |> sort(columns: [\"_time\"], desc: false)  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+
+            var fluxTable = await _influxClientService.GetInfluxData(query);
+
+            return fluxTable;
         }
 
     }

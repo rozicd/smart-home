@@ -54,31 +54,28 @@ namespace SmartHome.Application.HostedServices
 
                 foreach (var property in properties)
                 {
+
                     mqttClientService.ConnectAsync().Wait();
                     mqttClientService.PublishMessageAsync("property/create", property.Id.ToString()).Wait();
                     propertiesService.ListenOnCharge(property);
-                }
-
-                foreach (var property in properties)
-                {
                     var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
+                    Thread.Sleep(1000);
+
                     foreach (var device in devices)
                     {
                         Console.WriteLine(device.Type);
                         mqttClientService.ConnectAsync().Wait();
                         mqttClientService.PublishMessageAsync("property/" + property.Id.ToString() + "/create", device.Id.ToString() + "," + device.Type).Wait();
-                    }
-                }
 
-                foreach (var property in properties)
-                {
-                    var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
-                    foreach (var device in devices)
-                    {
                         ISmartDeviceActionsService smartDeviceActionService = smartDeviceServiceFactory.GetServiceAsync(device.Id).Result;
                         smartDeviceActionService.Connect(device.Id).Wait();
+                        Thread.Sleep(100);
                     }
+
+
                 }
+
+
             }
         }
 

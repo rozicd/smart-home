@@ -1,4 +1,5 @@
-﻿using SmartHome.Domain.Models;
+﻿using InfluxDB.Client.Core.Flux.Domain;
+using SmartHome.Domain.Models;
 using SmartHome.Domain.Models.SmartDevices;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace SmartHome.Domain.Services.SmartDevices
         Task TurnOn(Guid id,LoggedUser user);
 
         Task TurnOff(Guid id,LoggedUser user);
+        Task<List<FluxTable>> GetSPSInfluxDataAsync(Guid id, DateTime startDate, DateTime endDate);
 
 
 

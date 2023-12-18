@@ -14,5 +14,7 @@ namespace SmartHome.Domain.Services.SmartDevices
         Task<HomeBattery> GetById(Guid id);
         Task<List<FluxTable>> GetInfluxDataAsync(string id,string h);
 
+        Task<List<FluxTable>> GetInfluxDataDateRangeAsync(string id, DateTime startDate, DateTime endDate);
+
     }
 }

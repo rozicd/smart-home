@@ -19,5 +19,20 @@ const turnOn = async (lampId) => {
       throw error;
     }
   };
+  const getPanelActions = async (id, startDate, endDate) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/solarpanelsystem/${id}/history`, {
+        params: {
+          startDate: startDate, 
+          endDate: endDate,     
+        },
+        withCredentials: true,
+      });
+  
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
 
-  export { turnOn, turnOff };
+  export { turnOn, turnOff,getPanelActions };
