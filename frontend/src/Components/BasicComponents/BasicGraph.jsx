@@ -7,12 +7,12 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 //   // ...
 // ];
 
-const BasicGraph = ({data}) => (
+const BasicGraph = ({data,datakey}) => (
   <LineChart width={600} height={300} data={data}>
     <XAxis dataKey="timestamp" />
-    <YAxis dataKey="energy"/>
+    <YAxis dataKey={datakey}/>
     <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-    <Line type="monotone" dataKey="energy" stroke="#8884d8" />
+    <Line type="monotone" dataKey={datakey} stroke="#8884d8" />
     <Tooltip />
     <Legend />
   </LineChart>

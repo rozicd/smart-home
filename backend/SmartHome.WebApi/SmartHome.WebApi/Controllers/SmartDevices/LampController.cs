@@ -5,6 +5,8 @@ using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.DataTransferObjects.Requests;
 using SmartHome.DataTransferObjects.Responses;
+using InfluxDB.Client.Core.Flux.Domain;
+using SmartHome.Application.Services.SmartDevices;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -72,6 +74,70 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         {
             await _lampService.ChangeMode(changeModeDTO.LampId, changeModeDTO.Mode);
             return Ok();
+        }
+
+        [HttpPost("data")]
+        public async Task<IActionResult> GetPowerInLastHour([FromBody] DeviceHistoryRequestDTO bh)
+        {
+            List<FluxTable> fluxTables = await _lampService.GetInfluxDataAsync(bh.Id.ToString(), bh.Hours);
+
+            var influxData = new List<LampDataResponseDTO>();
+
+            foreach (var fluxTable in fluxTables)
+            {
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+
+                    var data = new LampDataResponseDTO
+                    {
+
+                        CurrentLight = fluxRecord.Values["light"].ToString(),
+                        PowerStatus = fluxRecord.Values["power"].ToString(),
+                        Timestamp = fluxRecord.GetTimeInDateTime()
+                    };
+
+                    influxData.Add(data);
+                }
+            }
+
+            return Ok(influxData);
+        }
+
+        [HttpPost("data/date")]
+        public async Task<IActionResult> GetPowerDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
+        {
+            TimeSpan dateRange = bh.EndDate - bh.StartDate;
+            if (dateRange.TotalDays > 30)
+            {
+                return BadRequest("Date range cannot be longer than one month");
+            }
+            if (bh.StartDate > bh.EndDate)
+            {
+                return BadRequest("Start date cannot be after end date");
+            }
+
+            List<FluxTable> fluxTables = await _lampService.GetInfluxDataDateRangeAsync(bh.Id.ToString(), bh.StartDate, bh.EndDate);
+
+            var influxData = new List<LampDataResponseDTO>();
+
+            foreach (var fluxTable in fluxTables)
+            {
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+
+                    var data = new LampDataResponseDTO
+                    {
+
+                        CurrentLight = fluxRecord.Values["light"].ToString(),
+                        PowerStatus = fluxRecord.Values["power"].ToString(),
+                        Timestamp = fluxRecord.GetTimeInDateTime()
+                    };
+
+                    influxData.Add(data);
+                }
+            }
+
+            return Ok(influxData);
         }
     }
 

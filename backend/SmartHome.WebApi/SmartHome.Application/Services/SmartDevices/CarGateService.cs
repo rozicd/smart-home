@@ -158,6 +158,7 @@ namespace SmartHome.Application.Services.SmartDevices
                         Console.WriteLine($"Who did action: {didAction}");
                         Console.WriteLine($"Action: {action}");
                         Console.WriteLine(device.Connection);
+                        await _hubContext.Clients.All.SendAsync(device.Connection+"/action", didAction, action);
                         await SendGateActionInfluxDataAsync(carGate, didAction, action, carGate.Mode);
                     }
                     else
@@ -202,16 +203,34 @@ namespace SmartHome.Application.Services.SmartDevices
             await _carGateRepository.Update(carGate);
         }
 
-        public async Task<List<FluxTable>> GetCarGateInfluxDataAsync(Guid carGateId, DateTime startDate, DateTime endDate)
+
+        public async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
         {
-            var query = $"from(bucket:\"bucket\") |> range(start: {startDate:yyyy-MM-dd'T'HH:mm:ss.fff'Z'}, stop: {endDate:yyyy-MM-dd'T'HH:mm:ss.fff'Z'}) |> filter(fn: (r) => r[\"_measurement\"] == \"Car actions\") |> filter(fn: (r) => r[\"Id\"] == \"{carGateId}\") |> sort(columns: [\"_time\"], desc: false)  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+            string query = $"from(bucket: \"bucket\")" +
+                               $"|> range(start: -{h})" +
+                               $"|> filter(fn: (r) => r._measurement == \"{"Car actions"}\" and r.Id == \"{id}\")" +
+                               $"|> sort(columns: [\"_time\"], desc: false)" +
+                               $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+            var result = await _influxClientService.GetInfluxData(query);
 
-            var fluxTable = await _influxClientService.GetInfluxData(query);
 
-            return fluxTable;
+            return result;
         }
+        public async Task<List<FluxTable>> GetInfluxDataDateRangeAsync(string id, DateTime startDate, DateTime endDate)
+        {
+            string start = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string end = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
+            string query = $"from(bucket: \"bucket\")" +
+                           $"|> range(start: {start}, stop: {end})" +
+                           $"|> filter(fn: (r) => r._measurement == \"{"Car actions"}\" and r.Id == \"{id}\")" +
+                           $"|> sort(columns: [\"_time\"], desc: false)" +
+                           $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
 
+            var result = await _influxClientService.GetInfluxData(query);
+
+            return result;
+        }
 
 
     }

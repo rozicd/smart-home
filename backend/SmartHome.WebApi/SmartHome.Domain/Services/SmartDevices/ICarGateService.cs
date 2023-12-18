@@ -9,7 +9,7 @@ using static SmartHome.Domain.Models.SmartDevices.CarGate;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface ICarGateService : ISmartDeviceActionsService
+    public interface ICarGateService : ISmartDeviceActionsService,IInfluxReadable
     {
         Task Add(CarGate sensor);
         Task<CarGate> GetById(Guid carGateId);
@@ -18,7 +18,6 @@ namespace SmartHome.Domain.Services.SmartDevices
         Task ChangeMode(Guid carGateId, CarGateMode newMode);
         Task AddLicensePlate(Guid carGateId, string licensePlate);
         Task RemoveLicensePlate(Guid carGateId, string licensePlate);
-        Task<List<FluxTable>> GetCarGateInfluxDataAsync(Guid carGateId, DateTime startDate, DateTime endDate);
 
 
     }

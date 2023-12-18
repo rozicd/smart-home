@@ -38,4 +38,24 @@ const changeMode = async (lampId, newMode) => {
   }
 };
 
-export { turnOn, turnOff, changeThreshold, changeMode };
+const GetGraphData = async (search) => {
+  try {
+      console.log(search)
+    const response = await axios.post(`${API_BASE_URL}/lamp/data`, search , { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+const GetGraphDataDate = async (search) => {
+  try {
+      console.log(search)
+    const response = await axios.post(`${API_BASE_URL}/lamp/data/date`, search , { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export { turnOn, turnOff, changeThreshold, changeMode, GetGraphData,GetGraphDataDate };

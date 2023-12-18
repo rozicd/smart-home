@@ -94,7 +94,7 @@ const BatteryCardsComponent = ({ deviceInfo }) => {
       <Grid item  lg={12}>
         <Card style={{  }}>
           <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
-            <BasicGraph data = {powerData}></BasicGraph>
+            <BasicGraph data = {powerData} datakey={"energy"}></BasicGraph>
           </CardContent>
         </Card>
       </Grid>
