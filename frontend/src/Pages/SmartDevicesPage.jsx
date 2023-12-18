@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import AddButton from "../Components/BasicComponents/AddButton";
 import { useParams } from "react-router-dom";
-import { AddSmartDevice, GetSmartDevicesByProperty } from "../Components/Services/SmartDeviceService";
+import {
+  AddSmartDevice,
+  GetSmartDevicesByProperty,
+} from "../Components/Services/SmartDeviceService";
 import "./device.css";
 import { Container, Dialog } from "@mui/material";
 import BasicSelect from "../Components/BasicComponents/BasicSelect";
 import BasicForm from "../Components/BasicComponents/BasicForm";
 import SmartDeviceCard from "../Components/BasicComponents/SmartDeviceCard";
 import BasicPagination from "../Components/BasicComponents/BasicPagination";
-
+import InfoDialog from "../Components/BasicComponents/InfoDialog";
+import { Title } from "@mui/icons-material";
+import { Grid ,Box} from "@mui/material";
 const deviceTypes = [
   { id: 1, name: "Enviromantal condition sensor" },
   { id: 2, name: "Air Conditioner" },
@@ -21,31 +26,31 @@ const deviceTypes = [
   { id: 9, name: "Car Charger" },
 ];
 
-
 const SmartDevicesPage = ({}) => {
-
-  let t = 
-  [
+  let t = [
     {
-      item:"ImageDrop",
-
+      item: "ImageDrop",
     },
     {
-      item:"BasicInput",
-      label:"Name",
-      itemValue : "name"
-
-    }
-
-  ]
+      item: "BasicInput",
+      label: "Name",
+      itemValue: "name",
+    },
+  ];
   const [openModal, setOpenModal] = useState(false);
-  const [selectedDevice, setSelectedDevice] = useState();
-  const [template,setTemplate] = useState(t);
-  const [url,setUrl] = useState("");
-  const propertyId = useParams().property;
-  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 4 });
-  const [totalItems, setTotalItems] = useState(0);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
 
+  const [addedModal, setAddedModal] = useState(false);
+  const [addedMessage, setAddedMessage] = useState(false);
+
+  const [selectedDevice, setSelectedDevice] = useState();
+  const [template, setTemplate] = useState(t);
+  const [url, setUrl] = useState("");
+  const propertyId = useParams().property;
+  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 6 });
+  const [totalItems, setTotalItems] = useState(0);
+  const [added, setAdded] = useState(false);
 
   const handlePageChange = (newPage) => {
     setPagination({
@@ -54,240 +59,217 @@ const SmartDevicesPage = ({}) => {
     });
   };
 
-  const test =async (form)=>
-  {
+  const test = async (form) => {
     const data = new FormData();
 
-    data.append('name', form.name);
-    data.append('imageFile', form.imageFile);
-    data.append('propertyId',propertyId)
-    if (selectedDevice == 1)
+    data.append("name", form.name);
+    data.append("imageFile", form.imageFile);
+    data.append("propertyId", propertyId);
+    if (selectedDevice == 1) {
+      data.append("energySpending", form.energySpending);
+    }
+    if (selectedDevice == 2) {
+      data.append("energySpending", form.energySpending);
+      data.append("maximumTemperature", form.maximumTemperature);
+      data.append("minimumTemperature", form.minimumTemperature);
+    }
+    if (selectedDevice == 4) {
+      data.append("energySpending", form.energySpending);
+      data.append("lightThreshold", form.lightThreshold);
+    }
+    if (selectedDevice == 5) {
+      for (var i = 0; i < form.AllowedLicensePlates.length; i++) {
+        data.append("allowedLicensePlates", form.AllowedLicensePlates[i]);
+      }
+    }
+    if (selectedDevice == 6) {
+      data.append("energySpending", form.energySpending);
+    }
+    if (selectedDevice == 7) {
+      data.append("energySpending", form.energySpending);
+      data.append("size", form.size);
+      data.append("efficiency", form.efficiency);
+      data.append("numberOfPanels", form.efficiency);
+    }
+    if (selectedDevice == 8) {
+      data.append("batterySize", form.batterySize);
+    }
+    if (selectedDevice == 9) {
+      data.append("chargingPower", form.chargingPower);
+      data.append("connectorNumber", form.connectorNumber);
+    }
+    for (var pair of data.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+    try {
+      const response = await AddSmartDevice(data, url);
+      setAdded(!added);
+      setAddedMessage("Device Added!")
+      setAddedModal(true)
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(error.response.data);
+        setErrorModal(true);
+      }
+    }
+    setOpenModal(false);
+  };
+
+  let l = [
     {
-      data.append('energySpending', form.energySpending);
-    }
-    if (selectedDevice == 2)
+      item: "BasicInput",
+      label: "Threshold",
+      type: "number",
+      itemValue: "lightThreshold",
+    },
     {
-      data.append('energySpending', form.energySpending);
-      data.append('maximumTemperature', form.maximumTemperature);
-      data.append('minimumTemperature', form.minimumTemperature);
-    }
-    if (selectedDevice == 4)
+      item: "BasicInput",
+      label: "Energy Spending",
+      type: "number",
+      itemValue: "energySpending",
+    },
+  ];
+  let ecs = [
     {
-      data.append('energySpending', form.energySpending);
-      data.append('lightThreshold', form.lightThreshold);
-    }
-    if (selectedDevice == 6)
+      item: "BasicInput",
+      label: "Energy Spending",
+      type: "number",
+      itemValue: "energySpending",
+    },
+  ];
+
+  let cg = [
     {
-      data.append('energySpending', form.energySpending);
-    }
-    if (selectedDevice == 7)
+      item: "RegistrationInput",
+      itemValue: "AllowedLicensePlates",
+    },
+  ];
+  let s = [
     {
-      data.append('energySpending', form.energySpending);
-      data.append('size', form.size);
-      data.append('efficiency', form.efficiency);
-      data.append('numberOfPanels', form.efficiency);
-
-      
-
-    }
-    if (selectedDevice == 8)
+      item: "BasicInput",
+      label: "Energy Spending",
+      type: "number",
+      itemValue: "energySpending",
+    },
+  ];
+  let ac = [
     {
-      data.append('batterySize', form.batterySize);
-
-    }
-    if (selectedDevice == 9)
+      item: "BasicInput",
+      label: "Energy Spending",
+      type: "number",
+      itemValue: "energySpending",
+    },
     {
-      data.append('chargingPower', form.chargingPower);
-      data.append('connectorNumber', form.connectorNumber);
-
-    }
-    for(var pair of data.entries()) {
-      console.log(pair[0]+', '+pair[1]);
-    }
-    await AddSmartDevice(data,url)
-    setOpenModal(false)
-
-  }
-
-
-let l = 
-[
-  {
-    item:"BasicInput",
-    label:"Threshold",
-    type :"number",
-    itemValue : "lightThreshold"
-  },
-  {
-    item:"BasicInput",
-    label:"Energy Spending",
-    type :"number",
-    itemValue : "energySpending"
-
-  }
-]
-let ecs = 
-[
-  {
-    item:"BasicInput",
-    label:"Energy Spending",
-    type :"number",
-    itemValue : "energySpending"
-
-  }
-]
-let s = 
-[
-  {
-    item:"BasicInput",
-    label:"Energy Spending",
-    type :"number",
-    itemValue : "energySpending"
-
-  }
-]
-let ac = 
-[
-  {
-    item:"BasicInput",
-    label:"Energy Spending",
-    type :"number",
-    itemValue : "energySpending"
-
-  },
-  {
-    item:"BasicInput",
-    label:"Minimum Temperature",
-    type :"number",
-    itemValue : "minimumTemperature"
-
-  },
-  {
-    item:"BasicInput",
-    label:"Maximum Temperature",
-    type :"number",
-    itemValue : "maximumTemperature"
-
-  }
-]
-let sps = 
-[
-  {
-    item:"BasicInput",
-    label:"Energy Spending",
-    type :"number",
-    itemValue : "energySpending"
-
-  },
-  {
-    item:"BasicInput",
-    label:"Area",
-    type :"number",
-    itemValue : "size"
-
-  },
-  {
-    item:"BasicInput",
-    label:"Number of panels",
-    type :"number",
-    itemValue : "numberOfPanels"
-  },
-  {
-    item:"BasicInput",
-    label:"Efficiency",
-    type :"number",
-    itemValue : "efficiency"
-
-  }
-]
-let hb = 
-[
-  
-  {
-    item:"BasicInput",
-    label:"Battery Size",
-    type :"number",
-    itemValue : "batterySize"
-
-  },
-]
-let cc = 
-[
-  
-  {
-    item:"BasicInput",
-    label:"Energy Spending",
-    type :"number",
-    itemValue : "energySpending"
-
-  },
-  {
-    item:"BasicInput",
-    label:"Charging Power",
-    type :"number",
-    itemValue : "chargingPower"
-
-  },
-  {
-    item:"BasicInput",
-    label:"Number of Connectors",
-    type :"number",
-    itemValue : "connectorNumber"
-
-  }
-]
-
+      item: "BasicInput",
+      label: "Minimum Temperature",
+      type: "number",
+      itemValue: "minimumTemperature",
+    },
+    {
+      item: "BasicInput",
+      label: "Maximum Temperature",
+      type: "number",
+      itemValue: "maximumTemperature",
+    },
+  ];
+  let sps = [
+    {
+      item: "BasicInput",
+      label: "Area",
+      type: "number",
+      itemValue: "size",
+    },
+    {
+      item: "BasicInput",
+      label: "Number of panels",
+      type: "number",
+      itemValue: "numberOfPanels",
+    },
+    {
+      item: "BasicInput",
+      label: "Efficiency",
+      type: "number",
+      itemValue: "efficiency",
+    },
+  ];
+  let hb = [
+    {
+      item: "BasicInput",
+      label: "Battery Size",
+      type: "number",
+      itemValue: "batterySize",
+    },
+  ];
+  let cc = [
+    {
+      item: "BasicInput",
+      label: "Energy Spending",
+      type: "number",
+      itemValue: "energySpending",
+    },
+    {
+      item: "BasicInput",
+      label: "Charging Power",
+      type: "number",
+      itemValue: "chargingPower",
+    },
+    {
+      item: "BasicInput",
+      label: "Number of Connectors",
+      type: "number",
+      itemValue: "connectorNumber",
+    },
+  ];
 
   console.log("Param=" + propertyId);
 
   useEffect(() => {
+<<<<<<< HEAD
     setTemplate(t)
     if (selectedDevice == 1)
     {
       setTemplate(t.concat(ecs))
       setUrl("environmentalconditionssensor")
+=======
+    setTemplate(t);
+    if (selectedDevice == 1) {
+      setTemplate(t.concat(ecs));
+      setUrl("conditions-sensor");
+>>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
     }
-    if (selectedDevice == 2)
-    {
-      setTemplate(t.concat(ac))
-      setUrl("air-conditioner")
-
+    if (selectedDevice == 2) {
+      setTemplate(t.concat(ac));
+      setUrl("air-conditioner");
     }
 
-    if (selectedDevice == 4)
-    {
-      setTemplate(t.concat(l))
-      setUrl("lamp")
-
+    if (selectedDevice == 4) {
+      setTemplate(t.concat(l));
+      setUrl("lamp");
     }
-    
-    if (selectedDevice == 6)
-    {
-      setTemplate(t.concat(s))
-      setUrl("sprinkler")
 
+    if (selectedDevice == 5) {
+      setTemplate(t.concat(cg));
+      setUrl("cargate");
     }
-    if (selectedDevice == 7)
-    {
-      setTemplate(t.concat(sps))
-      setUrl("solar-panel-system")
 
+    if (selectedDevice == 6) {
+      setTemplate(t.concat(s));
+      setUrl("sprinkler");
     }
-    if (selectedDevice == 8)
-    {
-      setTemplate(t.concat(hb))
-      setUrl("home-battery")
-
+    if (selectedDevice == 7) {
+      setTemplate(t.concat(sps));
+      setUrl("solarpanelsystem");
     }
-    if (selectedDevice == 9)
-    {
-      setTemplate(t.concat(cc))
-      setUrl("car-charger")
-
+    if (selectedDevice == 8) {
+      setTemplate(t.concat(hb));
+      setUrl("homebattery");
     }
-    
+    if (selectedDevice == 9) {
+      setTemplate(t.concat(cc));
+      setUrl("car-charger");
+    }
   }, [selectedDevice]);
-  const [smartDevices,setSmartDevices] = useState([]);
+  const [smartDevices, setSmartDevices] = useState([]);
   useEffect(() => {
     console.log("asdasdasdasd");
     const fetch = async () => {
@@ -295,19 +277,19 @@ let cc =
 
       let request = {
         propertyId: propertyId,
-        "page.pageSize":pagination.pageSize,
-        "page.pageNumber":pagination.pageNumber,
+        "page.pageSize": pagination.pageSize,
+        "page.pageNumber": pagination.pageNumber,
       };
       const smartDevicesUser = await GetSmartDevicesByProperty(request);
-      console.log(smartDevicesUser)
+      console.log(smartDevicesUser);
       setSmartDevices(smartDevicesUser.items);
       setTotalItems(smartDevicesUser.totalItems);
-
+      console.log(smartDevicesUser.totalItems);
     };
 
     fetch();
     console.log("asdasdasdasd");
-  }, [propertyId,pagination.pageNumber,pagination.pageSize]);
+  }, [propertyId, pagination.pageNumber, pagination.pageSize, added]);
 
   return (
     <div className="smart-device-container">
@@ -317,18 +299,42 @@ let cc =
         totalItems={totalItems}
         onPageChange={handlePageChange}
       />
-      <div className="device-list">
-          {smartDevices.map((device) => (
-            <SmartDeviceCard key={device.id} device={device}  />
-          ))}
-        </div>
+      <Grid style = {{marginTop:"30px"}} container spacing={3} alignItems="center" justifyContent="center">
+        {smartDevices.map((device) => (
+          <Grid item md={6} alignItems={"center"} justifyContent={"center"}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <SmartDeviceCard key={device.id} device={device} />
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
       <AddButton
         className="add-property-button"
         onClick={() => setOpenModal(true)}
       />
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <Container sx={{ padding: "10px", backgroundColor:"snow", display :"flex", alignItems:"center", flexDirection:"column"}}>
+      <Dialog
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        style={{ width: "100%", minWidth: "100%" }}
+        fullWidth={true}
+        minWidth="100%"
+      >
+        <Container
+          sx={{
+            padding: "10px",
+            backgroundColor: "snow",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+          style={{ minWidth: "70%", padding: "10%", alignItems: "center" }}
+        >
           <BasicSelect
+            style={{ width: "5vw" }}
             label={"Sensor Type"}
             collection={deviceTypes}
             valueParam={"id"}
@@ -336,9 +342,25 @@ let cc =
             selected={selectedDevice}
             callback={(e) => setSelectedDevice(e.target.value)}
           ></BasicSelect>
-          <BasicForm template={template} callback={test}></BasicForm>
+          <BasicForm
+            style={{ width: "70%" }}
+            template={template}
+            callback={test}
+          ></BasicForm>
         </Container>
       </Dialog>
+      <InfoDialog
+        open={errorModal}
+        onClose={() => setErrorModal(false)}
+        title={"Error"}
+        content={errorMessage}
+      ></InfoDialog>
+      <InfoDialog
+        open={addedModal}
+        onClose={() => setAddedModal(false)}
+        title={"Success"}
+        content={addedMessage}
+      ></InfoDialog>
     </div>
   );
 };

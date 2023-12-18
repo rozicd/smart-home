@@ -11,6 +11,9 @@ using InfluxDB.Client.Core.Flux.Domain;
 using System.Drawing.Printing;
 using SmartHome.Domain.Models.SmartDevices;
 
+using SmartHome.Domain.Models.SmartDevices;
+using InfluxDB.Client.Core.Flux.Domain;
+
 namespace SmartHome.Application.Services
 {
     public class InfluxClientService : IInfluxClientService
@@ -24,6 +27,12 @@ namespace SmartHome.Application.Services
             _client = new InfluxDBClient(influxDbUrl, token);
             _bucket = bucket;
             _organization = organization;
+        }
+        public async Task<List<FluxTable>> GetInfluxData(string query)
+        {
+            var queryApi = _client.GetQueryApi();
+            var queryResult = await queryApi.QueryAsync(query, "organization");
+            return queryResult;
         }
 
         public async Task WriteDataAsync(PointData pointData)
@@ -70,5 +79,6 @@ namespace SmartHome.Application.Services
             return data;
 
         }
+
     }
 }

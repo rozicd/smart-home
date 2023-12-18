@@ -49,7 +49,7 @@ class SmartDevice:
 
     def sendStatus(self):
         while self.running:
-            print("Publishing message from",self.topicSend)
+            #print("Publishing message from",self.topicSend)
             self.client.publish(self.topicSend, f"{self.name} : online")
             time.sleep(10)
 

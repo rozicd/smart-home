@@ -14,6 +14,7 @@ using InfluxDB.Client.Writes;
 using Microsoft.AspNetCore.SignalR;
 using SmartHome.Application.Hubs;
 using SmartHome.Domain.Exceptions;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -61,7 +62,7 @@ namespace SmartHome.Application.Services.SmartDevices
 
                 lamp = await repository.GetById(device.Id);
             }
-            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{lamp.LightThreshold},{lamp.LampMode}");
+            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{lamp.LightThreshold},{lamp.LampMode},{lamp.EnergySpending}");
             var client = await _mqttClientService.SubscribeAsync(device.Connection + "/light");
 
             client.ApplicationMessageReceivedAsync += async e =>
@@ -165,6 +166,7 @@ namespace SmartHome.Application.Services.SmartDevices
                 throw new RequestValuesException($"Cannot change mode. Lamp is already in {lamp.LampMode} mode.");
             }
         }
+       
 
     }
 

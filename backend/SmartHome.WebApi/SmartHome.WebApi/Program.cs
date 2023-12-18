@@ -68,7 +68,9 @@ builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
+
     var token = "kqUgtwKrykyHb7SuH2-2dJN0GAdzRtm0oL_F4qwH1U9iAi7rNAjqPIW9V86t-xVmyB9COkHK4EvW_bZnTg-nHQ==";
+
     var bucket = "bucket";
     var organization = "organization";
 
@@ -166,7 +168,14 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapHub<LampHub>("/lampHub");
+<<<<<<< HEAD
 app.MapHub<ECSHub>("/ECSHub");
+=======
+app.MapHub<CarGateHub>("/carGateHub");
+app.MapHub<SolarPanelSystemHub>("/panelHub");
+app.MapHub<HomeBatteryHub>("/batteryHub");
+
+>>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
 
 app.UseStaticFiles();
 

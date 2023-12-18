@@ -19,18 +19,18 @@ namespace SmartHome.Application.HostedServices
     public class SimulationService : IHostedService, IDisposable
     {
         private readonly IServiceProvider _serviceProvider;
-        private Timer _timer;
 
-        public SimulationService(
-            IServiceProvider serviceProvider)
+        public SimulationService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+            // Call DoWork directly when the service starts
+            DoWork(null);
 
+            // Return a completed task
             return Task.CompletedTask;
         }
 
@@ -45,22 +45,22 @@ namespace SmartHome.Application.HostedServices
                 var smartDeviceServiceFactory = scope.ServiceProvider.GetRequiredService<ISmartDeviceServiceFactory>();
 
                 Pagination pagination = new Pagination
-                        {
-                            PageNumber = 1,
-                            PageSize = int.MaxValue
-                        };
+                {
+                    PageNumber = 1,
+                    PageSize = int.MaxValue
+                };
 
                 var properties = propertiesService.GetPropertiesByStatus(Domain.Models.PropertyStatus.Approved, pagination).Result.Items;
 
                 foreach (var property in properties)
                 {
+
                     mqttClientService.ConnectAsync().Wait();
                     mqttClientService.PublishMessageAsync("property/create", property.Id.ToString()).Wait();
-                }
-
-                foreach (var property in properties)
-                {
+                    propertiesService.ListenOnCharge(property);
                     var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
+                    Thread.Sleep(1000);
+
                     foreach (var device in devices)
                     {
                         Console.WriteLine(device.Type);
@@ -71,31 +71,29 @@ namespace SmartHome.Application.HostedServices
                         mqttClientService.ConnectAsync().Wait();
                         mqttClientService.PublishMessageAsync("property/" + property.Id.ToString() + "/create", device.Id.ToString() + "," + device.Type).Wait();
 
-                    }
-                }
-                foreach (var property in properties)
-                {
-                    var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
-                    foreach (var device in devices)
-                    {
                         ISmartDeviceActionsService smartDeviceActionService = smartDeviceServiceFactory.GetServiceAsync(device.Id).Result;
                         smartDeviceActionService.Connect(device.Id).Wait();
+                        Thread.Sleep(100);
                     }
+
+
                 }
+
 
             }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _timer?.Change(Timeout.Infinite, 0);
+            // No need to stop anything since there is no timer
             return Task.CompletedTask;
         }
 
         public void Dispose()
         {
-            _timer?.Dispose();
+            // No need to dispose anything since there is no timer
         }
     }
+
 
 }

@@ -12,6 +12,10 @@ namespace SmartHome.Domain.Services
     public interface IInfluxClientService
     {
         Task WriteDataAsync(PointData pointData);
+
         Task<List<ESCData>> GetESCDataAsync(string name, string start, string stop);
+
+        Task<List<FluxTable>> GetInfluxData(string query);
+
     }
 }

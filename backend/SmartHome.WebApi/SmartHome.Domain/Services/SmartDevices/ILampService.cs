@@ -15,5 +15,6 @@ namespace SmartHome.Domain.Services.SmartDevices
         Task TurnOff(Guid lampId);
         Task ChangeThreshold(Guid lampId, float newThreshold);
         Task ChangeMode(Guid lampId, LampMode mode);
+
     }
 }

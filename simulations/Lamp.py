@@ -6,7 +6,7 @@ from datetime import datetime
 import paho.mqtt.client as mqtt
 import random
 
-from simulations.SmartDevice import SmartDevice
+from SmartDevice import SmartDevice
 
 
 class Lamp(SmartDevice):
@@ -17,11 +17,14 @@ class Lamp(SmartDevice):
         self.light_threshold = 50
         self.power_state = 0
         self.auto_mode = True
-        self.amplitude = 50
+        self.amplitude = 120
         self.period = 24 * 60
+        self.energy_spending = 0
         self.topicLight = name+"/light"
         self.send_lamp_tick_thread = None
         self.is_send_lamp_thread_running = False
+        self.send_lamp_energy_thread = None
+        self.is_send_lamp_energy_running = False
         self.offset = 0
     def on_message(self, client, userdata, msg):
         if msg.topic == self.name + "/recive":
@@ -29,8 +32,9 @@ class Lamp(SmartDevice):
         command = msg.payload.decode('utf-8')
         if msg.topic == self.name + "/info":
             lampInfo = msg.payload.decode('utf-8')
-            light_treshold, mode = lampInfo.split(',')
+            light_treshold, mode,energy_spending = lampInfo.split(',')
             self.light_threshold = int(light_treshold)
+            self.energy_spending = float(energy_spending)/1000
             if mode == "MANUAL":
                 self.auto_mode = False
             else:
@@ -69,6 +73,8 @@ class Lamp(SmartDevice):
             self.is_send_lamp_thread_running = True
             self.send_lamp_tick_thread = threading.Thread(target=self.sendLampInfo)
             self.send_lamp_tick_thread.start()
+            self.send_lamp_energy_thread = threading.Thread(target=self.sendEnergySpending)
+            self.send_lamp_energy_thread.start()
 
     def on_connect(self, client, userdata, flags, rc):
         super().on_connect(client, userdata, flags, rc)
@@ -79,6 +85,14 @@ class Lamp(SmartDevice):
         self.client.subscribe(self.name + "/modeUpdate")
 
         print(f"Subscribed to topic: {self.lamp_info_topic}")
+
+
+    def sendEnergySpending(self):
+        while self.is_send_lamp_thread_running:
+            self.client.publish(self.name +"/spending", f"{self.energy_spending}")
+            time.sleep(60)
+
+
 
     def sendLampInfo(self):
         while self.is_send_lamp_thread_running:
@@ -97,7 +111,10 @@ class Lamp(SmartDevice):
                 elif self.light_strength >= self.light_threshold and self.power_state == 1:
                     self.turn_off()
             print(self.light_strength)
+            print(self.power_state)
+            print(self.light_threshold)
             self.client.publish(self.topicLight, f"{self.light_strength},{self.power_state}")
+
 
             time.sleep(10)
         self.is_send_lamp_thread_running = False

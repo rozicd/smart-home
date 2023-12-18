@@ -33,7 +33,12 @@ const LampCardsComponent = ({ deviceInfo }) => {
         await lampHubConnection.start();
       }
 
+<<<<<<< HEAD
       lampHubConnection.on(deviceInfo.connection, (lightStrength, powerState) => {
+=======
+      hubConnection.on(deviceInfo.connection, (lightStrength, powerState) => {
+        console.log(lightStrength,powerState)
+>>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
         setLightData({ lightStrength, powerState });
       });
     }

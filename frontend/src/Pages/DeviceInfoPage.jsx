@@ -8,8 +8,14 @@ import getStaticContent from "../Components/Services/StaticService";
 import { Grid, Box } from "@mui/material";
 import BasicDeviceInfoComponent from "../Components/BasicDeviceInfoComponent";
 import LampCardsComponent from "../Components/LampCardsComponents";
+<<<<<<< HEAD
 import ECSCardsComponent from "../Components/ECSCardsComponents";
 import ACCardsComponents from "../Components/ACCardsComponents";
+=======
+import CarGateCardsComponent from "../Components/CarGateCardsComponent";
+import PanelCardComponent from "../Components/PanelCardsComponent";
+import BatteryCardsComponent from "../Components/BatteryCardsComponent";
+>>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
 
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();
@@ -17,7 +23,6 @@ const DeviceInfoPage = () => {
   const [imageData, setImageData] = useState("");
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-
 
   useEffect(() => {
     const fetchDeviceData = async () => {
@@ -47,12 +52,33 @@ const DeviceInfoPage = () => {
     <Grid container style={{ height: "100%" }}>
       <BasicDeviceInfoComponent imageData={imageData} deviceData={deviceData} />
 
-      <Grid container item xs={12} sm={6} paddingRight={"50px"} paddingTop={"50px"}>
-        <Box>
+      <Grid
+        container
+        item
+        xs={12}
+        sm={6}
+        paddingRight={"50px"}
+        paddingTop={"50px"}
+      >
+        <Box
+          style={{
+            overflow: "scroll",
+            height :"85vh"
+          }}
+        >
           {deviceType === "lamp" && (
-            <LampCardsComponent
-              deviceInfo={deviceData}
-            />
+            <LampCardsComponent deviceInfo={deviceData} />
+          )}
+          {deviceType === "cargate" && (
+            <CarGateCardsComponent
+              deviceData={deviceData}
+            ></CarGateCardsComponent>
+          )}
+          {deviceType === "solarpanelsystem" && (
+            <PanelCardComponent deviceInfo={deviceData} />
+          )}
+          {deviceType === "homebattery" && (
+            <BatteryCardsComponent deviceInfo={deviceData} />
           )}
           {deviceType === "environmentalconditionssensor" && (
             <ECSCardsComponent

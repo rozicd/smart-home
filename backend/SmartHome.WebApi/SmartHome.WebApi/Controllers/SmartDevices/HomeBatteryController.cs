@@ -4,11 +4,14 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.Application.Services.SmartDevices;
+using SmartHome.DataTransferObjects.Responses;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("home-battery")]
+    [Route("homebattery")]
     public class HomeBatteryController : BaseController
     {
         private readonly IHomeBatteryService _homeBatteryService;
@@ -34,6 +37,75 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             return Ok();
         }
+        [HttpGet("{batteryId}")]
+        public async Task<IActionResult> GetSystemById(Guid batteryId)
+        {
+            HomeBattery battery = await _homeBatteryService.GetById(batteryId);
+
+            var batteryDTO = _mapper.Map<HomeBatteryResponseDTO>(battery);
+
+            return Ok(batteryDTO);
+        }
+        [HttpPost("power")]
+        public async Task<IActionResult> GetPowerInLastHour([FromBody] BatteryHistoryRequestDTO bh)
+        {
+            List<FluxTable> fluxTables = await _homeBatteryService.GetInfluxDataAsync(bh.Id.ToString(),bh.Hours);
+
+            var influxData = new List<BatteryPowerResponseDTO>();
+
+            foreach (var fluxTable in fluxTables)
+            {
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+
+                    var data = new BatteryPowerResponseDTO
+                    {
+
+                        Energy = fluxRecord.Values["energy"].ToString(),
+                        Timestamp = fluxRecord.GetTimeInDateTime()
+                    };
+
+                    influxData.Add(data);
+                }
+            }
+
+            return Ok(influxData);
+        }
+        [HttpPost("power/date")]
+        public async Task<IActionResult> GetPowerDateRange([FromBody] BatteryHistoryDateRequestDTO bh)
+        {
+            TimeSpan dateRange = bh.EndDate - bh.StartDate;
+            if (dateRange.TotalDays > 30)
+            {
+                return BadRequest("Date range cannot be longer than one month");
+            }
+            if (bh.StartDate>bh.EndDate)
+            {
+                return BadRequest("Start date cannot be after end date");
+            }
+            List<FluxTable> fluxTables = await _homeBatteryService.GetInfluxDataDateRangeAsync(bh.Id.ToString(), bh.StartDate,bh.EndDate);
+
+            var influxData = new List<BatteryPowerResponseDTO>();
+
+            foreach (var fluxTable in fluxTables)
+            {
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+
+                    var data = new BatteryPowerResponseDTO
+                    {
+
+                        Energy = fluxRecord.Values["energy"].ToString(),
+                        Timestamp = fluxRecord.GetTimeInDateTime()
+                    };
+
+                    influxData.Add(data);
+                }
+            }
+
+            return Ok(influxData);
+        }
+
     }
 
 }

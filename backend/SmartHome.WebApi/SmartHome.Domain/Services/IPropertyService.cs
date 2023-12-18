@@ -14,5 +14,6 @@ namespace SmartHome.Domain.Services
         Task<PaginationReturnObject<Property>> GetPropertiesByStatus(PropertyStatus status, Pagination pagination);
         Task<Property> GetPropertyById(Guid id);
         Task UpdateProperty(Property property);
+        Task ListenOnCharge(Property property);
     }
 }

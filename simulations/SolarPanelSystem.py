@@ -13,21 +13,34 @@ class SolarPanelSystem(SmartDevice):
         self.efficiency = 0
         self.send_power_thread = None
         self.power_topic = name+"/power"
+        self.on_topic = name +"/turnOn"
+        self.off_topic = name +"/turnOff"
+        self.sps_status = True
 
 
         
 
     def on_message(self, client, userdata, msg):
         if msg.topic == self.name +"/recive":
-            print("kara")
             super().on_message(client, userdata, msg)
+
+        if msg.topic == self.on_topic :
+            print("KARA")
+            self.sps_status = True
+        if msg.topic == self.off_topic :
+            print("KARA")
+
+            self.sps_status = False
+
+
+            
         if self.running :
             if msg.topic == self.name +"/info":
                 spsInfo = msg.payload.decode('utf-8')  
                 numberOfPanels, size, efficiency = spsInfo.split(',')
                 self.number_of_panels = float(numberOfPanels)
                 self.size_per_panel = float(size)
-                self.efficiency = float(efficiency)
+                self.efficiency = float(efficiency)/1000
                 if self.send_power_thread is None or not self.send_power_thread.is_alive():
                     self.send_power_thread = threading.Thread(target=self.sendEnergyPerMinute)
                     self.send_power_thread.start()
@@ -35,6 +48,9 @@ class SolarPanelSystem(SmartDevice):
     def on_connect(self, client, userdata, flags, rc):
         super().on_connect(client, userdata, flags, rc)
         self.client.subscribe(self.panel_info_topic)
+        self.client.subscribe(self.off_topic)
+        self.client.subscribe(self.on_topic)
+
         print(f"Subscribed to topic: {self.panel_info_topic}")
 
     def calculate_sun_hours(self,current_month, current_hour):
@@ -69,10 +85,13 @@ class SolarPanelSystem(SmartDevice):
     
     def sendEnergyPerMinute(self):
         while self.running:
-            power = str(self.calculate_energy_production())
+            power = "0"
+            print(self.sps_status)
+            if self.sps_status :
+                power = str(round(self.calculate_energy_production(),2))
             print(power)
             self.client.publish(self.power_topic, power)
-            time.sleep(10)
+            time.sleep(60)
         self.client.publish(self.power_topic, "disconnected")
         return
 
