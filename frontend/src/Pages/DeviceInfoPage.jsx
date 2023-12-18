@@ -8,14 +8,11 @@ import getStaticContent from "../Components/Services/StaticService";
 import { Grid, Box } from "@mui/material";
 import BasicDeviceInfoComponent from "../Components/BasicDeviceInfoComponent";
 import LampCardsComponent from "../Components/LampCardsComponents";
-<<<<<<< HEAD
 import ECSCardsComponent from "../Components/ECSCardsComponents";
 import ACCardsComponents from "../Components/ACCardsComponents";
-=======
 import CarGateCardsComponent from "../Components/CarGateCardsComponent";
 import PanelCardComponent from "../Components/PanelCardsComponent";
 import BatteryCardsComponent from "../Components/BatteryCardsComponent";
->>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
 
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();

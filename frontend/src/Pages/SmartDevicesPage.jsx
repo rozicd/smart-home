@@ -224,18 +224,11 @@ const SmartDevicesPage = ({}) => {
   console.log("Param=" + propertyId);
 
   useEffect(() => {
-<<<<<<< HEAD
     setTemplate(t)
     if (selectedDevice == 1)
     {
       setTemplate(t.concat(ecs))
       setUrl("environmentalconditionssensor")
-=======
-    setTemplate(t);
-    if (selectedDevice == 1) {
-      setTemplate(t.concat(ecs));
-      setUrl("conditions-sensor");
->>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
     }
     if (selectedDevice == 2) {
       setTemplate(t.concat(ac));

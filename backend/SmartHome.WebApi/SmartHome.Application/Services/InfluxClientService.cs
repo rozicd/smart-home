@@ -45,7 +45,7 @@ namespace SmartHome.Application.Services
         public async Task<List<ESCData>> GetESCDataAsync(string name, string start, string stop)
         {
             var queryApi = _client.GetQueryApi();
-            string fluxQuery = $"from(bucket: \"bucket\") |> range(start: {start}, stop: {stop}) |> filter(fn: (r) => r[\"_measurement\"] == \"{name}\") |> filter(fn: (r) => r[\"_field\"] == \"RoomTemperature\" or r[\"_field\"] == \"AirHumidity\")";
+            string fluxQuery = $"from(bucket: \"bucket\") |> range(start: {start}, stop: {stop}) |> filter(fn: (r) => r[\"_measurement\"] == \"{name}\") |> filter(fn: (r) => r[\"_field\"] == \"RoomTemperature\" or r[\"_field\"] == \"AirHumidity\") |> aggregateWindow(every: 10s, fn: mean, createEmpty: false) |> yield(name: \"mean\")";
             Console.WriteLine(fluxQuery);
             List<ESCData> data = new List<ESCData>();
             var timestampData = new Dictionary<string, ESCData>();

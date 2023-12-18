@@ -168,14 +168,12 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapHub<LampHub>("/lampHub");
-<<<<<<< HEAD
+
 app.MapHub<ECSHub>("/ECSHub");
-=======
+
 app.MapHub<CarGateHub>("/carGateHub");
 app.MapHub<SolarPanelSystemHub>("/panelHub");
 app.MapHub<HomeBatteryHub>("/batteryHub");
-
->>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
 
 app.UseStaticFiles();
 

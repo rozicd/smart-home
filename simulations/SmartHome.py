@@ -3,18 +3,18 @@ import time
 import paho.mqtt.client as mqtt
 import random
 
-<<<<<<< HEAD
+# <<<<<<< HEAD
+# from simulations.Lamp import Lamp
+# from simulations.SmartDevice import SmartDevice
+# from simulations.SolarPanelSystem import SolarPanelSystem
+# =======
 from simulations.EnvironmentalConditionsSensor import EnvironmentalConditionsSensor
-from simulations.Lamp import Lamp
-from simulations.SmartDevice import SmartDevice
-from simulations.SolarPanelSystem import SolarPanelSystem
-=======
 from CarGate import CarGate
 from Lamp import Lamp
 from SmartDevice import SmartDevice
 from SolarPanelSystem import SolarPanelSystem
 from HomeBattery import HomeBattery
->>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
+# >>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
 
 
 class SmartHome:
@@ -44,26 +44,26 @@ class SmartHome:
         print(f"Subscribed to topic: {self.topicRecive}")
 
     def on_message(self, client, userdata, msg):
-<<<<<<< HEAD
-        command = msg.payload.decode('utf-8').split(',')
-        device_key = self.id+"/device/"+command[0]
-        print(command)
-        if command[0] not in self.devices.keys():
-
-            if command[1] == 'SolarPanelSystem':
-                smart_device = SolarPanelSystem(device_key)
-            elif command[1] == 'Lamp':
-                smart_device = Lamp(device_key)
-            elif command[1] == 'EnvironmentalConditionsSensor':
-                smart_device = EnvironmentalConditionsSensor(device_key)
-            else:
-                smart_device = SmartDevice(device_key)
-
-            self.devices[command[0]] = smart_device
-            if command[0] not in self.deviceThreads:
-                self.deviceThreads[command[0]] = threading.Thread(target=self.devices[command[0]].run)
-                self.deviceThreads[command[0]].start()
-=======
+# <<<<<<< HEAD
+#         command = msg.payload.decode('utf-8').split(',')
+#         device_key = self.id+"/device/"+command[0]
+#         print(command)
+#         if command[0] not in self.devices.keys():
+#
+#             if command[1] == 'SolarPanelSystem':
+#                 smart_device = SolarPanelSystem(device_key)
+#             elif command[1] == 'Lamp':
+#                 smart_device = Lamp(device_key)
+#             elif command[1] == 'EnvironmentalConditionsSensor':
+#                 smart_device = EnvironmentalConditionsSensor(device_key)
+#             else:
+#                 smart_device = SmartDevice(device_key)
+#
+#             self.devices[command[0]] = smart_device
+#             if command[0] not in self.deviceThreads:
+#                 self.deviceThreads[command[0]] = threading.Thread(target=self.devices[command[0]].run)
+#                 self.deviceThreads[command[0]].start()
+# =======
         recived = msg.payload.decode('utf-8')
         from_battery = False
         if msg.topic.lower().endswith("/spending"):
@@ -100,7 +100,7 @@ class SmartHome:
                         print("LEVEL= ",battery.current_level)
                         self.client.publish(self.house_power_topic, f"Battery Charged To {battery.current_level}%")
                         self.client.publish(battery.name+"/battery_level", f"{round(battery.current_level,2)}")
->>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
+# >>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
 
 
             else :
@@ -128,6 +128,8 @@ class SmartHome:
                 elif command[1] == 'Lamp':
                     smart_device = Lamp(device_key)
                     self.client.subscribe(device_key+'/spending')
+                elif command[1] == 'EnvironmentalConditionsSensor':
+                    smart_device = EnvironmentalConditionsSensor(device_key)
                 else:
                     smart_device = SmartDevice(device_key)
 

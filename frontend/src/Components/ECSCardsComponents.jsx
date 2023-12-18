@@ -10,9 +10,9 @@ import {
   MenuItem
 } from "@mui/material";
 
-import { LineChart } from "@mui/x-charts";
 import { ecsHubConnection } from "./Sockets/SocketService";
 import { getESCData } from "./Services/SmartDeviceService";
+import BasicGraph from "./BasicComponents/BasicGraph";
 
 
 const ECSCardsComponent = ({ deviceInfo }) =>{
@@ -21,6 +21,68 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
     const [temperatures, setTemperatures] = useState([])
     const [humidities, setHumidities] = useState([])
     const [dataSelect, setDataSelect] = useState(1)
+    const [dataHistory, setDataHistory] = useState([])
+    const [historyQuery, setHistoryQuery] = useState({Name:deviceInfo.name, start:"-1h", end:"0h"})
+
+
+    const handleSelectValueChange = (event) => {
+        const selectedValue = event.target.value;
+      
+        let startTime, endTime;
+      
+        // Update startTime and endTime based on the selected time range
+        switch (selectedValue) {
+          case 1:
+            startTime = "-1h";
+            endTime = "0h";
+            break;
+          case 2:
+            startTime = "-6h";
+            endTime = "0h";
+            break;
+          case 3:
+            startTime = "-12h";
+            endTime = "0h";
+            break;
+          default:
+            startTime = "-1h";
+            endTime = "0h";
+        }
+      
+        // Use the callback version of setHistoryQuery
+        setHistoryQuery((prevHistoryQuery) => ({
+          ...prevHistoryQuery,
+          Name: deviceInfo.name,
+          start: startTime,
+          end: endTime,
+        }));
+      
+        // Call getData after the state is updated
+        getData();
+      };
+      async function getData(){
+        try{
+            let data = []
+            data = await getESCData(deviceInfo.type, historyQuery);
+
+            let onlyDates = []
+            let temps = []
+            let onlyHumidities = []
+            data.forEach((element, index) => {
+                onlyDates.push(element.time)
+                temps.push({time:element.time, roomTemperate:element.roomTemperate})
+                onlyHumidities.push({time:element.time, airHumidity:element.airHumidity})
+            });
+            
+            setDates(onlyDates);
+            setTemperatures(temps);
+            setHumidities(onlyHumidities);
+            setDataHistory(data)
+            console.log(data);
+        }catch(error){
+            console.log(error);
+        }
+    }
 
     useEffect(()=>{
         async function connect(){
@@ -31,26 +93,7 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
                 setECSData({airHumidity, roomTemperature})
             });
         }
-        async function getData(){
-            try{
-                let data = []
-                data = await getESCData(deviceInfo.type, {Name:"Room", start:"-1h", end:"0h"});
-                let onlyDates = []
-                let temps = []
-                let onlyHumidities = []
-                data.forEach((element, index) => {
-                    onlyDates.push(element.time)
-                    temps.push(element.roomTemperature)
-                    onlyHumidities.push(element.airHumidity)
-                });
-                setDates(onlyDates);
-                setTemperatures(temps);
-                setHumidities(onlyHumidities);
-                console.log(data);
-            }catch(error){
-                console.log(error);
-            }
-        }
+        
         getData();
         connect();
     }, []);
@@ -89,23 +132,15 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={dataSelect}
+                        onChange={handleSelectValueChange}
                         label="Age"
                     >
-                        <MenuItem value={10}>Last hour</MenuItem>
-                        <MenuItem value={20}>Last 6 hours</MenuItem>
-                        <MenuItem value={30}>Last 12 hours</MenuItem>
+                        <MenuItem value={1}>Last hour</MenuItem>
+                        <MenuItem value={2}>Last 6 hours</MenuItem>
+                        <MenuItem value={3}>Last 12 hours</MenuItem>
                     </Select>
                 </FormControl>
-                <LineChart
-                    xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-                    series={[
-                        {
-                        data: [2, 5.5, 2, 8.5, 1.5, 5],
-                        },
-                    ]}
-                    width={500}
-                    height={300}
-                    />
+                <BasicGraph data={dataHistory} xKey="time" yKey="roomTemperate"/>
                 </CardContent>
                 </Card>
             </Grid>
