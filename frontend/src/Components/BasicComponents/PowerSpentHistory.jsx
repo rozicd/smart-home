@@ -5,27 +5,20 @@ import {
   CardContent,
   Typography,
   TextField,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  IconButton,
-  InputAdornment,
   Grid,
-  Container,
   Button,
 } from "@mui/material";
 import InfoDialog from "./InfoDialog";
-
+import BasicPowerGraph from "./BasicPowerGraph";
 import BasicGraph from "./BasicGraph";
 import BasicSelect from "./BasicSelect";
 import {
   GetPowerGraphData,
   GetPowerGraphDataDate,
 } from "../Services/BatteryService";
+import { GetPropertyPowerGraphData, GetPropertyPowerGraphDataDate } from "../Services/PropertiesService";
 const searchOptions = [
+  { key: "real", value: "Real Time" },
   { key: "1", value: "5m" },
   { key: "2", value: "1h" },
   { key: "3", value: "6h" },
@@ -35,12 +28,12 @@ const searchOptions = [
   { key: "7", value: "30d" },
   { key: "8", value: "Date Range" },
 ];
-const PowerSpentHistory = ({ deviceInfo }) => {
+const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
-  const [selectedSearch, setSelectedSearch] = useState();
+  const [selectedSearch, setSelectedSearch] = useState("real");
   const [dateVisibility, setDateVisibility] = useState(false);
   const [powerData, setPowerData] = useState([]);
   const [errorModal, setErrorModal] = useState(false);
@@ -51,7 +44,11 @@ const PowerSpentHistory = ({ deviceInfo }) => {
 
     try {
       let search = { id: deviceInfo.id, hours: hrs };
-      let data = await GetPowerGraphData(search);
+      let data = null;
+      if (!property) data = await GetPowerGraphData(search);
+      else {
+        data = await GetPropertyPowerGraphData(search);
+      }
 
       setPowerData(data);
     } catch (error) {
@@ -60,11 +57,12 @@ const PowerSpentHistory = ({ deviceInfo }) => {
   };
 
   const handleSearchChange = (value) => {
-    
     const foundOption = searchOptions.find((option) => option.key === value);
     console.log(foundOption);
     setDateVisibility(false);
     setSelectedSearch(value);
+    if (value == "real") return;
+
     if (value == "x") return;
 
     if (value == "8") setDateVisibility(true);
@@ -75,9 +73,9 @@ const PowerSpentHistory = ({ deviceInfo }) => {
 
   const handleSearchClick = async () => {
     if (toDate == "" || fromDate == "") {
-      setErrorModal(true)
+      setErrorModal(true);
       setErrorMessage("Please Select Valis Dates");
-      return
+      return;
     }
     let search = {
       id: deviceInfo.id,
@@ -85,12 +83,14 @@ const PowerSpentHistory = ({ deviceInfo }) => {
       endDate: toDate,
     };
     try {
-      let data = await GetPowerGraphDataDate(search);
+      let data = null ;
+      if (!property)data = await GetPowerGraphDataDate(search);
+      else {data= await GetPropertyPowerGraphDataDate(search)}
 
       setPowerData(data);
     } catch (error) {
       if (error.response) {
-        setErrorModal(true)
+        setErrorModal(true);
         setErrorMessage(error.response.data);
       }
     }
@@ -109,21 +109,14 @@ const PowerSpentHistory = ({ deviceInfo }) => {
             }}
           >
             <Typography variant="h6">History</Typography>
-
-            <BasicGraph data={powerData} datakey={"energy"}></BasicGraph>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card style={{ width: "85%", margin: "auto" }}>
-          <CardContent
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+            {selectedSearch === "real" ? (
+              // Render RealTimeGraph if selectedSearch is "real"
+              RealTimeGraph
+            ) : property === false ? (
+              <BasicGraph data={powerData}></BasicGraph>
+            ) : (
+              <BasicPowerGraph data={powerData} />
+            )}
             <Grid
               container
               item
@@ -176,9 +169,11 @@ const PowerSpentHistory = ({ deviceInfo }) => {
                 </Grid>
               )}
             </Grid>
+
           </CardContent>
         </Card>
       </Grid>
+      
       <InfoDialog
         open={errorModal}
         onClose={() => setErrorModal(false)}

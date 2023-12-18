@@ -40,6 +40,9 @@ class SmartHome:
         recived = msg.payload.decode('utf-8')
         from_battery = False
         if msg.topic.lower().endswith("/spending"):
+            device = msg.topic.lower().split('/')
+            device = device[3]
+            print("DEVICEE",device)
             if  self.home_batteries:
                 for key, battery in self.home_batteries.items():
                     if battery.capacity == 0 :
@@ -49,19 +52,23 @@ class SmartHome:
                         continue
                     battery.current_level -= procentage
                     print("ENERGY SPENT FROM",battery.name)
+                    self.client.publish(self.house_power_topic, f"{str(-float(recived))},Battery,{device}")
                     from_battery = True
                     self.client.publish(battery.name+"/battery_level", f"{round(battery.current_level,2)}")
                     break
                 if not from_battery :
                     self.from_grid -= float(recived)
-                    self.client.publish(self.house_power_topic, f"Batteries are empty, {recived} spent from Grid")
+                    self.client.publish(self.house_power_topic, f"{str(-float(recived))},Grid,{device}")
             else :
                 self.from_grid -= float(recived)
-                self.client.publish(self.house_power_topic, f"No Battery, {recived} spent from Grid")
+                self.client.publish(self.house_power_topic, f"{str(-float(recived))},Grid,{device}")
+                
 
         elif msg.topic.endswith("/power"):
-            print("RECIVED POWER",recived)
             
+            print("RECIVED POWER",recived)
+            device = msg.topic.lower().split('/')
+            device = device[3]
             if  self.home_batteries:
                 for key, battery in self.home_batteries.items():
                     if battery.capacity != 0 :
@@ -70,14 +77,16 @@ class SmartHome:
                         if battery.current_level > 100 :
                             battery.current_level = 100
                             self.from_grid += float(energy)
+                            self.client.publish(self.house_power_topic, f"{recived},Grid,{device}")
+                            continue
                         print("LEVEL= ",battery.current_level)
-                        self.client.publish(self.house_power_topic, f"Battery Charged To {battery.current_level}%")
+                        self.client.publish(self.house_power_topic, f"{recived},Battery,{device}")
                         self.client.publish(battery.name+"/battery_level", f"{round(battery.current_level,2)}")
 
 
             else :
                 self.from_grid += float(recived)
-                self.client.publish(self.house_power_topic, f"No Battery, {recived} sent to Grid")
+                self.client.publish(self.house_power_topic, f"{recived},Grid,{device}")
 
         else :
             command = recived.split(',')

@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SmartHome.Data.Entities;
 using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Models;
@@ -173,6 +174,12 @@ namespace SmartHome.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLazyLoadingProxies();
+            optionsBuilder.EnableSensitiveDataLogging(false);
+            optionsBuilder.UseLoggerFactory(null);
+
+
+            optionsBuilder.LogTo(_ => { }, LogLevel.None);  
+
         }
     }
 
