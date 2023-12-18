@@ -33,6 +33,8 @@ class CarGate(SmartDevice):
             self.mode = gate_info[0]
             self.gate_status = "CLOSED"
             self.allowed_vehicles = set(gate_info[2:])
+            if len(self.allowed_vehicles):
+                self.allowed_vehicles = set()
             print(f"Mode: {self.mode}")
             print(f"Gate Status: {self.gate_status}")
             print(f"Allowed Vehicles: {self.allowed_vehicles}")
@@ -54,7 +56,10 @@ class CarGate(SmartDevice):
             self.set_mode(command)
 
         elif msg.topic == self.name + "/setAllowedVehicles":
-            self.set_allowed_vehicles(command.split(','))
+            if command == "":
+                self.set_allowed_vehicles(set())
+            else:
+                self.set_allowed_vehicles(command.split(','))
 
 
     def set_mode(self, mode):
@@ -76,7 +81,7 @@ class CarGate(SmartDevice):
                 generated_plate = self.generate_license_plate()
                 allowed_list = self.allowed_vehicles.copy()
 
-                if not allowed_list:
+                if len(self.allowed_vehicles) == 0:
                     license_plate = generated_plate
                 else:
                     allowed_list.add(generated_plate)
