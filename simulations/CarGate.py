@@ -75,8 +75,12 @@ class CarGate(SmartDevice):
                 print(self.mode)
                 generated_plate = self.generate_license_plate()
                 allowed_list = self.allowed_vehicles.copy()
-                allowed_list.add(generated_plate)
-                license_plate = choice(list(allowed_list))
+
+                if not allowed_list:
+                    license_plate = generated_plate
+                else:
+                    allowed_list.add(generated_plate)
+                    license_plate = choice(list(allowed_list))
                 self.handle_gate_entry(license_plate)
             elif self.inside_vehicles:
                 license_plate = choice(list(self.inside_vehicles))

@@ -1,5 +1,5 @@
 // Import necessary Material-UI components
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -22,9 +22,11 @@ import InfoDialog from "./InfoDialog";
 import BasicGraph from "./BasicGraph";
 import BasicSelect from "./BasicSelect";
 import {
+    GetGraphData,
+  GetGraphDataDate,
   GetPowerGraphData,
   GetPowerGraphDataDate,
-} from "../Services/BatteryService";
+} from "../Services/LampService";
 const searchOptions = [
   { key: "1", value: "5m" },
   { key: "2", value: "1h" },
@@ -35,14 +37,12 @@ const searchOptions = [
   { key: "7", value: "30d" },
   { key: "8", value: "Date Range" },
 ];
-const PowerSpentHistory = ({ deviceInfo }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const LampDataHistory = ({ deviceInfo }) => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
   const [selectedSearch, setSelectedSearch] = useState();
   const [dateVisibility, setDateVisibility] = useState(false);
-  const [powerData, setPowerData] = useState([]);
+  const [lampData, setLampData] = useState([]);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
@@ -51,13 +51,20 @@ const PowerSpentHistory = ({ deviceInfo }) => {
 
     try {
       let search = { id: deviceInfo.id, hours: hrs };
-      let data = await GetPowerGraphData(search);
+      let data = await GetGraphData(search);
+      console.log(data)
 
-      setPowerData(data);
+      setLampData(data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  
+  useEffect(() => {
+    fetchData("6");
+  }, []);
+
 
   const handleSearchChange = (value) => {
     
@@ -74,23 +81,37 @@ const PowerSpentHistory = ({ deviceInfo }) => {
   };
 
   const handleSearchClick = async () => {
-    if (toDate == "" || fromDate == "") {
-      setErrorModal(true)
-      setErrorMessage("Please Select Valis Dates");
-      return
+    if (toDate === "" || fromDate === "") {
+      setErrorModal(true);
+      setErrorMessage("Please Select Valid Dates");
+      return;
     }
+  
+    const startDate = new Date(fromDate);
+    const endDate = new Date(toDate);
+  
+    const dateDifferenceInDays = (endDate - startDate) / (24 * 60 * 60 * 1000);
+  
+    const maxAllowedDifferenceInDays = 30;
+  
+    if (dateDifferenceInDays > maxAllowedDifferenceInDays) {
+      setErrorModal(true);
+      setErrorMessage("Date range cannot exceed 30 days");
+      return;
+    }
+  
     let search = {
       id: deviceInfo.id,
       startDate: fromDate,
       endDate: toDate,
     };
+  
     try {
-      let data = await GetPowerGraphDataDate(search);
-
-      setPowerData(data);
+      let data = await GetGraphDataDate(search);
+      setLampData(data);
     } catch (error) {
       if (error.response) {
-        setErrorModal(true)
+        setErrorModal(true);
         setErrorMessage(error.response.data);
       }
     }
@@ -110,7 +131,7 @@ const PowerSpentHistory = ({ deviceInfo }) => {
           >
             <Typography variant="h6">History</Typography>
 
-            <BasicGraph data={powerData} datakey={"energy"}></BasicGraph>
+            <BasicGraph data={lampData} datakey={"currentLight"}></BasicGraph>
           </CardContent>
         </Card>
       </Grid>
@@ -189,4 +210,4 @@ const PowerSpentHistory = ({ deviceInfo }) => {
   );
 };
 
-export default PowerSpentHistory;
+export default LampDataHistory;
