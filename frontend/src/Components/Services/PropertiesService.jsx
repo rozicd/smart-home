@@ -85,4 +85,25 @@ const createProperty = async (formData) => {
     console.error('Error creating property:', error.response ? error.response.data : error.message);
   }
 };
-export { getPropertiesByUserId,createProperty,getPendingProperties,approveProperty,rejectProperty};
+
+const GetPropertyPowerGraphData = async (search) => {
+  try {
+      console.log(search)
+    const response = await axios.post(`${API_BASE_URL}/properties/power`, search , { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const GetPropertyPowerGraphDataDate = async (search) => {
+  try {
+      console.log(search)
+    const response = await axios.post(`${API_BASE_URL}/properties/power/date`, search , { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export { GetPropertyPowerGraphDataDate,getPropertiesByUserId,createProperty,getPendingProperties,approveProperty,rejectProperty,GetPropertyPowerGraphData};

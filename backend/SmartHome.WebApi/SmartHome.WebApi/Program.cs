@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 using MQTTnet.Client;
@@ -123,9 +124,19 @@ builder.Services.AddAuthorization(o =>
 
 builder.Services.AddSignalR();
 
+builder.Services.AddLogging(builder =>
+{
+    builder.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.None); // Disable command level logs
+    builder.AddFilter(DbLoggerCategory.Database.Transaction.Name, LogLevel.None); // Disable transaction level logs
+                                                                                  // Add more filters as needed
+});
+
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
+    options.EnableSensitiveDataLogging(false);
+    options.LogTo(Console.WriteLine, LogLevel.None); 
+
 }, ServiceLifetime.Scoped);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

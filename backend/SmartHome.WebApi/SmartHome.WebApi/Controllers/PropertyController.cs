@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InfluxDB.Client.Core.Flux.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Application.Services;
@@ -133,4 +134,67 @@ public class PropertyController : BaseController
 
         return Ok($"Property {id} rejected successfully");
     }
+
+    [HttpPost("power")]
+    public async Task<IActionResult> GetPowerInLastHour([FromBody] BatteryHistoryRequestDTO bh)
+    {
+        List<FluxTable> fluxTables = await _propertyService.GetPropertyPowerInfluxData(bh.Id.ToString(), bh.Hours);
+
+        var influxData = new List<HomePowerResponseDTO>();
+
+        foreach (var fluxTable in fluxTables)
+        {
+            foreach (var fluxRecord in fluxTable.Records)
+            {
+
+                var data = new HomePowerResponseDTO
+                {
+                    DeviceId = fluxRecord.Values["device"].ToString(),
+                    Target = fluxRecord.Values["target"].ToString(),
+                    Energy = fluxRecord.Values["power"].ToString(),
+                    Timestamp = fluxRecord.GetTimeInDateTime()
+                };
+
+                influxData.Add(data);
+            }
+        }
+
+        return Ok(influxData);
+    }
+    [HttpPost("power/date")]
+    public async Task<IActionResult> GetPowerDateRange([FromBody] BatteryHistoryDateRequestDTO bh)
+    {
+        TimeSpan dateRange = bh.EndDate - bh.StartDate;
+        if (dateRange.TotalDays > 30)
+        {
+            return BadRequest("Date range cannot be longer than one month");
+        }
+        if (bh.StartDate > bh.EndDate)
+        {
+            return BadRequest("Start date cannot be after end date");
+        }
+        List<FluxTable> fluxTables = await _propertyService.GetPropertyPowerInfluxDataDate(bh.Id.ToString(), bh.StartDate, bh.EndDate);
+
+        var influxData = new List<HomePowerResponseDTO>();
+
+        foreach (var fluxTable in fluxTables)
+        {
+            foreach (var fluxRecord in fluxTable.Records)
+            {
+
+                var data = new HomePowerResponseDTO
+                {
+                    DeviceId = fluxRecord.Values["device"].ToString(),
+                    Target = fluxRecord.Values["target"].ToString(),
+                    Energy = fluxRecord.Values["power"].ToString(),
+                    Timestamp = fluxRecord.GetTimeInDateTime()
+                };
+
+                influxData.Add(data);
+            }
+        }
+
+        return Ok(influxData);
+    }
+
 }

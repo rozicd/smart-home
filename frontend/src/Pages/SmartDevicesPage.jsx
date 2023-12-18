@@ -13,7 +13,10 @@ import SmartDeviceCard from "../Components/BasicComponents/SmartDeviceCard";
 import BasicPagination from "../Components/BasicComponents/BasicPagination";
 import InfoDialog from "../Components/BasicComponents/InfoDialog";
 import { Title } from "@mui/icons-material";
-import { Grid ,Box} from "@mui/material";
+import { Grid ,Box,Card,CardContent} from "@mui/material";
+import PowerSpentHistory from "../Components/BasicComponents/PowerSpentHistory";
+import { GetPropertyPowerGraphData } from "../Components/Services/PropertiesService";
+import BasicPowerGraph from "../Components/BasicComponents/BasicPowerGraph";
 const deviceTypes = [
   { id: 1, name: "Enviromantal condition sensor" },
   { id: 2, name: "Air Conditioner" },
@@ -51,6 +54,33 @@ const SmartDevicesPage = ({}) => {
   const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 6 });
   const [totalItems, setTotalItems] = useState(0);
   const [added, setAdded] = useState(false);
+  const[powerData,setPowerData] = useState([]);
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      console.log("data")
+
+      try {
+        let search = { 'id': propertyId, 'hours': '6h' };
+        console.log("SEARCH!!",search)
+        let data = await GetPropertyPowerGraphData(search)
+        console.log("data")
+
+        console.log(data)
+        setPowerData(data)
+        console.log("data")
+
+      } catch (error) {
+        console.log(error)
+      } 
+    };
+
+    fetchData();
+  }, []);
+
+
+  
 
   const handlePageChange = (newPage) => {
     setPagination({
@@ -291,7 +321,8 @@ const SmartDevicesPage = ({}) => {
         totalItems={totalItems}
         onPageChange={handlePageChange}
       />
-      <Grid style = {{marginTop:"30px"}} container spacing={3} alignItems="center" justifyContent="center">
+      <Grid style = {{marginTop:"30px"}} container spacing={3} >
+        <Grid item container lg = {7} md = {12} spacing= {2}>
         {smartDevices.map((device) => (
           <Grid item md={6} alignItems={"center"} justifyContent={"center"}>
             <Box
@@ -303,6 +334,24 @@ const SmartDevicesPage = ({}) => {
             </Box>
           </Grid>
         ))}
+      </Grid>
+      <Grid item  container lg = {5} md = {12}>
+      <Grid item  lg={12}  md = {12}>
+        <Card style={{  }}>
+          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
+            <BasicPowerGraph data = {powerData}></BasicPowerGraph>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item  lg={12}  md = {12}>
+        <Card style={{  }}>
+          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
+            <PowerSpentHistory deviceInfo={{id:propertyId}} property ={true}/>
+          </CardContent>
+        </Card>
+      </Grid>
+      </Grid>
+
       </Grid>
       <AddButton
         className="add-property-button"

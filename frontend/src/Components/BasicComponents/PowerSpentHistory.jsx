@@ -5,26 +5,18 @@ import {
   CardContent,
   Typography,
   TextField,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  IconButton,
-  InputAdornment,
   Grid,
-  Container,
   Button,
 } from "@mui/material";
 import InfoDialog from "./InfoDialog";
-
+import BasicPowerGraph from "./BasicPowerGraph";
 import BasicGraph from "./BasicGraph";
 import BasicSelect from "./BasicSelect";
 import {
   GetPowerGraphData,
   GetPowerGraphDataDate,
 } from "../Services/BatteryService";
+import { GetPropertyPowerGraphData, GetPropertyPowerGraphDataDate } from "../Services/PropertiesService";
 const searchOptions = [
   { key: "1", value: "5m" },
   { key: "2", value: "1h" },
@@ -35,7 +27,7 @@ const searchOptions = [
   { key: "7", value: "30d" },
   { key: "8", value: "Date Range" },
 ];
-const PowerSpentHistory = ({ deviceInfo }) => {
+const PowerSpentHistory = ({ deviceInfo, property = false }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -51,7 +43,11 @@ const PowerSpentHistory = ({ deviceInfo }) => {
 
     try {
       let search = { id: deviceInfo.id, hours: hrs };
-      let data = await GetPowerGraphData(search);
+      let data = null;
+      if (!property) data = await GetPowerGraphData(search);
+      else {
+        data = await GetPropertyPowerGraphData(search);
+      }
 
       setPowerData(data);
     } catch (error) {
@@ -60,7 +56,6 @@ const PowerSpentHistory = ({ deviceInfo }) => {
   };
 
   const handleSearchChange = (value) => {
-    
     const foundOption = searchOptions.find((option) => option.key === value);
     console.log(foundOption);
     setDateVisibility(false);
@@ -75,9 +70,9 @@ const PowerSpentHistory = ({ deviceInfo }) => {
 
   const handleSearchClick = async () => {
     if (toDate == "" || fromDate == "") {
-      setErrorModal(true)
+      setErrorModal(true);
       setErrorMessage("Please Select Valis Dates");
-      return
+      return;
     }
     let search = {
       id: deviceInfo.id,
@@ -85,12 +80,14 @@ const PowerSpentHistory = ({ deviceInfo }) => {
       endDate: toDate,
     };
     try {
-      let data = await GetPowerGraphDataDate(search);
+      let data = null ;
+      if (!property)data = await GetPowerGraphDataDate(search);
+      else {data= await GetPropertyPowerGraphDataDate(search)}
 
       setPowerData(data);
     } catch (error) {
       if (error.response) {
-        setErrorModal(true)
+        setErrorModal(true);
         setErrorMessage(error.response.data);
       }
     }
@@ -110,7 +107,11 @@ const PowerSpentHistory = ({ deviceInfo }) => {
           >
             <Typography variant="h6">History</Typography>
 
-            <BasicGraph data={powerData}></BasicGraph>
+            {property === false ? (
+              <BasicGraph data={powerData} />
+            ) : (
+              <BasicPowerGraph data={powerData} />
+            )}
           </CardContent>
         </Card>
       </Grid>
