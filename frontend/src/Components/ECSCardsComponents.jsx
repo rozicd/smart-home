@@ -7,7 +7,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  TextField
 } from "@mui/material";
 
 import { ecsHubConnection } from "./Sockets/SocketService";
@@ -22,45 +23,63 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
     const [humidities, setHumidities] = useState([])
     const [dataSelect, setDataSelect] = useState(1)
     const [dataHistory, setDataHistory] = useState([])
-    const [historyQuery, setHistoryQuery] = useState({Name:deviceInfo.name, start:"-1h", end:"0h"})
+    const [dateVisibility, setDateVisibility] = useState(false);
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
 
 
     const handleSelectValueChange = (event) => {
         const selectedValue = event.target.value;
-      
+        console.log(selectedValue);
         let startTime, endTime;
+        setDataSelect(selectedValue)
       
         // Update startTime and endTime based on the selected time range
         switch (selectedValue) {
           case 1:
             startTime = "-1h";
             endTime = "0h";
+            setDateVisibility(false)
             break;
           case 2:
             startTime = "-6h";
             endTime = "0h";
+            setDateVisibility(false)
             break;
           case 3:
             startTime = "-12h";
             endTime = "0h";
+            setDateVisibility(false)
             break;
+          case 4:
+            startTime = "-24h";
+            endTime = "0h";
+            setDateVisibility(false)
+            break;
+          case 5:
+            startTime = "-7d";
+            endTime = "0h";
+            break;
+           case 6:
+            setDateVisibility(true)
           default:
             startTime = "-1h";
             endTime = "0h";
         }
-      
+        
+        
         // Use the callback version of setHistoryQuery
-        setHistoryQuery((prevHistoryQuery) => ({
-          ...prevHistoryQuery,
-          Name: deviceInfo.name,
-          start: startTime,
-          end: endTime,
-        }));
-      
+        // setHistoryQuery((prevHistoryQuery) => ({
+        //   ...prevHistoryQuery,
+        //   Name: deviceInfo.name,
+        //   start: startTime,
+        //   end: endTime,
+        // }));
         // Call getData after the state is updated
-        getData();
+        getData(startTime, endTime);
       };
-      async function getData(){
+      async function getData(start="-1h", end="0h"){
+        let historyQuery = {Name:deviceInfo.name, start:start, end:end}
         try{
             let data = []
             data = await getESCData(deviceInfo.type, historyQuery);
@@ -77,8 +96,7 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
             setDates(onlyDates);
             setTemperatures(temps);
             setHumidities(onlyHumidities);
-            setDataHistory(data)
-            console.log(data);
+            setDataHistory(data);
         }catch(error){
             console.log(error);
         }
@@ -93,9 +111,10 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
                 setECSData({airHumidity, roomTemperature})
             });
         }
-        
         getData();
+
         connect();
+
     }, []);
 
     return(
@@ -127,18 +146,47 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
                 <Card style={{ height: "55vh" }}>
                 <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%"  }}>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                    <InputLabel id="demo-simple-select-label">Time</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={dataSelect}
-                        onChange={handleSelectValueChange}
-                        label="Age"
-                    >
-                        <MenuItem value={1}>Last hour</MenuItem>
-                        <MenuItem value={2}>Last 6 hours</MenuItem>
-                        <MenuItem value={3}>Last 12 hours</MenuItem>
-                    </Select>
+                    <div>
+                        <InputLabel id="demo-simple-select-label">Time</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={dataSelect}
+                            onChange={handleSelectValueChange}
+                            label="Age"
+                        >
+                            <MenuItem value={1}>Last hour</MenuItem>
+                            <MenuItem value={2}>Last 6 hours</MenuItem>
+                            <MenuItem value={3}>Last 12 hours</MenuItem>
+                            <MenuItem value={4}>Last 24 hours</MenuItem>
+                            <MenuItem value={5}>Last 7 days</MenuItem>
+                            <MenuItem value={6}>Data Range</MenuItem>
+                        </Select>
+                        {dateVisibility &&(
+                            <TextField
+                            label="From Date"
+                            type="date"
+                            value={fromDate}
+                            onChange={(e) => setFromDate(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            />
+                            )
+                        }
+                        {dateVisibility &&(
+                            <TextField
+                            sx={{height:"35px"}}
+                            label="To Date"
+                            type="date"
+                            value={toDate}
+                            onChange={(e) => {setToDate(e.target.value);
+                                                if(fromDate !== "" && toDate!==""){
+                                                    getData(fromDate, toDate)
+                                                }}}
+                            InputLabelProps={{ shrink: true }}
+                            />
+                            )
+                        }
+                    </div>
                 </FormControl>
                 <BasicGraph data={dataHistory} xKey="time" yKey="roomTemperate"/>
                 </CardContent>
