@@ -103,6 +103,7 @@ const SmartDevicesPage = ({}) => {
       data.append("lightThreshold", form.lightThreshold);
     }
     if (selectedDevice == 5) {
+      data.append("energySpending", form.energySpending);
       for (var i = 0; i < form.AllowedLicensePlates.length; i++) {
         data.append("allowedLicensePlates", form.AllowedLicensePlates[i]);
       }
@@ -164,6 +165,12 @@ const SmartDevicesPage = ({}) => {
   ];
 
   let cg = [
+    {
+      item: "BasicInput",
+      label: "Energy Spending",
+      type: "number",
+      itemValue: "energySpending",
+    },
     {
       item: "RegistrationInput",
       itemValue: "AllowedLicensePlates",

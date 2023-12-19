@@ -32,6 +32,9 @@ namespace SmartHome.Application.Services.SmartDevices
             washingMachine.Id = Guid.NewGuid();
             washingMachine.Connection = "property/" + washingMachine.PropertyId + "/device/" + washingMachine.Id;
             await _washingMachineRepository.Add(washingMachine);
+            _mqttClientService.PublishMessageAsync("property/" + washingMachine.PropertyId.ToString() + "/create", washingMachine.Id.ToString() + "," + "WashingMachine").Wait();
+            Thread.Sleep(1000);
+            await this.Connect(washingMachine.Id);
         }
 
     }

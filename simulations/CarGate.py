@@ -13,8 +13,11 @@ class CarGate(SmartDevice):
         self.gate_status = "CLOSED"
         self.allowed_vehicles = set()
         self.inside_vehicles = set()
-
+        self.energy_spending = 0
         self.simulation_thread = None
+
+        self.send_lamp_energy_thread = None
+        self.is_send_lamp_energy_running = False
 
     def on_connect(self, client, userdata, flags, rc):
         super().on_connect(client, userdata, flags, rc)
@@ -32,17 +35,21 @@ class CarGate(SmartDevice):
             gate_info = command.split(',')
             self.mode = gate_info[0]
             self.gate_status = "CLOSED"
+            self.energy_spending = float(gate_info[1])/1000
             self.allowed_vehicles = set(gate_info[2:])
             if len(self.allowed_vehicles):
                 self.allowed_vehicles = set()
             print(f"Mode: {self.mode}")
             print(f"Gate Status: {self.gate_status}")
+            print(f"Energy Spending: {self.energy_spending}")
             print(f"Allowed Vehicles: {self.allowed_vehicles}")
 
             if self.simulation_thread is None:
                 self.simulation_thread = threading.Thread(target=self.simulate_vehicles)
                 self.simulation_thread.daemon = True
                 self.simulation_thread.start()
+                self.send_lamp_energy_thread = threading.Thread(target=self.sendEnergySpending)
+                self.send_lamp_energy_thread.start()
 
         elif msg.topic == self.name + "/openGate":
             self.client.publish(self.name + "/action", f"{command},3")
@@ -66,7 +73,10 @@ class CarGate(SmartDevice):
         self.mode = mode
         print(f"Mode set to {self.mode}")
 
-
+    def sendEnergySpending(self):
+        while self.send_lamp_energy_thread:
+            self.client.publish(self.name +"/spending", f"{self.energy_spending}")
+            time.sleep(60)
     def set_allowed_vehicles(self, vehicles):
         self.allowed_vehicles = set(vehicles)
         print(f"Allowed Vehicles set to {self.allowed_vehicles}")
