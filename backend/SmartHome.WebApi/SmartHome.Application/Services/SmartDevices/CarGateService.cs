@@ -42,6 +42,9 @@ namespace SmartHome.Application.Services.SmartDevices
             carGate.Id = Guid.NewGuid();
             carGate.Connection = "property/" + carGate.PropertyId + "/device/" + carGate.Id;
             await _carGateRepository.Add(carGate);
+            _mqttClientService.PublishMessageAsync("property/" + carGate.PropertyId.ToString() + "/create", carGate.Id.ToString() + "," + "CarGate").Wait();
+            Thread.Sleep(1000);
+            await this.Connect(carGate.Id);
         }
 
         public async Task<CarGate> GetById(Guid lampId)
@@ -94,7 +97,8 @@ namespace SmartHome.Application.Services.SmartDevices
 
                 carGate = await repository.GetById(device.Id);
             }
-            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{carGate.Mode},{carGate.State},{string.Join(",", carGate.AllowedLicensePlates)}");
+            Console.WriteLine(carGate.EnergySpending);
+            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{carGate.Mode},{carGate.EnergySpending},{string.Join(",", carGate.AllowedLicensePlates)}");
             var client = await _mqttClientService.SubscribeAsync(device.Connection + "/gateStatus");
 
             var actionClient = await _mqttClientService.SubscribeAsync(device.Connection + "/action");
