@@ -232,7 +232,7 @@ const SmartDevicesPage = ({}) => {
     }
     if (selectedDevice == 2) {
       setTemplate(t.concat(ac));
-      setUrl("air-conditioner");
+      setUrl("airconditioner");
     }
 
     if (selectedDevice == 4) {

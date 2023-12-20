@@ -170,7 +170,7 @@ using (var scope = app.Services.CreateScope())
 app.MapHub<LampHub>("/lampHub");
 
 app.MapHub<ECSHub>("/ECSHub");
-
+app.MapHub<ACHub>("/ACHub");
 app.MapHub<CarGateHub>("/carGateHub");
 app.MapHub<SolarPanelSystemHub>("/panelHub");
 app.MapHub<HomeBatteryHub>("/batteryHub");

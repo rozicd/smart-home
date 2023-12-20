@@ -18,10 +18,11 @@ public class SmartDeviceServiceFactory : ISmartDeviceServiceFactory
     public async Task<ISmartDeviceActionsService> GetServiceAsync(Guid deviceId)
     {
         string deviceType = await _smartDeviceRepository.GetDeviceType(deviceId);
-
+        Console.WriteLine(deviceType);
         switch (deviceType)
         {
             case "AirConditioner":
+                Console.WriteLine("DOOOOBAR CASEEEEEEEEE");
                 return _serviceProvider.GetRequiredService<IAirConditionerService>();
 
             case "CarCharger":
@@ -31,7 +32,7 @@ public class SmartDeviceServiceFactory : ISmartDeviceServiceFactory
                 return _serviceProvider.GetRequiredService<ICarGateService>();
 
             case "EnvironmentalConditionsSensor":
-                Console.WriteLine("DOOOOBAR CASEEEEEEEEE");
+                
                 return _serviceProvider.GetRequiredService<IEnvironmentalConditionsSensorService>();
 
             case "HomeBattery":

@@ -1,4 +1,5 @@
-﻿using SmartHome.Domain.Models.SmartDevices;
+﻿using SmartHome.Domain.Models;
+using SmartHome.Domain.Models.SmartDevices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,9 @@ namespace SmartHome.Domain.Services.SmartDevices
     {
         Task Add(AirConditioner sensor);
         Task<AirConditioner> GetById(Guid id);
+        Task TurnOn(Guid airConditionId);
+        Task TurnOff(Guid airConditionId);
+        Task ChangeMode(LoggedUser user, AirConditioner airConditioner);
 
     }
 }

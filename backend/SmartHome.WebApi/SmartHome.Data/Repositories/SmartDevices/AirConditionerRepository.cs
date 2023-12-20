@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InfluxDB.Client.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Exceptions;
@@ -15,13 +16,13 @@ namespace SmartHome.Data.Repositories.SmartDevices
     public class AirConditionerRepository : IAirConditionerRepository
     {
         private readonly IMapper _mapper;
-        private readonly DbSet<SmartDeviceEntity> _airConditioners;
+        private readonly DbSet<AirConditionerEntity> _airConditioners;
         private readonly DatabaseContext _context;
 
         public AirConditionerRepository(DatabaseContext context, IMapper mapper)
         {
             _context = context;
-            _airConditioners = context.Set<SmartDeviceEntity>();
+            _airConditioners = context.Set<AirConditionerEntity>();
             _mapper = mapper;
         }
 
@@ -42,6 +43,19 @@ namespace SmartHome.Data.Repositories.SmartDevices
             return _mapper.Map<AirConditioner>(airConditioner);
 
         }
+
+        public async Task Update(AirConditioner airConditioner)
+        {
+            AirConditionerEntity airConditionerEntity = await _airConditioners.FirstOrDefaultAsync(ac => ac.Id == airConditioner.Id);
+            if (airConditionerEntity == null)
+            {
+                throw new NotFoundException($"AC with ID {airConditioner.Id} not found");
+            }
+            airConditionerEntity.CurrentTemperature = airConditioner.CurrentTemperature;
+            airConditionerEntity.Mode = airConditioner.Mode;
+            await _context.SaveChangesAsync();
+        }
+
     }
 
 }

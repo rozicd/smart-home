@@ -5,6 +5,7 @@ using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.DataTransferObjects.Responses;
+using SmartHome.Application.Services.SmartDevices;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -45,6 +46,30 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             return Ok(response);
 
+        }
+        [HttpPost("turnOn")]
+        public async Task<IActionResult> TurnOn([FromBody] TurnOnOffDTO turnOnDTO)
+        {
+            await _airConditionerService.TurnOn(turnOnDTO.LampId);
+            return Ok();
+        }
+
+        [HttpPost("turnOff")]
+        public async Task<IActionResult> TurnOff([FromBody] TurnOnOffDTO turnOffDTO)
+        {
+            await _airConditionerService.TurnOff(turnOffDTO.LampId);
+            return Ok();
+        }
+
+
+        [HttpPost("changeMode")]
+        public async Task<IActionResult> ChangeMode([FromBody] ChangeAcModeDTO changeModeDTO)
+        {
+            AirConditioner ac = await _airConditionerService.GetById(changeModeDTO.Id);
+            ac.CurrentTemperature = changeModeDTO.currentTemperature;
+            ac.Mode = changeModeDTO.mode;
+            await _airConditionerService.ChangeMode(_user, ac);
+            return Ok();
         }
     }
 

@@ -3,6 +3,7 @@ import time
 import paho.mqtt.client as mqtt
 import random
 
+from simulations.AirConditioner import AirConditioner
 # <<<<<<< HEAD
 # from simulations.Lamp import Lamp
 # from simulations.SmartDevice import SmartDevice
@@ -130,6 +131,8 @@ class SmartHome:
                     self.client.subscribe(device_key+'/spending')
                 elif command[1] == 'EnvironmentalConditionsSensor':
                     smart_device = EnvironmentalConditionsSensor(device_key)
+                elif command[1] == 'AirConditioner':
+                    smart_device = AirConditioner(device_key)
                 else:
                     smart_device = SmartDevice(device_key)
 

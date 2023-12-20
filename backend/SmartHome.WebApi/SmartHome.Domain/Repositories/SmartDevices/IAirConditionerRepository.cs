@@ -11,6 +11,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     {
         Task Add(AirConditioner sensor);
         Task<AirConditioner> GetById(Guid id);
+        Task Update(AirConditioner airConditioner);
 
     }
 }

@@ -21,8 +21,6 @@ class EnvironmentalConditionsSensor(SmartDevice):
             super().on_message(client, userdata, msg)
 
         if msg.topic == self.name + "/info":
-            print("tpoicccccccc info#########")
-            print(self.topic_sensor)
             sensorInfo = msg.payload.decode('utf-8')
             power_consumption, room_temperature, air_humidity = sensorInfo.split(',')
             print(f"Power consumption: {power_consumption}")
