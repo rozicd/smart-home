@@ -19,5 +19,11 @@ const carGateHubConnection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
 
+  const propertyHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl("http://localhost:5090/propertyHub",{withCredentials:true})
+  .withAutomaticReconnect()
+  .build();
 
-export { hubConnection,panelHubConnection,BatteryHubConnection,carGateHubConnection };
+
+
+export { propertyHubConnection,hubConnection,panelHubConnection,BatteryHubConnection,carGateHubConnection };
