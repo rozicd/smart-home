@@ -13,11 +13,18 @@ import WbSunnyIcon from "@mui/icons-material/WbSunnyOutlined";
 import AirOutlinedIcon from "@mui/icons-material/AirOutlined";
 import { ACHubConnection } from "./Sockets/SocketService";
 import { turnOn, turnOff, changeMode } from "./Services/ACService";
+import InfoDialog from "./BasicComponents/InfoDialog";
 
 const ACCardsComponents = ({ deviceInfo }) => {
   const [currentTemperature, setCurrentTemperature] = useState(20);
   const [selectedButton, setSelectedButton] = useState("COOLING");
   const [acData, setACData] = useState({currentTemperature: deviceInfo.minimumTemperature, powerState: 0});
+  const [infoDialog, setInfoDialog] = useState({
+    open: false,
+    title: '',
+    content: ''
+  });
+
 
   const handleSwitchChange = async () => {
     console.log(deviceInfo.id)
@@ -76,6 +83,11 @@ const ACCardsComponents = ({ deviceInfo }) => {
 
     try{
         await changeMode(changeACModeDTO);
+        setInfoDialog({
+            open: true,
+            title: 'AC Mode',
+            content: 'AC is running on chosed mode',
+          });
     }catch(error){
         console.log(error)
     }
@@ -250,9 +262,14 @@ const ACCardsComponents = ({ deviceInfo }) => {
         </Card>
       </Grid>
       <Grid item xs={24} md={12}>
-        <Button onClick={()=>handleSubmitClick()}>Submit</Button>
+        <Button onClick={()=>handleSubmitClick()} disabled={acData.powerState === 0}>Submit</Button>
       </Grid>
-      
+      <InfoDialog
+        open={infoDialog.open}
+        onClose={() => setInfoDialog({ ...infoDialog, open: false })}
+        title={infoDialog.title}
+        content={infoDialog.content}
+      />
     </Grid>
   );
 };

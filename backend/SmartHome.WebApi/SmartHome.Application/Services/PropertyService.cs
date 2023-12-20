@@ -2,6 +2,7 @@
 using InfluxDB.Client.Core.Flux.Domain;
 using InfluxDB.Client.Writes;
 using Microsoft.AspNetCore.SignalR;
+using SmartHome.Application.Hubs;
 using SmartHome.Domain.Models;
 using SmartHome.Domain.Repositories;
 using SmartHome.Domain.Services;
@@ -19,13 +20,16 @@ namespace SmartHome.Application.Services
         private readonly IPropertyRepository _propertyRepository;
         private readonly IMqttClientService _mqttClientService;
         private readonly IInfluxClientService _influxClientService;
+        private readonly IHubContext<PropertyHub> _hubContext;
 
 
-        public PropertyService(IPropertyRepository propertyRepository, IMqttClientService mqttClientService, IInfluxClientService influxClientService)
+
+        public PropertyService(IPropertyRepository propertyRepository, IMqttClientService mqttClientService, IInfluxClientService influxClientService, IHubContext<PropertyHub> hubContext)
         {
             _propertyRepository = propertyRepository;
             _mqttClientService = mqttClientService;
             _influxClientService = influxClientService;
+            _hubContext = hubContext;
         }
 
         public async Task AddProperty(Property property)
@@ -70,12 +74,14 @@ namespace SmartHome.Application.Services
                     if (float.TryParse(parts[0], out float power))
                     {
                         await SendPowerInfluxDataAsync(property.Id.ToString(), power, parts[2], parts[1]);
+                        await _hubContext.Clients.All.SendAsync("property/" + property.Id, power);
+
 
 
 
                     }
 
-                    
+
                 }
             };
         }
