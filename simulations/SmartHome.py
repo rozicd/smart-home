@@ -106,6 +106,7 @@ class SmartHome:
                     self.home_batteries[command[0]] = smart_device
                 elif command[1] == "CarGate":
                     smart_device = CarGate(device_key)
+                    self.client.subscribe(device_key+'/spending')
                 elif command[1] == 'Lamp':
                     smart_device = Lamp(device_key)
                     self.client.subscribe(device_key+'/spending')

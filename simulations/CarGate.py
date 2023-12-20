@@ -66,7 +66,15 @@ class CarGate(SmartDevice):
         self.mode = mode
         print(f"Mode set to {self.mode}")
 
+<<<<<<< Updated upstream
 
+=======
+    def sendEnergySpending(self):
+        while self.send_lamp_energy_thread:
+            print("SENDING SPENDING")
+            self.client.publish(self.name +"/spending", f"{self.energy_spending}")
+            time.sleep(60)
+>>>>>>> Stashed changes
     def set_allowed_vehicles(self, vehicles):
         self.allowed_vehicles = set(vehicles)
         print(f"Allowed Vehicles set to {self.allowed_vehicles}")
