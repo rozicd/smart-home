@@ -8,6 +8,8 @@ import getStaticContent from "../Components/Services/StaticService";
 import { Grid, Box } from "@mui/material";
 import BasicDeviceInfoComponent from "../Components/BasicDeviceInfoComponent";
 import LampCardsComponent from "../Components/LampCardsComponents";
+import ECSCardsComponent from "../Components/ECSCardsComponents";
+import ACCardsComponents from "../Components/ACCardsComponents";
 import CarGateCardsComponent from "../Components/CarGateCardsComponent";
 import PanelCardComponent from "../Components/PanelCardsComponent";
 import BatteryCardsComponent from "../Components/BatteryCardsComponent";
@@ -21,8 +23,11 @@ const DeviceInfoPage = () => {
 
   useEffect(() => {
     const fetchDeviceData = async () => {
+      console.log(deviceType, deviceId)
       try {
         const deviceInfo = await getDevice(deviceType, deviceId);
+        console.log("MOJ UREDJAJ:")
+        console.log(deviceInfo)
         setDeviceData(deviceInfo);
         const propertyImage = await getStaticContent(deviceInfo.imageUrl);
         setImageData(propertyImage);
@@ -72,6 +77,18 @@ const DeviceInfoPage = () => {
           {deviceType === "homebattery" && (
             <BatteryCardsComponent deviceInfo={deviceData} />
           )}
+          {deviceType === "environmentalconditionssensor" && (
+            <ECSCardsComponent
+              deviceInfo={deviceData}
+            />
+          )}
+          {deviceType === "airconditioner" &&(
+            <ACCardsComponents
+              deviceInfo={deviceData}
+            />
+          )
+
+          }
           {/* Add other device type checks and load corresponding components */}
         </Box>
       </Grid>

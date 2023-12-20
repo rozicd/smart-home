@@ -6,6 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SmartHome.Domain.Services;
+using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Core.Flux.Domain;
+using System.Drawing.Printing;
+using SmartHome.Domain.Models.SmartDevices;
 
 using SmartHome.Domain.Models.SmartDevices;
 using InfluxDB.Client.Core.Flux.Domain;
@@ -38,6 +42,43 @@ namespace SmartHome.Application.Services
             await writeApi.WritePointAsync(pointData,this._bucket, this._organization);
         }
 
-        
+        public async Task<List<ESCData>> GetESCDataAsync(string name, string start, string stop)
+        {
+            var queryApi = _client.GetQueryApi();
+            string fluxQuery = $"from(bucket: \"bucket\") |> range(start: {start}, stop: {stop}) |> filter(fn: (r) => r[\"_measurement\"] == \"{name}\") |> filter(fn: (r) => r[\"_field\"] == \"RoomTemperature\" or r[\"_field\"] == \"AirHumidity\") |> aggregateWindow(every: 10s, fn: mean, createEmpty: false) |> yield(name: \"mean\")";
+            Console.WriteLine(fluxQuery);
+            List<ESCData> data = new List<ESCData>();
+            var timestampData = new Dictionary<string, ESCData>();
+            var queryResult = await queryApi.QueryAsync(fluxQuery, _organization);
+            foreach (var record in queryResult.SelectMany(table => table.Records))
+            {
+                string timestamp = record.GetTime().ToString();
+                string fieldName = record.GetValueByKey("_field").ToString();
+                var fieldValue = Convert.ToDouble(record.GetValueByKey("_value"));
+
+                // If timestamp not present in the dictionary, add a new entry
+                if (!timestampData.ContainsKey(timestamp))
+                {
+                    timestampData[timestamp] = new ESCData { Timestamp = timestamp };
+                }
+
+                // Add field and value to the CombinedData object for the current timestamp
+                if (fieldName == "RoomTemperature")
+                {
+                    timestampData[timestamp].RoomTemperate = (float)fieldValue;
+                }
+                else if (fieldName == "AirHumidity")
+                {
+                    timestampData[timestamp].AirHumidity = (float)fieldValue;
+                }
+            }
+            foreach (ESCData eSCData in timestampData.Values)
+            {
+                data.Add(eSCData);
+            }
+            return data;
+
+        }
+
     }
 }

@@ -52,7 +52,6 @@ const App = () => {
 
             <Route path="properties/:property" element={<SmartDevicesPage />} />
             <Route path="devices/:deviceType/:deviceId" element={<DeviceInfoPage/>} />
-
             <Route path="admins" element={<AuthenticatedAdmins />} />
           </Route>
         </Routes>

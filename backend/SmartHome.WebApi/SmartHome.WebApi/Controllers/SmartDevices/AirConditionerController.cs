@@ -4,11 +4,13 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.DataTransferObjects.Responses;
+using SmartHome.Application.Services.SmartDevices;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("air-conditioner")]
+    [Route("airconditioner")]
     public class AirConditionerController : BaseController
     {
         private readonly IAirConditionerService _airConditionerService;
@@ -33,6 +35,40 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             response.UserId = _user.UserId;
             await _airConditionerService.Add(response);
 
+            return Ok();
+        }
+
+        [HttpGet("{airConditionId}")]
+        public async Task<IActionResult> GetACById(Guid airConditionId)
+        {
+            AirConditioner ac = await _airConditionerService.GetById(airConditionId);
+            AirConditionerResponseDTO response = _mapper.Map<AirConditionerResponseDTO>(ac);
+
+            return Ok(response);
+
+        }
+        [HttpPost("turnOn")]
+        public async Task<IActionResult> TurnOn([FromBody] TurnOnOffAcDTO turnOnDTO)
+        {
+            await _airConditionerService.TurnOn(turnOnDTO.acId);
+            return Ok();
+        }
+
+        [HttpPost("turnOff")]
+        public async Task<IActionResult> TurnOff([FromBody] TurnOnOffAcDTO turnOffDTO)
+        {
+            await _airConditionerService.TurnOff(turnOffDTO.acId);
+            return Ok();
+        }
+
+
+        [HttpPost("changeMode")]
+        public async Task<IActionResult> ChangeMode([FromBody] ChangeAcModeDTO changeModeDTO)
+        {
+            AirConditioner ac = await _airConditionerService.GetById(changeModeDTO.Id);
+            ac.CurrentTemperature = changeModeDTO.currentTemperature;
+            ac.Mode = changeModeDTO.mode;
+            await _airConditionerService.ChangeMode(_user, ac);
             return Ok();
         }
     }

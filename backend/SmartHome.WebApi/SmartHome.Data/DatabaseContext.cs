@@ -23,6 +23,8 @@ namespace SmartHome.Data
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<PropertyEntity> Properties { get; set; }
         public DbSet<LampEntity> Lamps { get; set; }
+        public DbSet<EnvironmentalConditionsSensorEntity> environmentalConditionsSensors { get; set; }
+        public DbSet<AirConditionerEntity> airConditioners { get; set; }
         public DbSet<ActivationTokenEntity> ActivationTokens { get; set; }
         public DbSet<SmartDeviceEntity> SmartDevices { get; set; }
         public DbSet<SprinkleModeEntity> SprinkleModes { get; set; }

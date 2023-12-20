@@ -8,5 +8,6 @@ public interface IEnvironmentalConditionsSensorRepository
 {
     Task Add(EnvironmentalConditionsSensor device);
     Task<EnvironmentalConditionsSensor> GetById(Guid id);
+    Task Update(EnvironmentalConditionsSensor environmentalConditionsSensor);
 
 }
