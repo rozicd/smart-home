@@ -17,6 +17,7 @@ import { Grid, Box, Card, CardContent } from "@mui/material";
 import PowerSpentHistory from "../Components/BasicComponents/PowerSpentHistory";
 import { GetPropertyPowerGraphData } from "../Components/Services/PropertiesService";
 import BasicPowerGraph from "../Components/BasicComponents/BasicPowerGraph";
+import { propertyHubConnection } from "../Components/Sockets/LightSocketService";
 const deviceTypes = [
   { id: 1, name: "Enviromantal condition sensor" },
   { id: 2, name: "Air Conditioner" },
@@ -55,6 +56,20 @@ const SmartDevicesPage = ({}) => {
   const [totalItems, setTotalItems] = useState(0);
   const [added, setAdded] = useState(false);
   const [powerData, setPowerData] = useState([]);
+  const [socketPower,setSocketPower] = useState("");
+  useEffect(() => {
+    async function connect() {
+      if (propertyHubConnection.state === "Disconnected") {
+        await propertyHubConnection.start();
+      }
+
+      propertyHubConnection.on("property/"+propertyId, (powerPerMinute) => {
+        console.log(powerPerMinute)
+        setSocketPower(powerPerMinute)
+      });
+    }
+    connect();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,7 +90,7 @@ const SmartDevicesPage = ({}) => {
     };
 
     fetchData();
-  }, []);
+  }, [socketPower]);
 
   const handlePageChange = (newPage) => {
     setPagination({
