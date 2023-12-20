@@ -73,6 +73,8 @@ class CarGate(SmartDevice):
         self.mode = mode
         print(f"Mode set to {self.mode}")
 
+
+
     def sendEnergySpending(self):
         while self.send_lamp_energy_thread:
             self.client.publish(self.name +"/spending", f"{self.energy_spending}")

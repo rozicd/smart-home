@@ -104,7 +104,7 @@ class Lamp(SmartDevice):
 
     def solar_elevation_to_lux(self, solar_elevation):
         print(solar_elevation)
-        lux = max(0, 110000 * math.sin(math.radians(solar_elevation)))
+        lux = max(0, math.sin(math.radians(solar_elevation)))
         return lux
     def sendLampInfo(self):
         observer = ephem.Observer()
@@ -116,9 +116,9 @@ class Lamp(SmartDevice):
             lux_value = self.solar_elevation_to_lux(solar_elevation)
 
 
-            normalized_solar_elevation = (lux_value / 90) * 100
+            normalized_solar_elevation = (lux_value) * 100
 
-            adjusted_value = max(0, min(100, normalized_solar_elevation))
+            adjusted_value = max(0, normalized_solar_elevation)
 
             self.light_strength = adjusted_value
             if self.auto_mode:
