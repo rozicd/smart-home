@@ -1,24 +1,33 @@
 // Import necessary Material-UI components
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
   Typography,
   TextField,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  IconButton,
+  InputAdornment,
   Grid,
+  Container,
   Button,
 } from "@mui/material";
 import InfoDialog from "./InfoDialog";
-import BasicPowerGraph from "./BasicPowerGraph";
+
 import BasicGraph from "./BasicGraph";
 import BasicSelect from "./BasicSelect";
 import {
+    GetGraphData,
+  GetGraphDataDate,
   GetPowerGraphData,
   GetPowerGraphDataDate,
-} from "../Services/BatteryService";
-import { GetPropertyPowerGraphData, GetPropertyPowerGraphDataDate } from "../Services/PropertiesService";
+} from "../Services/LampService";
 const searchOptions = [
-  { key: "real", value: "Real Time" },
   { key: "1", value: "5m" },
   { key: "2", value: "1h" },
   { key: "3", value: "6h" },
@@ -28,14 +37,12 @@ const searchOptions = [
   { key: "7", value: "30d" },
   { key: "8", value: "Date Range" },
 ];
-const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const LampDataHistory = ({ deviceInfo }) => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [selectedSearch, setSelectedSearch] = useState("real");
+  const [selectedSearch, setSelectedSearch] = useState();
   const [dateVisibility, setDateVisibility] = useState(false);
-  const [powerData, setPowerData] = useState([]);
+  const [lampData, setLampData] = useState([]);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
@@ -44,25 +51,27 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
 
     try {
       let search = { id: deviceInfo.id, hours: hrs };
-      let data = null;
-      if (!property) data = await GetPowerGraphData(search);
-      else {
-        data = await GetPropertyPowerGraphData(search);
-      }
+      let data = await GetGraphData(search);
+      console.log(data)
 
-      setPowerData(data);
+      setLampData(data);
     } catch (error) {
       console.log(error);
     }
   };
 
+  
+  useEffect(() => {
+    fetchData("6");
+  }, []);
+
+
   const handleSearchChange = (value) => {
+    
     const foundOption = searchOptions.find((option) => option.key === value);
     console.log(foundOption);
     setDateVisibility(false);
     setSelectedSearch(value);
-    if (value == "real") return;
-
     if (value == "x") return;
 
     if (value == "8") setDateVisibility(true);
@@ -72,22 +81,34 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
   };
 
   const handleSearchClick = async () => {
-    if (toDate == "" || fromDate == "") {
+    if (toDate === "" || fromDate === "") {
       setErrorModal(true);
-      setErrorMessage("Please Select Valis Dates");
+      setErrorMessage("Please Select Valid Dates");
       return;
     }
+  
+    const startDate = new Date(fromDate);
+    const endDate = new Date(toDate);
+  
+    const dateDifferenceInDays = (endDate - startDate) / (24 * 60 * 60 * 1000);
+  
+    const maxAllowedDifferenceInDays = 30;
+  
+    if (dateDifferenceInDays > maxAllowedDifferenceInDays) {
+      setErrorModal(true);
+      setErrorMessage("Date range cannot exceed 30 days");
+      return;
+    }
+  
     let search = {
       id: deviceInfo.id,
       startDate: fromDate,
       endDate: toDate,
     };
+  
     try {
-      let data = null ;
-      if (!property)data = await GetPowerGraphDataDate(search);
-      else {data= await GetPropertyPowerGraphDataDate(search)}
-
-      setPowerData(data);
+      let data = await GetGraphDataDate(search);
+      setLampData(data);
     } catch (error) {
       if (error.response) {
         setErrorModal(true);
@@ -109,14 +130,21 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
             }}
           >
             <Typography variant="h6">History</Typography>
-            {selectedSearch === "real" ? (
-              // Render RealTimeGraph if selectedSearch is "real"
-              RealTimeGraph
-            ) : property === false ? (
-              <BasicGraph data={powerData}></BasicGraph>
-            ) : (
-              <BasicPowerGraph data={powerData} />
-            )}
+
+            <BasicGraph data={lampData} datakey={"currentLight"}></BasicGraph>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12}>
+        <Card style={{ width: "85%", margin: "auto" }}>
+          <CardContent
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Grid
               container
               item
@@ -169,11 +197,9 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
                 </Grid>
               )}
             </Grid>
-
           </CardContent>
         </Card>
       </Grid>
-      
       <InfoDialog
         open={errorModal}
         onClose={() => setErrorModal(false)}
@@ -184,4 +210,4 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
   );
 };
 
-export default PowerSpentHistory;
+export default LampDataHistory;

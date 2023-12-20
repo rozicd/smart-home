@@ -1,4 +1,5 @@
-﻿using SmartHome.Domain.Models;
+﻿using InfluxDB.Client.Core.Flux.Domain;
+using SmartHome.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace SmartHome.Domain.Services
         Task<Property> GetPropertyById(Guid id);
         Task UpdateProperty(Property property);
         Task ListenOnCharge(Property property);
+        Task<List<FluxTable>> GetPropertyPowerInfluxData(string id, string h);
+        Task<List<FluxTable>> GetPropertyPowerInfluxDataDate(string id, DateTime startDate, DateTime endDate);
     }
 }

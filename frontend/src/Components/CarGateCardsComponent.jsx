@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -25,11 +25,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import EventLogCard from "./BasicComponents/EventLogCard";
-import { openGate, closeGate, changeMode, addLicensePlate, removeLicensePlate } from './Services/CarGateService';
+import { openGate, closeGate, changeMode, addLicensePlate, removeLicensePlate, getCarActions } from './Services/CarGateService';
 import { carGateHubConnection } from "./Sockets/LightSocketService";
 
 const CarGateCardsComponent = ({ deviceData }) => {
-  console.log(deviceData)
   const [gateData, setGateData] = useState({
     mode: deviceData.mode,
     state: deviceData.state,
@@ -38,6 +37,10 @@ const CarGateCardsComponent = ({ deviceData }) => {
   const [isSwitchDisabled, setSwitchDisabled] = useState(false);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [newLicensePlate, setNewLicensePlate] = useState("");
+  const [carGateHistory,setCarGateHistory] = useState([]);
+  const [toDate,setToDate] = useState(null);
+  const [fromDate,setFromDate] = useState(null);
+  const isSubscribedToActions = useRef(false);
 
   const handleSwitchChange = () => {
 
@@ -77,6 +80,20 @@ const CarGateCardsComponent = ({ deviceData }) => {
     addLicensePlate(deviceData.id,newLicensePlate)
 
   };
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        let data = await getCarActions(deviceData.id,fromDate,toDate)
+        setCarGateHistory(data)
+
+      } catch (error) {
+        console.log(error)
+      } 
+    };
+
+    fetchData();
+  }, [toDate,fromDate]);
 
   useEffect(() => {
     async function connect() {
@@ -85,12 +102,31 @@ const CarGateCardsComponent = ({ deviceData }) => {
       }
 
       carGateHubConnection.on(deviceData.connection, (gateState) => {
-        console.log(gateState)
         setGateData((prevGateData) => ({
           ...prevGateData,
           state: gateState,
         }));
       });
+
+      if (!isSubscribedToActions.current) {
+        console.log("SUBSCRIBE ACTIONS");
+        carGateHubConnection.on(
+          deviceData.connection + "/action",
+          (didAction, action) => {
+            if (toDate === null || toDate === "") {
+              console.log("CAO");
+              const newAction = {
+                user: didAction,
+                action,
+                timestamp: new Date().toISOString(),
+              };
+              setCarGateHistory((prevHistory) => [...prevHistory, newAction]);
+            }
+          }
+        );
+        isSubscribedToActions.current = true;
+      }
+  
     }
     connect();
   }, []);
@@ -224,7 +260,7 @@ const CarGateCardsComponent = ({ deviceData }) => {
         </Card>
       </Grid>
       <Grid item xs={12} md={12}>
-        <EventLogCard eventData={[]}/>
+        <EventLogCard eventData= {carGateHistory} setEndDate={setToDate} setStartDate={setFromDate}/>
       </Grid>
 
      

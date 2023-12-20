@@ -49,14 +49,17 @@ class AirConditioner(SmartDevice):
             print("Updating Ac mode")
 
     def start_send_ac_tick_thread(self):
+        print("pre ifa")
         if not self.is_send_ac_energy_running:
-            self.is_send_ac_energy_running = True
+            print("posle ifa")
+            self.is_send_ac_thread_running = True
             self.send_ac_tick_thread = threading.Thread(target=self.send_ac_info)
             self.send_ac_tick_thread.start()
 
     def send_ac_info(self):
         while self.is_send_ac_thread_running:
-
+            print("################AAAAAAAAAAAAAAAa")
+            print(self.topic_ac)
             self.client.publish(self.topic_ac, f"{self.ac_current_temperature}, {self.powerState}")
             time.sleep(5)
 

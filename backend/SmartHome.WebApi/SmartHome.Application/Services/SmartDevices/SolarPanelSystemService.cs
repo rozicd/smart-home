@@ -41,6 +41,9 @@ namespace SmartHome.Application.Services.SmartDevices
             solarPanelSystem.Id = Guid.NewGuid();
             solarPanelSystem.Connection = "property/" + solarPanelSystem.PropertyId + "/device/" + solarPanelSystem.Id;
             await _solarPanelSystemRepository.Add(solarPanelSystem);
+            _mqttClientService.PublishMessageAsync("property/" + solarPanelSystem.PropertyId.ToString() + "/create", solarPanelSystem.Id.ToString() + "," + "SolarPanelSystem").Wait();
+            Thread.Sleep(1000);
+            await this.Connect(solarPanelSystem.Id);
         }
         public async Task<SolarPanelSystem> GetById(Guid id)
         {

@@ -97,6 +97,7 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
             setTemperatures(temps);
             setHumidities(onlyHumidities);
             setDataHistory(data);
+            console.log(dataHistory)
         }catch(error){
             console.log(error);
         }
@@ -188,7 +189,7 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
                         }
                     </div>
                 </FormControl>
-                <BasicGraph data={dataHistory} xKey="time" yKey="roomTemperate"/>
+                <BasicGraph data={dataHistory} datakey="roomTemperate" ah={true}/>
                 </CardContent>
                 </Card>
             </Grid>

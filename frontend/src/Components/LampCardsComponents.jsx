@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { lampHubConnection } from "../Components/Sockets/SocketService";
 import { changeMode, turnOn, turnOff, changeThreshold } from "../Components/Services/LampService"; 
+import LampDataHistory from "./BasicComponents/LampDataHistory";
 
 const LampCardsComponent = ({ deviceInfo }) => {
   const [lightData, setLightData] = useState({ lightStrength: 0, powerState: 0 });
@@ -176,6 +177,13 @@ const LampCardsComponent = ({ deviceInfo }) => {
           <Button onClick={handleThresholdSave}>Save</Button>
         </DialogActions>
       </Dialog>
+      <Grid item  lg={12}>
+        <Card style={{  }}>
+          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
+            <LampDataHistory deviceInfo={deviceInfo}/>
+          </CardContent>
+        </Card>
+      </Grid>
     </Grid>
   );
 };

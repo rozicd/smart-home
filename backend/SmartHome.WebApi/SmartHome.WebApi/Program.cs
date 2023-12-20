@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 using MQTTnet.Client;
@@ -69,8 +70,12 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
 
-    var token = "kqUgtwKrykyHb7SuH2-2dJN0GAdzRtm0oL_F4qwH1U9iAi7rNAjqPIW9V86t-xVmyB9COkHK4EvW_bZnTg-nHQ==";
 
+    var token = "xiJBfE-zr5QCoC37OjY-VOK-MOfPi82jTxG65cCnPzynDoFrfSIro2BvOpN9bqEYPnGcJaGGlTXslZHPcccOyA==";
+
+
+/*    var token = "btcm0GXAxvuE1kLY5oyNZ5mq2LeT2NoIEz7DRKhGSaZB86Mt-ctOUU40p8Br5eaE3yge6WWgELo0Uo7_ITkRbA==";
+*/
     var bucket = "bucket";
     var organization = "organization";
 
@@ -124,9 +129,19 @@ builder.Services.AddAuthorization(o =>
 
 builder.Services.AddSignalR();
 
+builder.Services.AddLogging(builder =>
+{
+    builder.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.None); // Disable command level logs
+    builder.AddFilter(DbLoggerCategory.Database.Transaction.Name, LogLevel.None); // Disable transaction level logs
+                                                                                  // Add more filters as needed
+});
+
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
+    options.EnableSensitiveDataLogging(false);
+    options.LogTo(Console.WriteLine, LogLevel.None); 
+
 }, ServiceLifetime.Scoped);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

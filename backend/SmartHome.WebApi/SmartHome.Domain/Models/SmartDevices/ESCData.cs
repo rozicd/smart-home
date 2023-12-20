@@ -8,7 +8,7 @@ namespace SmartHome.Domain.Models.SmartDevices
 {
     public class ESCData
     {
-        public string  Time { get; set; }
+        public string  Timestamp { get; set; }
         public float RoomTemperate { get; set; }
         public float AirHumidity { get; set; }
     }

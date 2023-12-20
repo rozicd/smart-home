@@ -135,13 +135,15 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
                     endDate = DateTime.UtcNow;
                 }
 
-                var fluxTables = await _carGateService.GetCarGateInfluxDataAsync(carGateId, startDate.Value, endDate.Value);
+                var fluxTables = await _carGateService.GetInfluxDataDateRangeAsync(carGateId.ToString(), startDate.Value, endDate.Value);
                 var influxData = new List<CarGateActionsDTO>();
 
                 foreach (var fluxTable in fluxTables)
                 {
+                    int i = 0;
                     foreach( var fluxRecord in fluxTable.Records)
                     {
+                        Console.WriteLine(fluxRecord.Values);
 
                         var data = new CarGateActionsDTO
                         {
@@ -150,6 +152,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
                             Timestamp = fluxRecord.GetTimeInDateTime()
                         };
 
+                        Console.WriteLine(i);
                         influxData.Add(data);
                     }
                 }

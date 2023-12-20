@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services.SmartDevices
 {
-    public interface IHomeBatteryService : ISmartDeviceActionsService
+    public interface IHomeBatteryService : ISmartDeviceActionsService, IInfluxReadable
     {
         Task Add(HomeBattery sensor);
         Task<HomeBattery> GetById(Guid id);
-        Task<List<FluxTable>> GetInfluxDataAsync(string id,string h);
-
-        Task<List<FluxTable>> GetInfluxDataDateRangeAsync(string id, DateTime startDate, DateTime endDate);
 
     }
 }

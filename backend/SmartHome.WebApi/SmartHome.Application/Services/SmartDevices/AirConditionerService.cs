@@ -14,20 +14,21 @@ using InfluxDB.Client.Writes;
 using InfluxDB.Client.Api.Domain;
 using Microsoft.AspNetCore.SignalR;
 using SmartHome.Application.Hubs;
+using System.Reflection.Metadata;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
     public class AirConditionerService : SmartDeviceService, IAirConditionerService
     {
         private readonly IAirConditionerRepository _airConditionerRepository;
-        private readonly IHubContext<LampHub> _hubContext;
+        private readonly IHubContext<ACHub> _hubContext;
 
         public AirConditionerService(
             IAirConditionerRepository airConditionerRepository,
             ISmartDeviceRepository smartDeviceRepository,
             IMqttClientService mqttClientService,
             IInfluxClientService influxClientService,
-            IHubContext<LampHub> hubContext,
+            IHubContext<ACHub> hubContext,
         IServiceScopeFactory scopeFactory)
             : base(smartDeviceRepository, mqttClientService, influxClientService, scopeFactory)
         {
@@ -40,6 +41,9 @@ namespace SmartHome.Application.Services.SmartDevices
             airConditioner.Id = Guid.NewGuid();
             airConditioner.Connection = "property/" + airConditioner.PropertyId + "/device/" + airConditioner.Id;
             await _airConditionerRepository.Add(airConditioner);
+            _mqttClientService.PublishMessageAsync("property/" + airConditioner.PropertyId.ToString() + "/create", airConditioner.Id.ToString() + "," + "AirConditioner").Wait();
+            Thread.Sleep(1000);
+            await this.Connect(airConditioner.Id);
         }
 
         public async Task ChangeMode(LoggedUser user,AirConditioner airConditioner)
@@ -69,13 +73,14 @@ namespace SmartHome.Application.Services.SmartDevices
             }
 
             await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{airConditioner.CurrentTemperature}, {airConditioner.EnergySpending}");
-            var client = await _mqttClientService.SubscribeAsync(device.Connection + "/ac");
+            string deviceTopic = device.Connection + "/ac";
+            var client = await _mqttClientService.SubscribeAsync(deviceTopic.ToLower());
             Console.Write("TOPIC:::::" + device.Connection + "/ac");
             client.ApplicationMessageReceivedAsync += async e =>
             {
                 string receivedTopic = e.ApplicationMessage.Topic;
-                
-                if (receivedTopic == device.Connection + "/ac")
+                Console.WriteLine("RECIVED TOPIC ::::::" + receivedTopic);
+                if (receivedTopic == deviceTopic.ToLower())
                 {
                     Console.WriteLine("##############");
                     Console.Write("U KlAJMU SAM");
@@ -86,11 +91,13 @@ namespace SmartHome.Application.Services.SmartDevices
 
                     if (payloadParts.Length == 2)
                     {
+                        Console.Write("USAO GDE TREBA");
                         if (float.TryParse(payloadParts[0], out float currentTemperature) && int.TryParse(payloadParts[1], out int powerState))
                         {
                             Console.WriteLine($"CURRENT AC TEMP: {currentTemperature}");
                             Console.WriteLine($"Power State: {powerState}");
                             Console.WriteLine(device.Connection);
+                            
                             await _hubContext.Clients.All.SendAsync(device.Connection, currentTemperature, powerState);
 
                         }
@@ -134,7 +141,7 @@ namespace SmartHome.Application.Services.SmartDevices
             var point = PointData
                           .Measurement(ac.Name)
                           .Field("currentTemp", currentTemperature)
-                          .Field("mode", mode)
+                          .Field("mode", mode.ToString())
                           .Field("user", user.Name)
                           .Field("userId", user.UserId)
                           .Timestamp(DateTime.UtcNow, WritePrecision.Ns);

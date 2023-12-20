@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace SmartHome.DataTransferObjects.Requests
 {
-    public class BatteryHistoryRequestDTO
+    public class TurnOnOffAcDTO
     {
-        public Guid Id { get; set; }
-        public string Hours {  get; set; }
+        public Guid acId { get; set; }
     }
 }

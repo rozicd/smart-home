@@ -11,4 +11,10 @@ const ecsHubConnection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
 
-export { lampHubConnection, ecsHubConnection };
+const ACHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl("http://localhost:5090/ACHub",{withCredentials:true})
+  .withAutomaticReconnect()
+  .build();
+
+
+export { lampHubConnection, ecsHubConnection, ACHubConnection };

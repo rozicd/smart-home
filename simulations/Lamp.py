@@ -2,6 +2,7 @@ import math
 import threading
 import time
 from datetime import datetime
+import ephem
 
 import paho.mqtt.client as mqtt
 import random
@@ -12,6 +13,8 @@ from SmartDevice import SmartDevice
 class Lamp(SmartDevice):
     def __init__(self, name):
         super().__init__(name)
+        self.latitude = 44.786568
+        self.longitude = 20.448921
         self.lamp_info_topic = name+"/info"
         self.light_strength = 0
         self.light_threshold = 50
@@ -92,17 +95,30 @@ class Lamp(SmartDevice):
             self.client.publish(self.name +"/spending", f"{self.energy_spending}")
             time.sleep(60)
 
+    def calculate_solar_elevation(self, observer, date_time):
+        sun = ephem._sun
+        observer.date = date_time.strftime('%Y-%m-%d %H:%M:%S')
+        sun.compute(observer)
+        solar_elevation = math.degrees(sun.alt)
+        return solar_elevation
 
-
+    def solar_elevation_to_lux(self, solar_elevation):
+        print(solar_elevation)
+        lux = max(0, math.sin(math.radians(solar_elevation)))
+        return lux
     def sendLampInfo(self):
+        observer = ephem.Observer()
+        observer.lat = str(self.latitude)
+        observer.lon = str(self.longitude)
         while self.is_send_lamp_thread_running:
             now = datetime.now()
-            minutes_since_midnight = now.hour * 60 + now.minute
+            solar_elevation = self.calculate_solar_elevation(observer, now)
+            lux_value = self.solar_elevation_to_lux(solar_elevation)
 
-            sine_value = self.amplitude * math.sin(
-                2 * math.pi * (minutes_since_midnight + self.offset) / self.period)
 
-            adjusted_value = max(0, min(100, sine_value + self.amplitude))
+            normalized_solar_elevation = (lux_value) * 100
+
+            adjusted_value = max(0, normalized_solar_elevation)
 
             self.light_strength = adjusted_value
             if self.auto_mode:

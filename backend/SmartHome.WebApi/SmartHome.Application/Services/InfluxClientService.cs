@@ -59,7 +59,7 @@ namespace SmartHome.Application.Services
                 // If timestamp not present in the dictionary, add a new entry
                 if (!timestampData.ContainsKey(timestamp))
                 {
-                    timestampData[timestamp] = new ESCData { Time = timestamp };
+                    timestampData[timestamp] = new ESCData { Timestamp = timestamp };
                 }
 
                 // Add field and value to the CombinedData object for the current timestamp

@@ -48,16 +48,16 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
         }
         [HttpPost("turnOn")]
-        public async Task<IActionResult> TurnOn([FromBody] TurnOnOffDTO turnOnDTO)
+        public async Task<IActionResult> TurnOn([FromBody] TurnOnOffAcDTO turnOnDTO)
         {
-            await _airConditionerService.TurnOn(turnOnDTO.LampId);
+            await _airConditionerService.TurnOn(turnOnDTO.acId);
             return Ok();
         }
 
         [HttpPost("turnOff")]
-        public async Task<IActionResult> TurnOff([FromBody] TurnOnOffDTO turnOffDTO)
+        public async Task<IActionResult> TurnOff([FromBody] TurnOnOffAcDTO turnOffDTO)
         {
-            await _airConditionerService.TurnOff(turnOffDTO.LampId);
+            await _airConditionerService.TurnOff(turnOffDTO.acId);
             return Ok();
         }
 

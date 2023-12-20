@@ -35,9 +35,12 @@ namespace SmartHome.Application.Services.SmartDevices
             carCharger.Id = Guid.NewGuid();
             carCharger.Connection = "property/" + carCharger.PropertyId + "/device/" + carCharger.Id;
             await _carChargerRepository.Add(carCharger);
+            _mqttClientService.PublishMessageAsync("property/" + carCharger.PropertyId.ToString() + "/create", carCharger.Id.ToString() + "," + "CarCharger").Wait();
+            Thread.Sleep(1000);
+            await this.Connect(carCharger.Id);
         }
 
-      
+
 
     }
 

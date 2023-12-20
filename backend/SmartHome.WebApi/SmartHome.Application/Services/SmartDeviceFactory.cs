@@ -18,7 +18,8 @@ public class SmartDeviceServiceFactory : ISmartDeviceServiceFactory
     public async Task<ISmartDeviceActionsService> GetServiceAsync(Guid deviceId)
     {
         string deviceType = await _smartDeviceRepository.GetDeviceType(deviceId);
-        Console.WriteLine(deviceType);
+        
+        Console.WriteLine("TIP::::"+deviceType);
         switch (deviceType)
         {
             case "AirConditioner":
