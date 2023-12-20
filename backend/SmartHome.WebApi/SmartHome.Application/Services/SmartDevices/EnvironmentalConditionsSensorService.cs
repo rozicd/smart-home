@@ -31,6 +31,9 @@ namespace SmartHome.Application.Services.SmartDevices
             sensor.Id = Guid.NewGuid();
             sensor.Connection = "property/" + sensor.PropertyId + "/device/" + sensor.Id;
             await _enviromentalConditionsSensorRepository.Add(sensor);
+            _mqttClientService.PublishMessageAsync("property/" + sensor.PropertyId.ToString() + "/create", sensor.Id.ToString() + "," + "EnvironmentalConditionsSensor").Wait();
+            Thread.Sleep(1000);
+            await this.Connect(sensor.Id);
         }
 
 

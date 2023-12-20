@@ -32,6 +32,9 @@ namespace SmartHome.Application.Services.SmartDevices
             airConditioner.Id = Guid.NewGuid();
             airConditioner.Connection = "property/" + airConditioner.PropertyId + "/device/" + airConditioner.Id;
             await _airConditionerRepository.Add(airConditioner);
+            _mqttClientService.PublishMessageAsync("property/" + airConditioner.PropertyId.ToString() + "/create", airConditioner.Id.ToString() + "," + "AirConditioner").Wait();
+            Thread.Sleep(1000);
+            await this.Connect(airConditioner.Id);
         }
 
     }
