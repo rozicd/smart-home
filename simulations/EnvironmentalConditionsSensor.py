@@ -47,5 +47,5 @@ class EnvironmentalConditionsSensor(SmartDevice):
             self.room_temperature = room_temperature
             self.air_humidity = air_humidity
             self.client.publish(self.topic_sensor, f"{self.air_humidity},{self.room_temperature}")
-            time.sleep(3)
+            time.sleep(10)
         self.is_send_sensor_thread_running = False
