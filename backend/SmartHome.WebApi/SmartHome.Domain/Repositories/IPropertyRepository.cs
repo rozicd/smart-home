@@ -11,6 +11,8 @@ namespace SmartHome.Domain.Repositories
     {
         Task Add(Property property);
         Task<PaginationReturnObject<Property>> GetPropertiesByUserId(Guid userId,Pagination pagination);
+        Task<PaginationReturnObject<Property>> GetAllProperties(Pagination pagination);
+
         Task<PaginationReturnObject<Property>> GetPropertiesByStatus(PropertyStatus status, Pagination pagination);
         Task<Property> GetById(Guid id);
         Task Update(Property property);

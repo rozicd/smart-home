@@ -2,6 +2,7 @@
 using InfluxDB.Client.Core.Flux.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.X509;
 using SmartHome.Application.Services;
 using SmartHome.DataTransferObjects.Requests;
 using SmartHome.DataTransferObjects.Responses;
@@ -50,7 +51,6 @@ public class PropertyController : BaseController
     }
 
     [HttpGet("{id}")]
-    [Authorize(Roles = "USER")]
     public async Task<IActionResult> GetPropertyById(Guid id)
     {
         Property property = await _propertyService.GetPropertyById(id);
@@ -68,6 +68,16 @@ public class PropertyController : BaseController
     public async Task<IActionResult> GetPropertiesByUserId(Guid userId, [FromQuery] Pagination page)
     {
         var properties = await _propertyService.GetPropertiesByUserId(userId,page);
+
+        PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(_mapper.Map<IEnumerable<PropertyResponseDTO>>(properties.Items), properties.PageNumber, properties.PageSize, properties.TotalItems);
+
+
+        return Ok(response);
+    }
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllProperties([FromQuery] Pagination page)
+    {
+        var properties = await _propertyService.GetAllProperties(page);
 
         PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(_mapper.Map<IEnumerable<PropertyResponseDTO>>(properties.Items), properties.PageNumber, properties.PageSize, properties.TotalItems);
 
@@ -149,10 +159,9 @@ public class PropertyController : BaseController
 
                 var data = new HomePowerResponseDTO
                 {
-                    DeviceId = fluxRecord.Values["device"].ToString(),
-                    Target = fluxRecord.Values["target"].ToString(),
-                    Energy = fluxRecord.Values["power"].ToString(),
-                    Timestamp = fluxRecord.GetTimeInDateTime()
+                    Target = fluxRecord.GetValueByKey("target").ToString(),
+                    Energy = fluxRecord.GetValueByKey("_value").ToString(),
+                    Timestamp = fluxRecord.GetValueByKey("_time").ToString(),
                 };
 
                 influxData.Add(data);
@@ -187,7 +196,7 @@ public class PropertyController : BaseController
                     DeviceId = fluxRecord.Values["device"].ToString(),
                     Target = fluxRecord.Values["target"].ToString(),
                     Energy = fluxRecord.Values["power"].ToString(),
-                    Timestamp = fluxRecord.GetTimeInDateTime()
+                    Timestamp = fluxRecord.Values["_time"].ToString()
                 };
 
                 influxData.Add(data);

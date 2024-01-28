@@ -71,7 +71,7 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
     var influxDbUrl = "http://localhost:8086";
 
 
-    var token = "xiJBfE-zr5QCoC37OjY-VOK-MOfPi82jTxG65cCnPzynDoFrfSIro2BvOpN9bqEYPnGcJaGGlTXslZHPcccOyA==";
+    var token = "ZqgHocXYE-wlr76ucjWaUpjF0qKVmbeWjGme9s-h5zzDdol4qTNCl9tbANULxmKdLKbv5D-SqNwkXHaCBH93Bw==";
 
 
     var bucket = "bucket";

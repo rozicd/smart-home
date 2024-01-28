@@ -87,5 +87,21 @@ namespace SmartHome.Data.Repositories
             propertyEntity.Status = property.Status;
             await _context.SaveChangesAsync();
         }
+
+        public async Task<PaginationReturnObject<Property>> GetAllProperties(Pagination pagination)
+        {
+            var query = _properties
+               .Include(p => p.City)
+                   .ThenInclude(c => c.Country);
+
+            var totalItems = await query.CountAsync();
+
+            var properties = await query
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+
+            return new PaginationReturnObject<Property>(_mapper.Map<IEnumerable<Property>>(properties), pagination.PageNumber, pagination.PageSize, totalItems);
+        }
     }
 }

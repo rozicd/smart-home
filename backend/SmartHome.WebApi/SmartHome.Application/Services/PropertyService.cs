@@ -92,8 +92,8 @@ namespace SmartHome.Application.Services
                           .Measurement("Home Energy")
                           .Tag("id", id)
                           .Field("power", power)
-                          .Field("device", deviceId)
-                          .Field("target", target)
+                          .Tag("device", deviceId)
+                          .Tag("target", target)
                           .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
         }
@@ -101,10 +101,32 @@ namespace SmartHome.Application.Services
 
         public async Task<List<FluxTable>> GetPropertyPowerInfluxData(string id, string h)
         {
-            string query = $"from(bucket: \"bucket\")" +
-                               $"|> range(start: -{h})" +
-                               $"|> filter(fn: (r) => r._measurement == \"Home Energy\" and r.id == \"{id}\")" +
-                               $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+            string ag = "5s";
+            string fn = "last";
+            if (h == "6h")
+            {
+                ag = "30m";
+                fn = "mean";
+
+            }
+            string query = $@"
+            from(bucket: ""bucket"")
+              |> range(start: -{h}) 
+              |> filter(fn: (r) => r[""_measurement""] == ""Home Energy"")
+              |> filter(fn: (r) => r[""_field""] == ""power"")
+              |> filter(fn: (r) => r[""id""] == ""{id}"")
+              |> group(columns: [""_measurement"", ""_field"",""target""])
+
+              |> aggregateWindow(every: {ag}, fn: {fn}, createEmpty: false)";
+
+                /*from(bucket: "bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "Home Energy")
+                  |> filter(fn: (r) => r["_field"] == "power")
+                  |> aggregateWindow(every: 1m, fn: last, createEmpty: false)
+                  |> group(columns: ["_measurement", "_field"])  // Group by _measurement and _field*/
+
+
             var result = await _influxClientService.GetInfluxData(query);
 
 
@@ -124,6 +146,12 @@ namespace SmartHome.Application.Services
             var result = await _influxClientService.GetInfluxData(query);
 
             return result;
+        }
+
+        public async Task<PaginationReturnObject<Property>> GetAllProperties(Pagination pagination)
+        {
+            return await _propertyRepository.GetAllProperties(pagination);
+
         }
     }
 }

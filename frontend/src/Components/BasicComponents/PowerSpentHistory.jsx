@@ -16,7 +16,10 @@ import {
   GetPowerGraphData,
   GetPowerGraphDataDate,
 } from "../Services/BatteryService";
-import { GetPropertyPowerGraphData, GetPropertyPowerGraphDataDate } from "../Services/PropertiesService";
+import {
+  GetPropertyPowerGraphData,
+  GetPropertyPowerGraphDataDate,
+} from "../Services/PropertiesService";
 const searchOptions = [
   { key: "real", value: "Real Time" },
   { key: "1", value: "5m" },
@@ -27,20 +30,27 @@ const searchOptions = [
   { key: "6", value: "7d" },
   { key: "7", value: "30d" },
   { key: "8", value: "Date Range" },
+  { key: "9", value: "Day" },
+
 ];
-const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) => {
+const PowerSpentHistory = ({ deviceInfo, property = false, RealTimeGraph }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [day, setDay] = useState("");
+
   const [sortOrder, setSortOrder] = useState("asc");
   const [selectedSearch, setSelectedSearch] = useState("real");
   const [dateVisibility, setDateVisibility] = useState(false);
+  const [dayVisibility, setDayVisibility] = useState(false);
+
   const [powerData, setPowerData] = useState([]);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
+
+
   const fetchData = async (hrs) => {
-    console.log("data");
 
     try {
       let search = { id: deviceInfo.id, hours: hrs };
@@ -49,23 +59,28 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
       else {
         data = await GetPropertyPowerGraphData(search);
       }
-
+      console.log(data)
       setPowerData(data);
     } catch (error) {
       console.log(error);
     }
   };
 
+
   const handleSearchChange = (value) => {
     const foundOption = searchOptions.find((option) => option.key === value);
     console.log(foundOption);
     setDateVisibility(false);
+    setDayVisibility(false);
+
     setSelectedSearch(value);
     if (value == "real") return;
 
     if (value == "x") return;
 
     if (value == "8") setDateVisibility(true);
+    if (value == "9") setDayVisibility(true);
+
     else {
       fetchData(foundOption.value);
     }
@@ -74,7 +89,7 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
   const handleSearchClick = async () => {
     if (toDate == "" || fromDate == "") {
       setErrorModal(true);
-      setErrorMessage("Please Select Valis Dates");
+      setErrorMessage("Please Select Valid Dates");
       return;
     }
     let search = {
@@ -83,9 +98,47 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
       endDate: toDate,
     };
     try {
-      let data = null ;
-      if (!property)data = await GetPowerGraphDataDate(search);
-      else {data= await GetPropertyPowerGraphDataDate(search)}
+      let data = null;
+      if (!property) data = await GetPowerGraphDataDate(search);
+      else {
+        data = await GetPropertyPowerGraphDataDate(search);
+      }
+
+      setPowerData(data);
+    } catch (error) {
+      if (error.response) {
+        setErrorModal(true);
+        setErrorMessage(error.response.data);
+      }
+    }
+  };
+  const handleSearchClickDay = async () => {
+    if (day == "") {
+      setErrorModal(true);
+      setErrorMessage("Please Select Valid Day");
+      return;
+    }
+    const selectedDate = new Date(day);
+
+    const startDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+
+    const endDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
+    
+
+    const startOfDayFormatted = startDate.toISOString()
+    const endOfDayFormatted = endDate.toISOString()
+
+    let search = {
+      id: deviceInfo.id,
+      startDate: startOfDayFormatted,
+      endDate: endOfDayFormatted,
+    };
+    try {
+      let data = null;
+      if (!property) data = await GetPowerGraphDataDate(search);
+      else {
+        data = await GetPropertyPowerGraphDataDate(search);
+      }
 
       setPowerData(data);
     } catch (error) {
@@ -168,12 +221,35 @@ const PowerSpentHistory = ({ deviceInfo, property = false , RealTimeGraph  }) =>
                   </Grid>
                 </Grid>
               )}
+              {dayVisibility && (
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  spacing={3}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  
+                  <Grid item xs={8}>
+                    <TextField
+                      label="Day"
+                      type="date"
+                      value={day}
+                      onChange={(e) => setDay(e.target.value)}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button onClick={() => handleSearchClickDay()}>Search</Button>
+                  </Grid>
+                </Grid>
+              )}
             </Grid>
-
           </CardContent>
         </Card>
       </Grid>
-      
+
       <InfoDialog
         open={errorModal}
         onClose={() => setErrorModal(false)}
