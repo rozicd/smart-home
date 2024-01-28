@@ -50,6 +50,8 @@ public class MappingProfiles : Profile
         CreateMap<SprinkleMode, SprinkleModeEntity>();
         CreateMap<SprinkleModeEntity, SprinkleMode>();
 
+        CreateMap<CountriesAndCities, CountriesAndCitiesDTO>();
+        CreateMap<CountriesAndCitiesDTO, CountriesAndCities>();
 
         CreateMap<EnvironmentalConditionsSensorEntity, EnvironmentalConditionsSensor>();
         CreateMap<Property, PropertyEntity>();
@@ -61,6 +63,10 @@ public class MappingProfiles : Profile
         CreateMap<CreateUserRequestDTO, User>();
         CreateMap<User, UserResponseDTO>();
         CreateMap<UpdateUserRequestDTO, User>();
+
+        CreateMap<Country, CountryResponseDTO>();
+
+
 
         CreateMap<WashingMachineModeDTO, WashingMachineMode>();
         CreateMap<CreateWashingMachineDTO, WashingMachine>();

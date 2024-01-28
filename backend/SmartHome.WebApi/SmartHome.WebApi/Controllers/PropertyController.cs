@@ -170,6 +170,25 @@ public class PropertyController : BaseController
 
         return Ok(influxData);
     }
+    [HttpGet("country")]
+    public async Task<IActionResult> GetCountries()
+    {
+        
+            CountriesAndCities result = await _propertyService.GetCountries();
+            return Ok(_mapper.Map<CountriesAndCitiesDTO>(result));
+        
+
+    }
+    [HttpPost("country/energy")]
+    public async Task<IActionResult> CountryHistory([FromBody] EnergyHistory bh)
+    {
+
+        CountryEnergyHistory ceh = await _propertyService.GetCountryEnergyData(bh.Name, bh.Search,bh.Tag);
+        return Ok(ceh);
+
+
+    }
+
     [HttpPost("power/date")]
     public async Task<IActionResult> GetPowerDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
     {
@@ -193,10 +212,9 @@ public class PropertyController : BaseController
 
                 var data = new HomePowerResponseDTO
                 {
-                    DeviceId = fluxRecord.Values["device"].ToString(),
-                    Target = fluxRecord.Values["target"].ToString(),
-                    Energy = fluxRecord.Values["power"].ToString(),
-                    Timestamp = fluxRecord.Values["_time"].ToString()
+                    Target = fluxRecord.GetValueByKey("target").ToString(),
+                    Energy = fluxRecord.GetValueByKey("_value").ToString(),
+                    Timestamp = fluxRecord.GetValueByKey("_time").ToString(),
                 };
 
                 influxData.Add(data);

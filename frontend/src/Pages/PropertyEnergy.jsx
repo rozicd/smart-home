@@ -63,7 +63,7 @@ const PropertyEnergyPage = () => {
     const fetchData = async () => {
 
       try {
-        let search = { id: property, hours: "6h" };
+        let search = { id: property, hours: "5m" };
         let data = await GetPropertyPowerGraphData(search);
 
         setPowerData(data);

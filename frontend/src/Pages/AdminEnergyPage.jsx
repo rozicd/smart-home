@@ -13,7 +13,8 @@ import "./UserPropertiesPage.css";
 import LoadingComponent from "../Components/BasicComponents/LoadingComponent";
 import axios from "axios";
 import { API_BASE_URL } from "../App";
-
+import { Grid,Box } from "@mui/material";
+import EnergySpentCountry from "../Components/BasicComponents/EnergySpentCountry";
 const AdminEnergyPage = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -93,17 +94,25 @@ const AdminEnergyPage = ({ user }) => {
         totalItems={totalItems}
         onPageChange={handlePageChange}
       />
-      <div className="property-list-container">
-        <div className="property-list">
-          {properties.map((property) => (
+      <Grid style={{ marginTop: "30px" }} container spacing={3}>
+        <Grid item container lg={7} md={12} spacing={2} justifyContent={"center"}>
+        {properties.map((property) => (
             <PropertyCard
               key={property.id}
               property={property}
               callback={property.status == 1 ? ClickedProperty : NotAccepted}
             />
           ))}
-        </div>
-      </div>
+        </Grid>
+        <Grid item container lg={5} md={12}  justifyContent={'center'}>
+          <Grid item lg={12} md={12}>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <EnergySpentCountry></EnergySpentCountry>
+            </Box>
+          </Grid>
+        </Grid>
+      </Grid>
+      
     </div>
   );
 };

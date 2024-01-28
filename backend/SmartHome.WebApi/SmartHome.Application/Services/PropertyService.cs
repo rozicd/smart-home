@@ -7,10 +7,12 @@ using SmartHome.Domain.Models;
 using SmartHome.Domain.Repositories;
 using SmartHome.Domain.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Property = SmartHome.Domain.Models.Property;
 
 namespace SmartHome.Application.Services
@@ -103,9 +105,27 @@ namespace SmartHome.Application.Services
         {
             string ag = "5s";
             string fn = "last";
+            if (h == "1h")
+            {
+                ag = "5m";
+                fn = "mean";
+
+            }
             if (h == "6h")
             {
                 ag = "30m";
+                fn = "mean";
+
+            }
+            if (h == "12h" || h == "24h")
+            {
+                ag = "1h";
+                fn = "mean";
+
+            }
+            if (h == "7d" || h == "30d")
+            {
+                ag = "1d";
                 fn = "mean";
 
             }
@@ -135,13 +155,31 @@ namespace SmartHome.Application.Services
 
         public async Task<List<FluxTable>> GetPropertyPowerInfluxDataDate(string id, DateTime startDate, DateTime endDate)
         {
+
             string start = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
             string end = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            int daysApart = Math.Abs((endDate - startDate).Days);
 
-            string query = $"from(bucket: \"bucket\")" +
-                           $"|> range(start: {start}, stop: {end})" +
-                           $"|> filter(fn: (r) => r._measurement == \"Home Energy\" and r.id == \"{id}\")" +
-                           $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+            string ag = "1h";
+
+            if (daysApart > 3) 
+            {
+                ag = "6h";
+            }
+            if (daysApart > 7)
+            {
+                ag = "1d";
+            }
+
+            string query = $@"
+            from(bucket: ""bucket"")
+              |> range(start: {start},stop:{end} ) 
+              |> filter(fn: (r) => r[""_measurement""] == ""Home Energy"")
+              |> filter(fn: (r) => r[""_field""] == ""power"")
+              |> filter(fn: (r) => r[""id""] == ""{id}"")
+              |> group(columns: [""_measurement"", ""_field"",""target""])
+
+              |> aggregateWindow(every: {ag}, fn: mean, createEmpty: false)";
 
             var result = await _influxClientService.GetInfluxData(query);
 
@@ -152,6 +190,60 @@ namespace SmartHome.Application.Services
         {
             return await _propertyRepository.GetAllProperties(pagination);
 
+        }
+
+        public async  Task<CountriesAndCities> GetCountries()
+        {
+            return await _propertyRepository.GetCountries();
+         }
+        public async Task<CountryEnergyHistory> GetCountryEnergyData(string country, string h,string tag)
+        {
+            List<Property> properties;
+            if (tag == "Country")
+            {
+                properties = await _propertyRepository.GetPropertiesByCountry(country);
+            }
+            else 
+            {
+                properties = await _propertyRepository.GetPropertiesByCity(country);
+            }
+            float spent = 0;
+            float generated = 0;
+            foreach(Property property in properties) 
+            {
+                string query = $@"
+                from(bucket: ""bucket"")
+                  |> range(start: -{h}) 
+                  |> filter(fn: (r) => r[""_measurement""] == ""Home Energy"")
+                  |> filter(fn: (r) => r[""_field""] == ""power"")
+                  |> filter(fn: (r) => r[""id""] == ""{property.Id}"")
+                  |> group(columns: [""_measurement"", ""_field"",""target""])
+                  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)";
+
+                var result = await _influxClientService.GetInfluxData(query);
+                foreach (var fluxTable in result)
+                {
+                    foreach (var fluxRecord in fluxTable.Records)
+                    {
+                        float energy = float.Parse(fluxRecord.GetValueByKey("_value").ToString());
+
+                        if (energy > 0)
+                        {
+                            generated += energy;
+                        }
+                        else
+                        {
+                            spent += energy*-1;
+                        }
+                    }
+                }
+
+            }
+            CountryEnergyHistory ceh = new CountryEnergyHistory();
+            ceh.Name = country;
+            ceh.Spent = spent;
+            ceh.Generated = generated;
+            return ceh;
         }
     }
 }
