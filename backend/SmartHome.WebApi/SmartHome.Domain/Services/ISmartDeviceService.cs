@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Services
 {
-    public interface ISmartDeviceService
+    public interface ISmartDeviceService : IInfluxReadable
     {
         Task<PaginationReturnObject<SmartDevice>> GetAll(Pagination page);
         Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId);

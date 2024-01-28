@@ -46,8 +46,9 @@ const DeviceInfoPage = () => {
   }
 
   return (
-    <Grid container style={{ height: "100%" }}>
-      <BasicDeviceInfoComponent imageData={imageData} deviceData={deviceData} />
+    <Grid container style={{ height: "100%",display:'flex',flexDirection:'row'  }}>
+
+            <BasicDeviceInfoComponent imageData={imageData} deviceData={deviceData} />
 
       <Grid
         container

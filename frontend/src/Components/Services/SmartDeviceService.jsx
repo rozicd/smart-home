@@ -99,3 +99,23 @@ export const GetSmartDevicesByProperty = async (pagination) => {
       throw error;
     }
   };
+
+  export const GetStatusGraphData = async (search) => {
+    try {
+        console.log(search)
+      const response = await axios.post(`${API_BASE_URL}/smart-device/data`, search , { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  export const GetStatusGraphDataDate = async (search) => {
+    try {
+        console.log(search)
+      const response = await axios.post(`${API_BASE_URL}/smart-device/data/date`, search , { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  

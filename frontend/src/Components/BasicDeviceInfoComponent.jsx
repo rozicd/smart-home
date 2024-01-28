@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import BasicForm from "./BasicComponents/BasicForm";
 import { connect } from "./Services/SmartDeviceService";
+import DeviceStatusHistory from "./BasicComponents/DeviceStatusHistory";
 
 const template = [
   { item: "BasicInput", itemValue: "connection", label: "Connection" },
@@ -39,103 +40,118 @@ const BasicDeviceInfoComponent = ({ imageData, deviceData }) => {
       height={"100%"}
       display={"flex"}
       justifyContent={"space-evenly"}
+      wrap="nowrap"
       alignItems={"center"}
+      maxWidth={"100%"}
+      paddingLeft={"50px"}
+      paddingTop={"50px"}
     >
-      <Card item style={{ aspectRatio: "1/1" }}>
-        <CardMedia
-          component="img"
-          alt="Device Image"
-          style={{ objectFit: "contain",width: "320px", height: "320px", border: "1px solid #f1f2f3" }}
-          image={imageData}
-        />
-      </Card>
+            
+      <Box
+          style={{
+            overflow: "scroll",
+            height: "85vh"
+          }}
+        >
+          <Grid container spacing={2} sx={{display:"flex",flexDirection:"column",alignItems:"center" }}>
+        <Card item style={{ width: "320px", height: "320px"}}>
+          <CardMedia
+            component="img"
+            alt="Device Image"
+            style={{ objectFit: "fill",width: "320px", height: "320px", border: "1px solid #f1f2f3" }}
+            image={imageData}
+          />
+        </Card>
 
-      <Card item style={{ height: "30%", width: "50%" }}>
-        <CardContent style={{ display: "flex", flexDirection: "row" }}>
-          <Box
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              flex: "1 0 60%",
-            }}
-          >
-            <Typography
-              variant="h5"
-              marginBottom={"20px"}
-              component="div"
-              marginLeft={"40%"}
+        <Card item style={{ height: "30%", width: "50%", marginTop:"50px" }}>
+          <CardContent style={{ display: "flex", flexDirection: "row" }}>
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                flex: "1 0 60%",
+              }}
             >
-              {deviceData.name}
-            </Typography>
-            <Typography
-              variant="body1"
-              width={"100%"}
-              marginBottom={"8px"}
-              color="text.secondary"
-            >
-              Device Type: {deviceData.type}
-            </Typography>
-            <Typography
-              variant="body1"
-              width={"100%"}
-              marginBottom={"8px"}
-              color="text.secondary"
-            >
-              Power Supply: {deviceData.powerSupply}
-            </Typography>
-            {deviceData.energySpending != null && (
+              <Typography
+                variant="h5"
+                marginBottom={"20px"}
+                component="div"
+                marginLeft={"40%"}
+              >
+                {deviceData.name}
+              </Typography>
               <Typography
                 variant="body1"
                 width={"100%"}
                 marginBottom={"8px"}
                 color="text.secondary"
               >
-                Energy Spending: {deviceData.energySpending}
+                Device Type: {deviceData.type}
               </Typography>
-            )}
-            <Typography
-              variant="body1"
-              width={"100%"}
-              marginBottom={"8px"}
-              color="text.secondary"
-            >
-              Device Type: {deviceData.deviceType}
-            </Typography>
-            <Typography
-              variant="body1"
-              width={"100%"}
-              marginBottom={"8px"}
-              color="text.secondary"
-            >
-              Device Status: {deviceData.deviceStatus}
-            </Typography>
-          </Box>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              flex: "1 0 40%",
-            }}
-          >
+              <Typography
+                variant="body1"
+                width={"100%"}
+                marginBottom={"8px"}
+                color="text.secondary"
+              >
+                Power Supply: {deviceData.powerSupply}
+              </Typography>
+              {deviceData.energySpending != null && (
+                <Typography
+                  variant="body1"
+                  width={"100%"}
+                  marginBottom={"8px"}
+                  color="text.secondary"
+                >
+                  Energy Spending: {deviceData.energySpending}
+                </Typography>
+              )}
+              <Typography
+                variant="body1"
+                width={"100%"}
+                marginBottom={"8px"}
+                color="text.secondary"
+              >
+                Device Type: {deviceData.deviceType}
+              </Typography>
+              <Typography
+                variant="body1"
+                width={"100%"}
+                marginBottom={"8px"}
+                color="text.secondary"
+              >
+                Device Status: {deviceData.deviceStatus}
+              </Typography>
+            </Box>
             <div
               style={{
-                margin: "10px",
-                width: "12px",
-                height: "12px",
-                position: "relative",
-                top: "10",
-                right: "10",
-                borderRadius: "100%",
-                backgroundColor: `${deviceData.deviceStatus ? "green" : "red"}`,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
+                flex: "1 0 40%",
               }}
-            ></div>
-          </div>
-        </CardContent>
-      </Card>
+            >
+              <div
+                style={{
+                  margin: "10px",
+                  width: "12px",
+                  height: "12px",
+                  position: "relative",
+                  top: "10",
+                  right: "10",
+                  borderRadius: "100%",
+                  backgroundColor: `${deviceData.deviceStatus ? "green" : "red"}`,
+                }}
+              ></div>
+            </div>
+          </CardContent>
+        </Card>
+          <DeviceStatusHistory style={{height:'30%',marginTop: "60px",}} deviceInfo={deviceData} />
+          </Grid>
+        </Box>
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
         <Container
           sx={{
