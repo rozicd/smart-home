@@ -107,7 +107,7 @@ namespace SmartHome.Data
         {
             var countries = new List<CountryEntity>();
 
-            using (var reader = new StreamReader("countries.csv"))
+            using (var reader = new StreamReader("Countries.csv"))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 csv.Read();
@@ -139,7 +139,7 @@ namespace SmartHome.Data
         {
             var cities = new List<CityEntity>();
 
-            using (var reader = new StreamReader("countries.csv"))
+            using (var reader = new StreamReader("Countries.csv"))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 csv.Read();

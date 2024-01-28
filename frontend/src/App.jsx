@@ -23,6 +23,10 @@ import SmartDevicesPage from "./Pages/SmartDevicesPage";
 import AdminCreationPage from "./Pages/AdminCreationPage";
 import CheckForSuperAdmin from "./Pages/CheckForSuperAdmin";
 import DeviceInfoPage from "./Pages/DeviceInfoPage";
+import AdminEnergyPage from "./Pages/AdminEnergyPage";
+import CheckForAmin from "./Pages/CheckForAdmin";
+export const API_BASE_URL = "http://localhost:5090";
+import PropertyEnergyPage from "./Pages/PropertyEnergy";
 
 const AuthenticatedHome = CheckAuthentication({
   Component: Home,
@@ -34,6 +38,9 @@ const AuthenticatedProperties = CheckAuthentication({
 });
 const AuthenticatedAdmins = CheckForSuperAdmin({
   Component: AdminCreationPage,
+});
+const AuthenticatedEnergy = CheckForAmin({
+  Component: AdminEnergyPage,
 });
 
 const App = () => {
@@ -53,6 +60,10 @@ const App = () => {
             <Route path="properties/:property" element={<SmartDevicesPage />} />
             <Route path="devices/:deviceType/:deviceId" element={<DeviceInfoPage/>} />
             <Route path="admins" element={<AuthenticatedAdmins />} />
+            <Route path="energy" element={<AuthenticatedEnergy />} />
+            <Route path="energy/:property" element={<PropertyEnergyPage />} />
+
+
           </Route>
         </Routes>
       </Router>

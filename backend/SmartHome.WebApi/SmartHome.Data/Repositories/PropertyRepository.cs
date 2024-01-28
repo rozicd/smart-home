@@ -65,6 +65,32 @@ namespace SmartHome.Data.Repositories
 
             return new PaginationReturnObject<Property>(_mapper.Map<IEnumerable<Property>>(properties), pagination.PageNumber, pagination.PageSize, totalItems);
         }
+        public async Task<List<Property>> GetPropertiesByCountry(string country)
+        {
+            var query = _properties
+                .Include(p => p.City)
+                    .ThenInclude(c => c.Country)
+                .Where(p => p.City.Country.Name == country);
+
+
+            var properties = await query
+                .ToListAsync();
+
+            return (_mapper.Map<List<Property>>(properties));
+        }
+        public async Task<List<Property>> GetPropertiesByCity(string city)
+        {
+            var query = _properties
+                .Include(p => p.City)
+                    .ThenInclude(c => c.Country)
+                .Where(p => p.City.Name == city);
+
+
+            var properties = await query
+                .ToListAsync();
+
+            return (_mapper.Map<List<Property>>(properties));
+        }
 
         public async Task<Property> GetById(Guid id)
         {
@@ -86,6 +112,56 @@ namespace SmartHome.Data.Repositories
 
             propertyEntity.Status = property.Status;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<PaginationReturnObject<Property>> GetAllProperties(Pagination pagination)
+        {
+            var query = _properties
+               .Include(p => p.City)
+                   .ThenInclude(c => c.Country);
+
+            var totalItems = await query.CountAsync();
+
+            var properties = await query
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+
+            return new PaginationReturnObject<Property>(_mapper.Map<IEnumerable<Property>>(properties), pagination.PageNumber, pagination.PageSize, totalItems);
+        }
+
+        public async Task<CountriesAndCities> GetCountries()
+        {
+            var query = _properties
+               .Include(p => p.City)
+                   .ThenInclude(c => c.Country);
+
+            var properties = await query.ToListAsync();
+
+            List<Country> countries = new List<Country>();
+            List<City> cities = new List<City>();
+            List<string> cityNames = new List<string>();
+            List<string> countryNames = new List<string>();
+            CountriesAndCities res = new CountriesAndCities();
+            
+            foreach (PropertyEntity p in properties)
+            {
+                City c = _mapper.Map<City>(p.City);
+                Country co = _mapper.Map<Country>(p.City.Country);
+                if (!cityNames.Contains(c.Name))
+                { 
+                    cities.Add(c);
+                    cityNames.Add(c.Name);
+                }
+                if (!countryNames.Contains(co.Name))
+                { 
+                    countries.Add(co);
+                    countryNames.Add(co.Name);
+                }
+            }
+            res.Cities = cities;
+            res.Countries = countries;
+            return res;
         }
     }
 }

@@ -22,13 +22,21 @@ const NavbarComponent = ({ loggedUser }) => {
             <Link className="nav-link nav-btn nav-first" to={"properties"}>
               <div>Properties</div>
             </Link>
-            <Link className="nav-link nav-btn" to={"properties"}>
-              <div>Butoon</div>
+            {loggedUser.role == 1 && (
+              <>
+            <Link className="nav-link nav-btn" to={"energy"}>
+              <div>Energy</div>
             </Link>
+            </>
+            )}
+           
             {loggedUser.role == 2 && (
+              <>
               <Link className="nav-link nav-btn" to={"admins"}>
               <div>Admins</div>
             </Link>
+           
+            </>
             )}
           </>
         )}
