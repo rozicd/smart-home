@@ -34,7 +34,7 @@ const BasicPropertyComponent = ({ imageData, propertyData }) => {
         <CardMedia
           component="img"
           alt="Device Image"
-          style={{ objectFit: "contain",width: "320px", height: "320px", border: "1px solid #f1f2f3" }}
+          style={{objectFit: "contain",width: "320px", height: "320px", border: "1px solid #f1f2f3" }}
           image={imageData}
         />
       </Card>
@@ -54,15 +54,17 @@ const BasicPropertyComponent = ({ imageData, propertyData }) => {
               variant="h5"
               marginBottom={"20px"}
               component="div"
-              marginLeft={"40%"}
+              fontSize={"xx-large"}
             >
-              {propertyData.name}
+             {propertyData.propertyName}
             </Typography>
             <Typography
               variant="body1"
               width={"100%"}
               marginBottom={"8px"}
               color="text.secondary"
+              fontSize={"large"}
+
             >
               Country: {propertyData.countryName}
             </Typography>
@@ -71,6 +73,8 @@ const BasicPropertyComponent = ({ imageData, propertyData }) => {
               width={"100%"}
               marginBottom={"8px"}
               color="text.secondary"
+              fontSize={"large"}
+
             >
               City: {propertyData.cityName}
             </Typography>
@@ -80,6 +84,8 @@ const BasicPropertyComponent = ({ imageData, propertyData }) => {
               width={"100%"}
               marginBottom={"8px"}
               color="text.secondary"
+              fontSize={"large"}
+
             >
               Address: {propertyData.address}
             </Typography>
@@ -88,6 +94,8 @@ const BasicPropertyComponent = ({ imageData, propertyData }) => {
               width={"100%"}
               marginBottom={"8px"}
               color="text.secondary"
+              fontSize={"large"}
+
             >
               Floors: {propertyData.numberOfFloors}
             </Typography>

@@ -127,9 +127,8 @@ namespace SmartHome.Application.Services
             string query = $"from(bucket: \"bucket\")" +
                            $"|> range(start: -{h})" +
                            $"|> filter(fn: (r) => r._measurement == \"Device status\" and r.Id == \"{id}\")" +
-                           $"|> window(every: {aggregation}, createEmpty: true)" +
+                           $"|> window(every: {aggregation}, createEmpty: false)" +
                            $"|> stateDuration(fn: (r) => r._value == 1, unit: {units})" +
-                           $"|> fill(column: \"stateDuration\", value: 0)" +
                            $"|> last()" +
                            $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r.stateDuration+1,percentage: (r.stateDuration+1) * 100/" +
                            multipicator + ",units:" + $"\"{dorh}\"" + "}" + "))";
@@ -167,9 +166,8 @@ namespace SmartHome.Application.Services
             string query = $"from(bucket: \"bucket\")" +
                            $"|> range(start: {start}, stop: {end})" +
                            $"|> filter(fn: (r) => r._measurement == \"Device status\" and r.Id == \"{id}\")" +
-                           $"|> window(every: {aggregation}, createEmpty: true)" +
+                           $"|> window(every: {aggregation}, createEmpty: false)" +
                            $"|> stateDuration(fn: (r) => r._value == 1, unit: {units})" +
-                           $"|> fill(column: \"stateDuration\", value: 0)" +
                            $"|> last()" +
                            $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r.stateDuration+1,percentage: (r.stateDuration+1) * 100/" +
                            multipicator + ",units:"+ $"\"{dorh}\"" + "}" + "))";

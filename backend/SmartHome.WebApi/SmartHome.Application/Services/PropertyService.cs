@@ -139,13 +139,7 @@ namespace SmartHome.Application.Services
 
               |> aggregateWindow(every: {ag}, fn: {fn}, createEmpty: false)";
 
-                /*from(bucket: "bucket")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "Home Energy")
-                  |> filter(fn: (r) => r["_field"] == "power")
-                  |> aggregateWindow(every: 1m, fn: last, createEmpty: false)
-                  |> group(columns: ["_measurement", "_field"])  // Group by _measurement and _field*/
-
+               
 
             var result = await _influxClientService.GetInfluxData(query);
 
@@ -196,8 +190,16 @@ namespace SmartHome.Application.Services
         {
             return await _propertyRepository.GetCountries();
          }
-        public async Task<CountryEnergyHistory> GetCountryEnergyData(string country, string h,string tag)
-        {
+        public async Task<CountryEnergyHistory> GetCountryEnergyData(string country, string h,string tag,DateTime? startDate, DateTime? endDate)
+        {   
+            string range = $@"|> range(start: -{h})";
+
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                string start = startDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                string end = endDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                range = $@"|> range(start: {start},stop:{end})";
+            }
             List<Property> properties;
             if (tag == "Country")
             {
@@ -212,8 +214,9 @@ namespace SmartHome.Application.Services
             foreach(Property property in properties) 
             {
                 string query = $@"
-                from(bucket: ""bucket"")
-                  |> range(start: -{h}) 
+                from(bucket: ""bucket"")"
+                + range+
+                $@"  
                   |> filter(fn: (r) => r[""_measurement""] == ""Home Energy"")
                   |> filter(fn: (r) => r[""_field""] == ""power"")
                   |> filter(fn: (r) => r[""id""] == ""{property.Id}"")

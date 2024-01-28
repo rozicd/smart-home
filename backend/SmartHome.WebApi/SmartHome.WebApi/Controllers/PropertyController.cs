@@ -183,7 +183,25 @@ public class PropertyController : BaseController
     public async Task<IActionResult> CountryHistory([FromBody] EnergyHistory bh)
     {
 
-        CountryEnergyHistory ceh = await _propertyService.GetCountryEnergyData(bh.Name, bh.Search,bh.Tag);
+        CountryEnergyHistory ceh = await _propertyService.GetCountryEnergyData(bh.Name, bh.Search,bh.Tag,null,null);
+        return Ok(ceh);
+
+
+    }
+    [HttpPost("country/energy/date")]
+    public async Task<IActionResult> CountryHistoryDate([FromBody] EnergyHistoryDate bh)
+    {
+        TimeSpan dateRange = bh.Start - bh.End;
+        if (dateRange.TotalDays > 30)
+        {
+            return BadRequest("Date range cannot be longer than one month");
+        }
+        if (bh.Start > bh.End)
+        {
+            return BadRequest("Start date cannot be after end date");
+        }
+
+        CountryEnergyHistory ceh = await _propertyService.GetCountryEnergyData(bh.Name,"", bh.Tag, bh.Start, bh.End);
         return Ok(ceh);
 
 

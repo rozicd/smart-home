@@ -140,19 +140,23 @@ namespace SmartHome.Data.Repositories
 
             List<Country> countries = new List<Country>();
             List<City> cities = new List<City>();
+            List<string> cityNames = new List<string>();
+            List<string> countryNames = new List<string>();
             CountriesAndCities res = new CountriesAndCities();
             
             foreach (PropertyEntity p in properties)
             {
                 City c = _mapper.Map<City>(p.City);
                 Country co = _mapper.Map<Country>(p.City.Country);
-                if (!cities.Contains(c))
+                if (!cityNames.Contains(c.Name))
                 { 
                     cities.Add(c);
+                    cityNames.Add(c.Name);
                 }
-                if (!countries.Contains(co))
+                if (!countryNames.Contains(co.Name))
                 { 
                     countries.Add(co);
+                    countryNames.Add(co.Name);
                 }
             }
             res.Cities = cities;

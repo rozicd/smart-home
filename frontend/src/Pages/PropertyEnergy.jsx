@@ -98,6 +98,8 @@ const PropertyEnergyPage = () => {
         sm={6}
         paddingRight={"50px"}
         paddingTop={"50px"}
+        alignItems={"center"}
+        justifyContent={"center"}
       >
         <Box
           style={{
