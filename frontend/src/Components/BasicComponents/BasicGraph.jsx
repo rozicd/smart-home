@@ -7,7 +7,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 //   // ...
 // ];
 
-const BasicGraph = ({data,datakey = "energy",width=600,height=300}) => (
+const BasicGraph = ({data,datakey = "energy",width=600,height=300 ,ah = false}) => (
   <LineChart width={width} height={height} data={data}>
     <XAxis dataKey="timestamp" />
     <YAxis dataKey={datakey}/>
