@@ -71,6 +71,52 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             await _airConditionerService.ChangeMode(_user, ac);
             return Ok();
         }
+
+        [HttpPut("addScheduled/{id}")]
+        public async Task<IActionResult> AddScheduledMode(Guid id, [FromBody] CreateACScheduledModeRequestDTO acScheduledModeRequestDTO)
+        {
+            ACScheduledMode acScheduledMode = _mapper.Map<ACScheduledMode>(acScheduledModeRequestDTO);
+            AirConditioner ac = await _airConditionerService.AddScheduledMode(id, acScheduledMode, _user);
+
+            return Ok(_mapper.Map<AirConditionerResponseDTO>(ac));
+        }
+
+        [HttpGet("{id}/history")]
+        public async Task<IActionResult> GetACActions(Guid id, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            if (!startDate.HasValue)
+            {
+                startDate = DateTime.UtcNow.AddHours(-6);
+            }
+
+            if (!endDate.HasValue)
+            {
+                endDate = DateTime.UtcNow;
+            }
+
+            var fluxTables = await _airConditionerService.GetInfluxDataDateRangeAsync(id.ToString(), startDate.Value, endDate.Value);
+            var influxData = new List<ACActionsDTO>();
+            foreach (var fluxTable in fluxTables)
+            {
+                int i = 0;
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+                    Console.WriteLine(fluxRecord.Values);
+                    Console.WriteLine(fluxRecord.ToString());
+                    var data = new ACActionsDTO
+                    {
+                        Temperature = fluxRecord.Values["currentTemp"].ToString(),
+                        Mode = fluxRecord.Values["mode"].ToString(),
+                        Name = fluxRecord.Values["user"].ToString(),
+                        Timestamp = fluxRecord.GetTimeInDateTime()
+                    };
+
+                    Console.WriteLine(i);
+                    influxData.Add(data);
+                }
+            }
+            return Ok(influxData);
+        }
     }
 
 }

@@ -89,7 +89,6 @@ class Lamp(SmartDevice):
 
         print(f"Subscribed to topic: {self.lamp_info_topic}")
 
-
     def sendEnergySpending(self):
         while self.is_send_lamp_thread_running:
             self.client.publish(self.name +"/spending", f"{self.energy_spending}")

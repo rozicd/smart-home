@@ -15,6 +15,8 @@ using InfluxDB.Client.Api.Domain;
 using Microsoft.AspNetCore.SignalR;
 using SmartHome.Application.Hubs;
 using System.Reflection.Metadata;
+using Newtonsoft.Json;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -89,16 +91,18 @@ namespace SmartHome.Application.Services.SmartDevices
                     string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                     string[] payloadParts = payload.Split(',');
 
-                    if (payloadParts.Length == 2)
+                    if (payloadParts.Length == 3)
                     {
                         Console.Write("USAO GDE TREBA");
                         if (float.TryParse(payloadParts[0], out float currentTemperature) && int.TryParse(payloadParts[1], out int powerState))
                         {
+                            string acMode = payloadParts[2];
                             Console.WriteLine($"CURRENT AC TEMP: {currentTemperature}");
                             Console.WriteLine($"Power State: {powerState}");
+                            Console.WriteLine($"AC Mode: {acMode}");
                             Console.WriteLine(device.Connection);
-                            
-                            await _hubContext.Clients.All.SendAsync(device.Connection, currentTemperature, powerState);
+                            var payloadObject = new { CurrentTemperature = currentTemperature, PowerState = powerState, ACMode = acMode };
+                            await _hubContext.Clients.All.SendAsync(device.Connection, payloadObject);
 
                         }
                         else
@@ -133,19 +137,59 @@ namespace SmartHome.Application.Services.SmartDevices
         private async Task SaveAndPublishChanges(AirConditioner ac, string topic)
         {
             await _airConditionerRepository.Update(ac);
-            await _mqttClientService.PublishMessageAsync(ac.Connection + topic, $"{ac.CurrentTemperature}, {ac.Mode}");
+            var serializedScheduledModes = JsonConvert.SerializeObject(ac.ScheduledModes);
+            await _mqttClientService.PublishMessageAsync(ac.Connection + topic, $"{ac.CurrentTemperature}, {ac.Mode}, {serializedScheduledModes}");
         }
 
         private async Task SendInfluxDataAsync(AirConditioner ac, float currentTemperature, ACMode mode, LoggedUser user)
         {
             var point = PointData
-                          .Measurement(ac.Name)
+                          .Measurement("AC actions")
+                          .Tag("Id", ac.Id.ToString())
                           .Field("currentTemp", currentTemperature)
                           .Field("mode", mode.ToString())
                           .Field("user", user.Name)
                           .Field("userId", user.UserId)
                           .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
+        }
+
+        public async Task<AirConditioner> AddScheduledMode(Guid id, ACScheduledMode scheduledMode, LoggedUser user)
+        {
+            AirConditioner ac = await _airConditionerRepository.AddACScheduledMode(id, scheduledMode);
+            var serializedScheduledModes = JsonConvert.SerializeObject(ac.ScheduledModes);
+            await _mqttClientService.PublishMessageAsync(ac.Connection + "/schedule", $"{serializedScheduledModes}");
+            await SendInfluxDataAsync(ac, ac.CurrentTemperature, ACMode.AUTOMATIC, user);
+            return ac;
+        }
+        public async Task<List<FluxTable>> GetInfluxDataDateRangeAsync(string id, DateTime startDate, DateTime endDate)
+        {
+            string start = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string end = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+            string query = $"from(bucket: \"bucket\")" +
+                           $"|> range(start: {start}, stop: {end})" +
+                           $"|> filter(fn: (r) => r._measurement == \"AC actions\")" +
+                           $"|> filter(fn: (r) => r[\"Id\"] == \"{id}\")"+
+                           $"|> sort(columns: [\"_time\"], desc: false)" +
+                           $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+
+            var result = await _influxClientService.GetInfluxData(query);
+
+            return result;
+
+        }
+
+        public async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
+        {
+            string query = $"from(bucket: \"bucket\")" +
+                   $"|> range(start: -{h})" +
+                   $"|> filter(fn: (r) => r._measurement == \"{"AC actions"}\" and r.Id == \"{id}\")" +
+                   $"|> sort(columns: [\"_time\"], desc: false)";
+            var result = await _influxClientService.GetInfluxData(query);
+
+
+            return result;
         }
     }
     

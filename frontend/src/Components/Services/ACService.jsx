@@ -30,5 +30,28 @@ const turnOn = async (acId) => {
     }
   };
 
+  const addScheduledMode = async (id, createACSCheduledModeRequestDTO) => {
+    try{
+      const response = await axios.put(`${API_BASE_URL}/airconditioner/addScheduled/${id}`,  createACSCheduledModeRequestDTO , { withCredentials: true });
+      return response
+    }catch(error) {
+      throw error;
+    }
+  }
 
-  export { turnOn, turnOff, changeMode };
+  const getACActions = async (id, startDate, endDate) =>{
+    try{
+      const response = await axios.get(`${API_BASE_URL}/airconditioner/${id}/history`, {
+        params: {
+          startDate: startDate,
+          endDate: endDate,
+        },
+        withCredentials: true,
+      });
+      return response.data
+    }catch(error){
+      throw error;
+    }
+  }
+
+  export { turnOn, turnOff, changeMode, addScheduledMode, getACActions };
