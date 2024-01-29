@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace SmartHome.DataTransferObjects.Responses
 {
-    public class HomePowerResponseDTO
+    public class DeviceDataResponseDTO
     {
-        public string Energy { get; set; }
+        public string Percentage { get; set; }
+        public string Duration { get; set; }
+        public string Units { get; set; }
         public string Timestamp { get; set; }
-        public string DeviceId {  get; set; }
-        public string Target {  get; set; }
     }
 }

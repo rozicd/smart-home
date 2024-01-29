@@ -3,13 +3,13 @@ import time
 import paho.mqtt.client as mqtt
 import random
 
-from simulations.AirConditioner import AirConditioner
+from AirConditioner import AirConditioner
 # <<<<<<< HEAD
 # from simulations.Lamp import Lamp
 # from simulations.SmartDevice import SmartDevice
 # from simulations.SolarPanelSystem import SolarPanelSystem
 # =======
-from simulations.EnvironmentalConditionsSensor import EnvironmentalConditionsSensor
+from EnvironmentalConditionsSensor import EnvironmentalConditionsSensor
 from CarGate import CarGate
 from Lamp import Lamp
 from SmartDevice import SmartDevice

@@ -1,4 +1,5 @@
 using AutoMapper;
+using InfluxDB.Client.Core.Flux.Domain;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Application.Services;
 using SmartHome.DataTransferObjects.Requests;
@@ -57,6 +58,73 @@ namespace SmartHome.WebApi.Controllers
 
             await actionsService.Disconnect(dp.Id);
             return Ok();
+        }
+
+        [HttpPost("data")]
+        public async Task<IActionResult> GetAvailabilityInLastHour([FromBody] DeviceHistoryRequestDTO bh)
+        {
+            List<FluxTable> fluxTables = await _smartDeviceService.GetInfluxDataAsync(bh.Id.ToString(), bh.Hours);
+
+            var influxData = new List<DeviceDataResponseDTO>();
+
+            foreach (var fluxTable in fluxTables)
+            {
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+
+                    var data = new DeviceDataResponseDTO
+                    {
+                        Units = fluxRecord.Values["units"].ToString(),
+                        Percentage = fluxRecord.Values["percentage"].ToString(),
+                        Duration = fluxRecord.Values["duration"].ToString(),
+                        Timestamp = fluxRecord.Values["time"].ToString(),
+                    };
+
+                    influxData.Add(data);
+                }
+            }
+
+            return Ok(influxData);
+        }
+
+        [HttpPost("data/date")]
+        public async Task<IActionResult> GetAvailabilityDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
+        {
+            TimeSpan dateRange = bh.EndDate - bh.StartDate;
+            if (dateRange.TotalDays > 30)
+            {
+                return BadRequest("Date range cannot be longer than one month");
+            }
+            if (bh.StartDate > bh.EndDate)
+            {
+                return BadRequest("Start date cannot be after end date");
+            }
+            if (bh.StartDate > DateTime.Now || bh.EndDate > DateTime.Now)
+            {
+                return BadRequest("Cannot check availability in the future");
+            }
+            List<FluxTable> fluxTables = await _smartDeviceService.GetInfluxDataDateRangeAsync(bh.Id.ToString(), bh.StartDate, bh.EndDate);
+
+            var influxData = new List<DeviceDataResponseDTO>();
+
+            foreach (var fluxTable in fluxTables)
+            {
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+
+                    var data = new DeviceDataResponseDTO
+                    {
+                        Units = fluxRecord.Values["units"].ToString(),
+                        Percentage = fluxRecord.Values["percentage"].ToString(),
+                        Duration = fluxRecord.Values["duration"].ToString(),
+                        Timestamp = fluxRecord.Values["time"].ToString(),
+                    };
+
+                    influxData.Add(data);
+                }
+            }
+
+            return Ok(influxData);
         }
 
     }

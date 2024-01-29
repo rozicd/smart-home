@@ -1,12 +1,15 @@
 ﻿using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Core.Flux.Domain;
 using InfluxDB.Client.Writes;
 using Microsoft.Extensions.DependencyInjection;
 using MQTTnet.Client;
+using NodaTime;
 using SmartHome.Domain.Models;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Repositories;
 using SmartHome.Domain.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -15,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Application.Services
 {
-    public class SmartDeviceService : ISmartDeviceService,ISmartDeviceActionsService
+    public class SmartDeviceService : ISmartDeviceService, ISmartDeviceActionsService
     {
         protected readonly ISmartDeviceRepository _smartDeviceRepository;
         protected readonly IMqttClientService _mqttClientService;
@@ -66,7 +69,7 @@ namespace SmartHome.Application.Services
 
                 var repository = serviceProvider.GetRequiredService<ISmartDeviceRepository>();
 
-                smartDevice= await repository.TurnOn(id);
+                smartDevice = await repository.TurnOn(id);
             }
             if (smartDevice == null) return null;
 
@@ -88,10 +91,10 @@ namespace SmartHome.Application.Services
                         repository.TurnOff(smartDevice.Id);
                     }
                 }
-                else if(receivedTopic == smartDevice.Connection + "/status")
+                else if (receivedTopic == smartDevice.Connection + "/status")
                 {
                     string messageContent = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-                    
+
                     SendInfluxDataAsync(smartDevice, 1);
                 }
                 return Task.CompletedTask;
@@ -99,14 +102,87 @@ namespace SmartHome.Application.Services
             return smartDevice;
         }
 
+        public async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
+        {
 
+            string aggregation;
+            string units;
+            string multipicator;
+            string dorh;
+            if (!(h == "7d" || h == "30d"))
+            {
+                aggregation = "1h";
+                units = "1m";
+                multipicator = "60";
+                dorh = "h";
+            }
+            else
+            {
+                aggregation = "1d";
+                units = "1h";
+                multipicator = "24";
+                dorh = "d";
+            }
+
+            string query = $"from(bucket: \"bucket\")" +
+                           $"|> range(start: -{h})" +
+                           $"|> filter(fn: (r) => r._measurement == \"Device status\" and r.Id == \"{id}\")" +
+                           $"|> window(every: {aggregation}, createEmpty: false)" +
+                           $"|> stateDuration(fn: (r) => r._value == 1, unit: {units})" +
+                           $"|> last()" +
+                           $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r.stateDuration+1,percentage: (r.stateDuration+1) * 100/" +
+                           multipicator + ",units:" + $"\"{dorh}\"" + "}" + "))";
+
+
+            var result = await _influxClientService.GetInfluxData(query);   
+
+            Console.WriteLine(result);
+            return result;
+        }
+        public async Task<List<FluxTable>> GetInfluxDataDateRangeAsync(string id, DateTime startDate, DateTime endDate)
+        {
+            string start = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string end = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+            string aggregation;
+            string units;
+            string multipicator;
+            string dorh;
+            if ((endDate - startDate).TotalDays <= 2)
+            {
+                aggregation = "1h";
+                units = "1m";
+                multipicator = "60";
+                dorh = "h";
+            }
+            else
+            {
+                aggregation = "1d";
+                units = "1h";
+                multipicator = "24";
+                dorh = "d";
+            }
+
+            string query = $"from(bucket: \"bucket\")" +
+                           $"|> range(start: {start}, stop: {end})" +
+                           $"|> filter(fn: (r) => r._measurement == \"Device status\" and r.Id == \"{id}\")" +
+                           $"|> window(every: {aggregation}, createEmpty: false)" +
+                           $"|> stateDuration(fn: (r) => r._value == 1, unit: {units})" +
+                           $"|> last()" +
+                           $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r.stateDuration+1,percentage: (r.stateDuration+1) * 100/" +
+                           multipicator + ",units:"+ $"\"{dorh}\"" + "}" + "))";
+
+            var result = await _influxClientService.GetInfluxData(query);
+
+            return result;
+        }
 
         private async Task SendInfluxDataAsync(SmartDevice smartDevice, int status)
         {
             var point = PointData
-                          .Measurement(smartDevice.Name)
-                          .Field("status", status)
-                          .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
+                          .Measurement("Device status")
+                          .Tag("Id", smartDevice.Id.ToString())
+                          .Field("status", status);
             await _influxClientService.WriteDataAsync(point);
         }
     }

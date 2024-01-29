@@ -74,6 +74,7 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
     var token = "tCtCpcSk5TC_bwYJy-iIhP9pJV0cumX20qOlSI_QLsdx8KkcEHQOFQlfhHSXw4v23i7jAceatMn2C-mBOCckjA==";
 
 
+
     var bucket = "bucket";
     var organization = "organization";
 

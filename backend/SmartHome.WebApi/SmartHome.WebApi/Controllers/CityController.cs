@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SmartHome.WebApi.Controllers
 {
     [ApiController]
-    [Route("cities")]
+    [Route("Cities")]
     public class CityController : BaseController
     {
         private readonly ICityService _cityService;

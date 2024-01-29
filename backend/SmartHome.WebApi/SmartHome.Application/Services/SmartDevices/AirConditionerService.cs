@@ -185,7 +185,9 @@ namespace SmartHome.Application.Services.SmartDevices
             string query = $"from(bucket: \"bucket\")" +
                    $"|> range(start: -{h})" +
                    $"|> filter(fn: (r) => r._measurement == \"{"AC actions"}\" and r.Id == \"{id}\")" +
-                   $"|> sort(columns: [\"_time\"], desc: false)";
+                   $"|> sort(columns: [\"_time\"], desc: false)"+
+                   $"|> sort(columns: [\"_time\"], desc: false)" +
+                   $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
             var result = await _influxClientService.GetInfluxData(query);
 
 
