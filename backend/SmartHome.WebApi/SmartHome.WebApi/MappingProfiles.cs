@@ -22,6 +22,11 @@ public class MappingProfiles : Profile
         CreateMap<AirConditioner, AirConditionerEntity>()
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
         CreateMap<AirConditionerEntity, AirConditioner>();
+        CreateMap<ACScheduledMode, ACScheduledModeEntity>();
+        CreateMap<ACScheduledModeEntity, ACScheduledMode>();
+        CreateMap<CreateACScheduledModeRequestDTO, ACScheduledMode>();
+        CreateMap<ACScheduledMode, ACScheduledModeResponseDTO>();
+
         CreateMap<WashingMachine, WashingMachineEntity>()
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
         CreateMap<WashingMachineEntity, WashingMachine>();

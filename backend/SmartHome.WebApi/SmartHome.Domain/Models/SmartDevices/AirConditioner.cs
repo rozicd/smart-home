@@ -12,6 +12,8 @@ namespace SmartHome.Domain.Models.SmartDevices
         public float MaximumTemperature { get; set; }
         public float CurrentTemperature { get; set; }
         public ACMode Mode { get; set; }
+
+        public List<ACScheduledMode> ScheduledModes { get; set; }
         public AirConditioner()
         {
             PowerSupply = PowerSupplyType.HOME;
@@ -19,6 +21,7 @@ namespace SmartHome.Domain.Models.SmartDevices
             DeviceType = DeviceType.HSD;
             Connection = "";
             CurrentTemperature = 0;
+            ScheduledModes = new List<ACScheduledMode>();
         }
     }
     public enum ACMode { COOLING, HEATING, AUTOMATIC, FAN }

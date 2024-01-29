@@ -12,25 +12,49 @@ import AcUnitIcon from "@mui/icons-material/AcUnitOutlined";
 import WbSunnyIcon from "@mui/icons-material/WbSunnyOutlined";
 import AirOutlinedIcon from "@mui/icons-material/AirOutlined";
 import { ACHubConnection } from "./Sockets/SocketService";
-import { turnOn, turnOff, changeMode } from "./Services/ACService";
+import { turnOn, turnOff, changeMode, addScheduledMode, getACActions } from "./Services/ACService";
 import InfoDialog from "./BasicComponents/InfoDialog";
+import ACScheduleModeDialog from "./Dialogs/ACScheduleModeDialog";
+import ACHistoryComponent from "./ACHistoryComponent";
 
 const ACCardsComponents = ({ deviceInfo }) => {
-  const [currentTemperature, setCurrentTemperature] = useState(20);
+  const [airConditionerInfo, setAirConditionerInfo] = useState(deviceInfo)
   const [selectedButton, setSelectedButton] = useState("COOLING");
-  const [acData, setACData] = useState({currentTemperature: deviceInfo.minimumTemperature, powerState: 0});
+  const [acData, setACData] = useState({currentTemperature: airConditionerInfo.minimumTemperature, powerState: 0});
+  const [currentTemperature, setCurrentTemperature] = useState(acData.currentTemperature);
+  const [toDate,setToDate] = useState(null);
+  const [fromDate,setFromDate] = useState(null);
+  const [acHistory, setACHistory] = useState([]);
   const [infoDialog, setInfoDialog] = useState({
     open: false,
     title: '',
     content: ''
   });
 
+  const [autoModeDialogOpen, setAutoModeDialogOpen] = useState(false);
+
+  const handleAutoButtonClick = () => {
+    setAutoModeDialogOpen(true);
+  };
+
+  const handleAutoModeSubmit = async (autoModeSettings) => {
+    try{
+      const response = await addScheduledMode(airConditionerInfo.id, autoModeSettings)
+      setAirConditionerInfo(prevInfo => ({
+        ...prevInfo,
+        ...response.data
+      }));
+      
+    }catch(error){
+      console.log(error)
+    }
+  };
 
   const handleSwitchChange = async () => {
-    console.log(deviceInfo.id)
+    console.log(airConditionerInfo.id)
     if(acData.powerState === 0){
         try{
-            await turnOn(deviceInfo.id)
+            await turnOn(airConditionerInfo.id)
         }
         catch(error){
             console.log(error)
@@ -38,7 +62,7 @@ const ACCardsComponents = ({ deviceInfo }) => {
     }
     else{
         try{
-            await turnOff(deviceInfo.id)
+            await turnOff(airConditionerInfo.id)
         }catch(error){
             console.log(error)
         }
@@ -47,20 +71,20 @@ const ACCardsComponents = ({ deviceInfo }) => {
   };
 
   const handleDecrease = () => {
-    if (currentTemperature > deviceInfo.minimumTemperature) {
+    if (currentTemperature > airConditionerInfo.minimumTemperature) {
       setCurrentTemperature((prevTemp) => prevTemp - 1);
     }
   };
 
   const handleIncrease = () => {
-    if (currentTemperature < deviceInfo.maximumTemperature) {
+    if (currentTemperature < airConditionerInfo.maximumTemperature) {
       setCurrentTemperature((prevTemp) => prevTemp + 1);
     }
   };
 
   const handleButtonClick = (buttonName) => {
     setSelectedButton(buttonName);
-    // Add logic here to perform actions based on the clicked button
+
     console.log(`${buttonName} button clicked`);
   };
   
@@ -79,7 +103,7 @@ const ACCardsComponents = ({ deviceInfo }) => {
         selectedMode = 3;
     }
 
-    let changeACModeDTO = {id:deviceInfo.id, mode: selectedMode, currentTemperature: currentTemperature}
+    let changeACModeDTO = {id:airConditionerInfo.id, mode: selectedMode, currentTemperature: currentTemperature}
 
     try{
         await changeMode(changeACModeDTO);
@@ -93,19 +117,33 @@ const ACCardsComponents = ({ deviceInfo }) => {
     }
   }
 
-  useEffect(()=>{
-    
-    async function connect(){
-        if(ACHubConnection.state === "Disconnected"){
-            await ACHubConnection.start();
-        }
-        ACHubConnection.on(deviceInfo.connection, (currentTemperature, powerState) =>{
-            setACData({currentTemperature: currentTemperature, powerState: powerState})
-            console.log("PowerState: "+powerState)
+  useEffect(() => {
 
-        });
+    const fetchData = async () => {
+      try {
+        let data = await getACActions(airConditionerInfo.id,fromDate,toDate)
+        setACHistory(data)
+        console.log(data)
+      } catch (error) {
+        console.log(error)
+      } 
+    };
+
+    fetchData();
+  }, [toDate,fromDate]);
+
+  useEffect(()=>{
+
+    async function connect(){
+      if(ACHubConnection.state === "Disconnected"){
+        await ACHubConnection.start();
+      }
+      ACHubConnection.on(airConditionerInfo.connection, (payloadObject) =>{
+        setACData({currentTemperature: payloadObject.currentTemperature, powerState: payloadObject.powerState});
+        setCurrentTemperature(payloadObject.currentTemperature)
+        setSelectedButton(payloadObject.acMode.trim());
+      });
     }
-    console.log(deviceInfo)
     connect();
 
     }, []);
@@ -125,7 +163,7 @@ const ACCardsComponents = ({ deviceInfo }) => {
           >
             <Typography variant="h6">Min Temperature</Typography>
             <Typography align="center" variant="h4">
-              {deviceInfo.minimumTemperature}
+              {airConditionerInfo.minimumTemperature}
             </Typography>
             <Typography align="center">°C</Typography>
           </CardContent>
@@ -144,7 +182,7 @@ const ACCardsComponents = ({ deviceInfo }) => {
           >
             <Typography variant="h6">Max Temperature</Typography>
             <Typography align="center" variant="h4">
-              {deviceInfo.maximumTemperature}
+              {airConditionerInfo.maximumTemperature}
             </Typography>
             <Typography align="center">°C</Typography>
           </CardContent>
@@ -247,28 +285,38 @@ const ACCardsComponents = ({ deviceInfo }) => {
               >
                 <AirOutlinedIcon sx={{ fontSize: 60 }} color="primary" />
               </Button>
-              <Button
-                style={{
-                  margin: "30px",
-                  border: selectedButton === "AUTOMATIC" ? "2px solid #00AEAE" : "none",
-                  fontSize: "15px"
-                }}
-                onClick={() => handleButtonClick("AUTOMATIC")}
-              >
-                AUTO
-              </Button>
+              
             </div>
           </CardContent>
         </Card>
       </Grid>
       <Grid item xs={24} md={12}>
         <Button onClick={()=>handleSubmitClick()} disabled={acData.powerState === 0}>Submit</Button>
+        <Button
+                style={{
+                  margin: "30px",
+                  border: selectedButton === "AUTOMATIC" ? "2px solid #00AEAE" : "none",
+                  fontSize: "15px",
+                }}
+                onClick={handleAutoButtonClick}
+              >
+                Add Scheduled
+        </Button>
+      </Grid>
+      <Grid item xs={12} md={12}>
+        <ACHistoryComponent acHistory= {acHistory} setEndDate={setToDate} setStartDate={setFromDate}/>
       </Grid>
       <InfoDialog
         open={infoDialog.open}
         onClose={() => setInfoDialog({ ...infoDialog, open: false })}
         title={infoDialog.title}
         content={infoDialog.content}
+      />
+      <ACScheduleModeDialog
+        open={autoModeDialogOpen}
+        onClose={() => setAutoModeDialogOpen(false)}
+        onSubmit={handleAutoModeSubmit}
+        deviceInfo={airConditionerInfo}
       />
     </Grid>
   );

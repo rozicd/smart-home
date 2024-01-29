@@ -13,5 +13,6 @@ namespace SmartHome.Data.Entities.SmartDevices
         public float MaximumTemperature { get; set; }
         public float CurrentTemperature { get; set; }
         public ACMode Mode { get; set; }
+        public virtual List<ACScheduledModeEntity> ScheduledModes { get; set; } = new List<ACScheduledModeEntity>();
     }
 }
