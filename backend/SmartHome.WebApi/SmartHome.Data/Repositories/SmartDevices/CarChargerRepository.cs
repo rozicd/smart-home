@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InfluxDB.Client.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Models.SmartDevices;
@@ -14,13 +15,13 @@ namespace SmartHome.Data.Repositories.SmartDevices
     public class CarChargerRepository : ICarChargerRepository
     {
         private readonly IMapper _mapper;
-        private readonly DbSet<SmartDeviceEntity> _carChargers;
+        private readonly DbSet<CarChargerEntity> _carChargers;
         private readonly DatabaseContext _context;
 
         public CarChargerRepository(DatabaseContext context, IMapper mapper)
         {
             _context = context;
-            _carChargers = context.Set<SmartDeviceEntity>();
+            _carChargers = context.Set<CarChargerEntity>();
             _mapper = mapper;
         }
 
@@ -31,6 +32,18 @@ namespace SmartHome.Data.Repositories.SmartDevices
             await _context.SaveChangesAsync();
         }
 
+        public async Task<CarCharger> GetById(Guid id)
+        {
+            CarChargerEntity chargerEntity = await _carChargers.FirstOrDefaultAsync(sps => sps.Id == id);
+
+            if (chargerEntity == null)
+            { 
+                throw new NotFoundException($"Solar Panel System with ID {chargerEntity.Id} not found");
+            }
+
+            CarCharger charger = _mapper.Map<CarCharger>(chargerEntity);
+            return charger;
+        }
     }
 
 }

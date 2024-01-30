@@ -188,6 +188,8 @@ app.MapHub<CarGateHub>("/carGateHub");
 app.MapHub<SolarPanelSystemHub>("/panelHub");
 app.MapHub<HomeBatteryHub>("/batteryHub");
 app.MapHub<PropertyHub>("/propertyHub");
+app.MapHub<CarChargerHub>("/carChargerHub");
+
 
 
 app.UseStaticFiles();

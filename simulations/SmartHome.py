@@ -15,6 +15,7 @@ from Lamp import Lamp
 from SmartDevice import SmartDevice
 from SolarPanelSystem import SolarPanelSystem
 from HomeBattery import HomeBattery
+from CarCharger import CarCharger
 # >>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
 
 
@@ -142,6 +143,10 @@ class SmartHome:
                     smart_device = EnvironmentalConditionsSensor(device_key)
                 elif command[1] == 'AirConditioner':
                     smart_device = AirConditioner(device_key)
+                elif command[1] == 'CarCharger':
+                    smart_device = CarCharger(device_key)
+                    self.client.subscribe(device_key+'/spending')
+
                 else:
                     smart_device = SmartDevice(device_key)
 

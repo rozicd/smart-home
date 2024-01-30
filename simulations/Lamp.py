@@ -37,7 +37,7 @@ class Lamp(SmartDevice):
             lampInfo = msg.payload.decode('utf-8')
             light_treshold, mode,energy_spending = lampInfo.split(',')
             self.light_threshold = int(light_treshold)
-            self.energy_spending = float(energy_spending)/1000
+            self.energy_spending = energy_spending
             if mode == "MANUAL":
                 self.auto_mode = False
             else:

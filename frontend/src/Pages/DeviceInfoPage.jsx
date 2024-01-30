@@ -13,6 +13,7 @@ import ACCardsComponents from "../Components/ACCardsComponents";
 import CarGateCardsComponent from "../Components/CarGateCardsComponent";
 import PanelCardComponent from "../Components/PanelCardsComponent";
 import BatteryCardsComponent from "../Components/BatteryCardsComponent";
+import CarChargerComponent from "../Components/CarChargerComponent";
 
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();
@@ -90,6 +91,14 @@ const DeviceInfoPage = () => {
           )
 
           }
+          {deviceType === "carcharger" &&(
+            <CarChargerComponent
+              deviceInfo={deviceData}
+            />
+          )
+
+          }
+          
           {/* Add other device type checks and load corresponding components */}
         </Box>
       </Grid>
