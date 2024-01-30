@@ -85,24 +85,38 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             foreach (var fluxTable in fluxTables)
             {
-                foreach (var fluxRecord in fluxTable.Records)
+                var lightRecord = fluxTable.Records[0];
+                var powerRecord = fluxTable.Records[1];
+
+                var data = new LampDataResponseDTO
                 {
 
-                    var data = new LampDataResponseDTO
-                    {
+                    CurrentLight = GetFieldValue(lightRecord, "light"),
+                    PowerStatus = GetFieldValue(powerRecord, "power"),
+                    Timestamp = lightRecord.GetTimeInDateTime()
+                };
 
-                        CurrentLight = fluxRecord.Values["light"].ToString(),
-                        PowerStatus = fluxRecord.Values["power"].ToString(),
-                        Timestamp = fluxRecord.GetTimeInDateTime()
-                    };
-
-                    influxData.Add(data);
-                }
+                influxData.Add(data);
+                
             }
 
             return Ok(influxData);
         }
+        private static string GetFieldValue(FluxRecord fluxRecord, string fieldName)
+        {
+            if (fluxRecord.Values.TryGetValue("_field", out var field) && field.ToString() == fieldName)
+            {
+                if (fluxRecord.Values.TryGetValue("_value", out var value))
+                {
+                    if (value != null)
+                    {
+                        return value.ToString();
+                    }
+                }
+            }
 
+            return "0";
+        }
         [HttpPost("data/date")]
         public async Task<IActionResult> GetPowerDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
         {
@@ -122,19 +136,19 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             foreach (var fluxTable in fluxTables)
             {
-                foreach (var fluxRecord in fluxTable.Records)
+                var lightRecord = fluxTable.Records[0];
+                var powerRecord = fluxTable.Records[1];
+
+                var data = new LampDataResponseDTO
                 {
 
-                    var data = new LampDataResponseDTO
-                    {
+                    CurrentLight = GetFieldValue(lightRecord, "light"),
+                    PowerStatus = GetFieldValue(powerRecord, "power"),
+                    Timestamp = lightRecord.GetTimeInDateTime()
+                };
 
-                        CurrentLight = fluxRecord.Values["light"].ToString(),
-                        PowerStatus = fluxRecord.Values["power"].ToString(),
-                        Timestamp = fluxRecord.GetTimeInDateTime()
-                    };
+                influxData.Add(data);
 
-                    influxData.Add(data);
-                }
             }
 
             return Ok(influxData);

@@ -14,6 +14,7 @@ import CarGateCardsComponent from "../Components/CarGateCardsComponent";
 import PanelCardComponent from "../Components/PanelCardsComponent";
 import BatteryCardsComponent from "../Components/BatteryCardsComponent";
 import CarChargerComponent from "../Components/CarChargerComponent";
+import SprinklerCardsComponent from "../Components/SprinklerCardsComponent";
 
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();
@@ -45,7 +46,7 @@ const DeviceInfoPage = () => {
   if (loading) {
     return <LoadingComponent />;
   }
-
+  console.log(deviceData)
   return (
     <Grid container style={{ height: "100%",display:'flex',flexDirection:'row'  }}>
 
@@ -94,6 +95,11 @@ const DeviceInfoPage = () => {
           {deviceType === "carcharger" &&(
             <CarChargerComponent
               deviceInfo={deviceData}
+              />
+          )}
+          {deviceType === "sprinkler" &&(
+            <SprinklerCardsComponent
+              deviceData={deviceData}
             />
           )
 
