@@ -33,6 +33,20 @@ namespace SmartHome.Data.Repositories.SmartDevices
             await _context.SaveChangesAsync();
         }
 
+        public async Task<AirConditioner> AddACScheduledMode(Guid Id, ACScheduledMode scheduledMode)
+        {
+            AirConditionerEntity airConditionerEntity = await _airConditioners.FirstOrDefaultAsync(ac => ac.Id == Id);
+            if (airConditionerEntity == null)
+            {
+                throw new NotFoundException($"AC with ID {airConditionerEntity.Id} not found");
+            }
+            ACScheduledModeEntity aCScheduledModeEntity = _mapper.Map<ACScheduledModeEntity>(scheduledMode);
+            airConditionerEntity.ScheduledModes.Add(aCScheduledModeEntity);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<AirConditioner>(airConditionerEntity);
+            
+        }
+
         public async Task<AirConditioner> GetById(Guid id)
         {
             var airConditioner = await _airConditioners.FirstOrDefaultAsync(ac => ac.Id == id);
