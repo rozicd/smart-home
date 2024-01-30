@@ -191,6 +191,4 @@ app.MapHub<PropertyHub>("/propertyHub");
 app.MapHub<SprinklerHub>("/sprinklerHub");
 
 
-app.UseStaticFiles();
-
 app.Run();
