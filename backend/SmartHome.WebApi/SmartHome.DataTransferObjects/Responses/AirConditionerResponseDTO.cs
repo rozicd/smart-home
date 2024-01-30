@@ -24,5 +24,6 @@ namespace SmartHome.DataTransferObjects.Responses
         public float MaximumTemperature { get; set; }
         public float CurrentTemperature { get; set; }
         public ACMode ACMode { get; set; }
+        public List<ACScheduledModeResponseDTO> ScheduledModes { get; set; }
     }
 }

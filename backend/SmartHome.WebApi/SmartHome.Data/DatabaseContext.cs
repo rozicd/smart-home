@@ -30,7 +30,7 @@ namespace SmartHome.Data
         public DbSet<SprinklerScheduleEntity> SprinkleSchedules { get; set; }
 
         public DbSet<WashingMachineModeEntity> WashingMachineModes { get; set; }
-
+        public DbSet<ACScheduledModeEntity> ACScheduledModes { get; set; }
 
 
 
@@ -61,7 +61,7 @@ namespace SmartHome.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             SeedCountriesAndCities(modelBuilder);
-
+           
             modelBuilder.Entity<EnvironmentalConditionsSensorEntity>()
                 .ToTable("EnvironmentalConditionsSensors")
                 .HasBaseType<SmartDeviceEntity>();
@@ -90,7 +90,10 @@ namespace SmartHome.Data
                 .ToTable("CarChargers")
                 .HasBaseType<SmartDeviceEntity>();
 
-
+            modelBuilder.Entity<AirConditionerEntity>()
+                .HasMany(ac => ac.ScheduledModes)
+                .WithOne(scheduledMode => scheduledMode.airConditionerEntity)
+                .HasForeignKey(scheduledMode => scheduledMode.AirConditionerId);
         }
 
 

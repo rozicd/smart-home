@@ -119,7 +119,7 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
     }, []);
 
     return(
-        <Grid container spacing={2}>
+        <Grid container spacing={2} >
             <Grid item xs={12} md={6}>
                 <Card style={{ height: "20vh" }}>
                 <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
@@ -143,9 +143,9 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
                 </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={24} md={12}>
-                <Card style={{ height: "55vh" }}>
-                <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%"  }}>
+            <Grid item xs={24} md={12} sx={{marginTop:"50px"}}>
+                <Card style={{ height: "100vh"}}>
+                <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"100%" }}>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                     <div>
                         <InputLabel id="demo-simple-select-label">Time</InputLabel>
@@ -189,7 +189,8 @@ const ECSCardsComponent = ({ deviceInfo }) =>{
                         }
                     </div>
                 </FormControl>
-                <BasicGraph data={dataHistory} datakey="roomTemperate" ah={true}/>
+                <BasicGraph data={temperatures} datakey="roomTemperate" ah={false}/>
+                <BasicGraph data={humidities} datakey="airHumidity" ah={false}/>
                 </CardContent>
                 </Card>
             </Grid>
