@@ -27,7 +27,7 @@ namespace SmartHome.Data
         public DbSet<AirConditionerEntity> airConditioners { get; set; }
         public DbSet<ActivationTokenEntity> ActivationTokens { get; set; }
         public DbSet<SmartDeviceEntity> SmartDevices { get; set; }
-        public DbSet<SprinkleModeEntity> SprinkleModes { get; set; }
+        public DbSet<SprinklerScheduleEntity> SprinkleSchedules { get; set; }
 
         public DbSet<WashingMachineModeEntity> WashingMachineModes { get; set; }
 

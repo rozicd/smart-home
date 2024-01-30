@@ -8,8 +8,7 @@ namespace SmartHome.Domain.Models.SmartDevices
 {
     public class Sprinkler : SmartDevice
     {
-        public SprinkleMode? Mode { get; set; }
-        public Guid?  ModeId { get; set; }
+        public bool Power { get; set; }
         public Sprinkler()
         {
             PowerSupply = PowerSupplyType.HOME;

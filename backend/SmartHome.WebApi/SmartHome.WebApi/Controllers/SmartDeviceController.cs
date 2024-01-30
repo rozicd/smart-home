@@ -103,6 +103,7 @@ namespace SmartHome.WebApi.Controllers
             {
                 return BadRequest("Cannot check availability in the future");
             }
+            bh.EndDate = bh.EndDate.Date.AddDays(1).AddTicks(-1);
             List<FluxTable> fluxTables = await _smartDeviceService.GetInfluxDataDateRangeAsync(bh.Id.ToString(), bh.StartDate, bh.EndDate);
 
             var influxData = new List<DeviceDataResponseDTO>();
