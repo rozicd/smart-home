@@ -192,6 +192,4 @@ app.MapHub<CarChargerHub>("/carChargerHub");
 app.MapHub<SprinklerHub>("/sprinklerHub");
 
 
-app.UseStaticFiles();
-
 app.Run();
