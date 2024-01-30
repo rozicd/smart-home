@@ -5,7 +5,10 @@ const lampHubConnection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
 
-
+  const sprinklerHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl("http://localhost:5090/sprinklerHub",{withCredentials:true})
+  .withAutomaticReconnect()
+  .build();
 const ecsHubConnection = new signalR.HubConnectionBuilder()
   .withUrl("http://localhost:5090/ECSHub",{withCredentials:true})
   .withAutomaticReconnect()
@@ -17,4 +20,4 @@ const ACHubConnection = new signalR.HubConnectionBuilder()
   .build();
 
 
-export { lampHubConnection, ecsHubConnection, ACHubConnection };
+export { lampHubConnection, ecsHubConnection, ACHubConnection,sprinklerHubConnection };

@@ -26,6 +26,7 @@ namespace SmartHome.WebApi.Middlewares
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
 
+            Console.WriteLine(exception.Message);
             if (exception is ResourceNotFoundException)
             {
                 context.Response.StatusCode = StatusCodes.Status404NotFound;

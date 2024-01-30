@@ -9,7 +9,7 @@ namespace SmartHome.Data.Entities.SmartDevices
 {
     public class SprinklerEntity : SmartDeviceEntity
     {
-        public virtual SprinkleModeEntity? Mode { get; set; }
-        public Guid? ModeId { get; set; }
+        public bool Power { get; set; }
+
     }
 }

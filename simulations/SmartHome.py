@@ -12,6 +12,7 @@ from AirConditioner import AirConditioner
 from EnvironmentalConditionsSensor import EnvironmentalConditionsSensor
 from CarGate import CarGate
 from Lamp import Lamp
+from Sprinkler import Sprinkler
 from SmartDevice import SmartDevice
 from SolarPanelSystem import SolarPanelSystem
 from HomeBattery import HomeBattery
@@ -142,6 +143,8 @@ class SmartHome:
                     smart_device = EnvironmentalConditionsSensor(device_key)
                 elif command[1] == 'AirConditioner':
                     smart_device = AirConditioner(device_key)
+                elif command[1] == 'Sprinkler':
+                    smart_device = Sprinkler(device_key)
                 else:
                     smart_device = SmartDevice(device_key)
 

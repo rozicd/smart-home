@@ -62,11 +62,12 @@ const BarChartComponent = ({ data, timeRange }) => {
       }));
   
     const deduplicatedData = [...existingTimestamps.values(), ...emptyEntries];
-  
+      
+    let lastHr = 0
     deduplicatedData.forEach(entry => {
       if (isHours) {
-        const hoursDifference = Math.round((currentTime - new Date(entry.timestamp).getTime()) / (60 * 60 * 1000));
-        entry.timestamp = `-${hoursDifference}`;
+        entry.timestamp = `-${lastHr}`;
+        lastHr+=1
       } else {
         entry.timestamp = new Date(entry.timestamp).toISOString().split('T')[0];
       }
