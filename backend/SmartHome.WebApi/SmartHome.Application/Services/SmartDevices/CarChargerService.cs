@@ -14,6 +14,7 @@ using SmartHome.Application.Hubs;
 using System.Reactive.Joins;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
+using SmartHome.Domain.Models;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -76,7 +77,8 @@ namespace SmartHome.Application.Services.SmartDevices
                     await _hubContext.Clients.All.SendAsync(device.Connection, payload);
                     string[] values = payload.Split(':');
                     await SendChargerInfluxDataAsync(device.Id.ToString(), values[0],float.Parse(values[1]));
-                    
+                    await SendInfluxDataAsync("System", device.Id.ToString(), values[0], float.Parse(values[1]));
+
 
 
                 }
@@ -112,11 +114,12 @@ namespace SmartHome.Application.Services.SmartDevices
             return device;
         }
 
-        public async Task ChangeTreshold(Guid id, string plug, float treshold)
+        public async Task ChangeTreshold(Guid id, string plug, float treshold, string user)
         {
             CarCharger charger = await  _carChargerRepository.GetById(id);
             string topic = charger.Connection + "/" + plug + "/treshold";
             await _mqttClientService.PublishMessageAsyncNoRetain(topic,treshold.ToString());
+            await SendInfluxDataAsync(user, id.ToString(), "treshold", treshold);
         }
         private async Task SendChargerInfluxDataAsync(string id, string action,float power)
         {
@@ -130,6 +133,22 @@ namespace SmartHome.Application.Services.SmartDevices
                           .Tag("id", id)
                           .Tag("action", action)
                           .Field(fieldName, power)
+                          .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
+            await _influxClientService.WriteDataAsync(point);
+        }
+        private async Task SendInfluxDataAsync(string user, string id, string action,float value)
+        {
+            string fieldName = "plug";
+            if (action == "treshold")
+            {
+                fieldName = "value";
+            }
+            var point = PointData
+                          .Measurement("Charger Actions")
+                          .Tag("id", id)
+                          .Tag("user", user)
+                          .Tag("action", action)
+                          .Field(fieldName, value)
                           .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
         }

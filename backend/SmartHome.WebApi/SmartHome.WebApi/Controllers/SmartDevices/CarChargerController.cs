@@ -40,7 +40,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         public async Task<IActionResult> ChangeTreshold([FromBody] ChangeCarTresholdDTO cct)
         {
            
-            await _carChargerService.ChangeTreshold(cct.Id,cct.Plug,cct.Treshold);
+            await _carChargerService.ChangeTreshold(cct.Id,cct.Plug,cct.Treshold,_user.Email);
 
             
             return Ok();

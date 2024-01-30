@@ -10,7 +10,7 @@ namespace SmartHome.Domain.Services.SmartDevices
     public interface ICarChargerService : ISmartDeviceActionsService
     {
         Task Add(CarCharger sensor);
-        Task ChangeTreshold(Guid id, string plug, float treshold);
+        Task ChangeTreshold(Guid id, string plug, float treshold,string user);
         Task<CarCharger> GetById(Guid chargerId);
 
     }

@@ -23,6 +23,7 @@ import { GetPowerGraphData } from "./Services/BatteryService";
 import PowerSpentHistory from "./BasicComponents/PowerSpentHistory";
 import axios from "axios";
 import { API_BASE_URL } from "../App";
+import LoadingComponent from "./BasicComponents/LoadingComponent";
 const CarChargerComponent = ({ deviceInfo }) => {
   const [connectors, setConnectors] = useState(
     new Array(deviceInfo.connectorNumber).fill("")
@@ -32,6 +33,9 @@ const CarChargerComponent = ({ deviceInfo }) => {
   const [newThreshold, setNewThreshold] = useState(100);
   const [thresholdError, setThresholdError] = useState("");
   const [selectedPlug, setSelectedPlug] = useState("");
+  const [connecting, setConnecting] = useState(
+    new Array(deviceInfo.connectorNumber).fill(false)
+  );
 
   const handleThresholdSave = async () => {
     const thresholdValue = parseFloat(newThreshold);
@@ -40,9 +44,9 @@ const CarChargerComponent = ({ deviceInfo }) => {
       return;
     }
     let param = {
-      "id": deviceInfo.id,
-      "plug": selectedPlug.toString(),
-      "treshold": thresholdValue,
+      id: deviceInfo.id,
+      plug: selectedPlug.toString(),
+      treshold: thresholdValue,
     };
     axios
       .post(`${API_BASE_URL}/carcharger/treshold`, param, {
@@ -51,12 +55,12 @@ const CarChargerComponent = ({ deviceInfo }) => {
       .then((response) => {
         setThresholdDialogOpen(false);
         setConnectors((prevArray) => {
-            const newArray = [...prevArray];
-            let items = connectors[selectedPlug].split("/")
-            newArray[selectedPlug] = items[0]+"/"+ thresholdValue; 
-  
-            return newArray;
-          });
+          const newArray = [...prevArray];
+          let items = connectors[selectedPlug].split("/");
+          newArray[selectedPlug] = items[0] + "/" + thresholdValue;
+
+          return newArray;
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -82,6 +86,18 @@ const CarChargerComponent = ({ deviceInfo }) => {
 
     ChargerHubConnection.on(topic, (connected) => {
       console.log(connected);
+
+      let items = connected.split(":");
+      console.log(items);
+      if (items[0] == "connected") {
+        setConnecting((prevArray) => {
+          const newArray = [...prevArray];
+
+          newArray[items[1]] = true; // You can replace 10 with your desired value
+
+          return newArray;
+        });
+      }
     });
     for (let i = 0; i < deviceInfo.connectorNumber; i++) {
       console.log(topic + "/plug/" + i);
@@ -90,6 +106,13 @@ const CarChargerComponent = ({ deviceInfo }) => {
           const newArray = [...prevArray];
 
           newArray[i] = bla; // You can replace 10 with your desired value
+          setConnecting((prevArray) => {
+            const newArray = [...prevArray];
+  
+            newArray[i] = false; // You can replace 10 with your desired value
+  
+            return newArray;
+          });
 
           return newArray;
         });
@@ -100,6 +123,10 @@ const CarChargerComponent = ({ deviceInfo }) => {
   useEffect(() => {
     connect(deviceInfo.connection);
   }, []);
+
+  useEffect(() => {
+    console.log(connecting);
+  }, [connecting]);
 
   useEffect(() => {
     console.log(connectors);
@@ -115,30 +142,55 @@ const CarChargerComponent = ({ deviceInfo }) => {
       >
         {connectors.map((item, index) => {
           let items = item.split("/");
-          return (
-            <Grid item sx={3}>
-              <Card
-                onClick={() => handleThresholdChange(index)}
-                style={{ height: "20vh", padding: "20px" }}
-              >
-                <CardContent
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "space-evenly",
-                    height: "80%",
-                    width: "250px",
-                  }}
+          if (!connecting[index]) {
+            return (
+              <Grid item sx={3}>
+                <Card
+                  onClick={() => handleThresholdChange(index)}
+                  style={{ height: "20vh", padding: "20px" }}
                 >
-                  <Typography variant="h6">Plug {index}</Typography>
-                  <Typography align="center" variant="h4">
-                    {items[0]}% / {items[1]}%
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          );
+                  <CardContent
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "space-evenly",
+                      height: "80%",
+                      width: "250px",
+                    }}
+                  >
+                    <Typography variant="h6">Plug {index}</Typography>
+                    <Typography align="center" variant="h4">
+                      {items[0]}% / {items[1]}%
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          } else {
+            return (
+              <Grid item sx={3}>
+                <Card
+                  onClick={() => handleThresholdChange(index)}
+                  style={{ height: "20vh", padding: "20px" }}
+                >
+                  <CardContent
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "space-evenly",
+                      height: "80%",
+                      width: "250px",
+                    }}
+                  >
+                    <Typography variant="h6">Plug {index}</Typography>
+                    <LoadingComponent></LoadingComponent>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          }
         })}
       </Grid>
       <Dialog
