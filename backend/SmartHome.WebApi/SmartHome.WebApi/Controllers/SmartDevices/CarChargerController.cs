@@ -4,11 +4,13 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.Application.Services.SmartDevices;
+using SmartHome.DataTransferObjects.Responses;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("car-charger")]
+    [Route("carcharger")]
     public class CarChargerController : BaseController
     {
         private readonly ICarChargerService _carChargerService;
@@ -33,6 +35,24 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             await _carChargerService.Add(response);
 
             return Ok();
+        }
+        [HttpPost("treshold")]
+        public async Task<IActionResult> ChangeTreshold([FromBody] ChangeCarTresholdDTO cct)
+        {
+           
+            await _carChargerService.ChangeTreshold(cct.Id,cct.Plug,cct.Treshold,_user.Email);
+
+            
+            return Ok();
+        }
+        [HttpGet("{chargerId}")]
+        public async Task<IActionResult> GetChargerById(Guid chargerId)
+        {
+            CarCharger charger = await _carChargerService.GetById(chargerId);
+
+            var chargerDTO = _mapper.Map<CarChargerResponseDTO>(charger);
+
+            return Ok(chargerDTO);
         }
     }
 

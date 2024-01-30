@@ -185,8 +185,8 @@ namespace SmartHome.Application.Services.SmartDevices
             string query = $"from(bucket: \"bucket\")" +
                                $"|> range(start: -{h})" +
                                $"|> filter(fn: (r) => r._measurement == \"{"Lamp data"}\" and r.Id == \"{id}\")" +
-                               $"|> aggregateWindow(every: {ag}, fn: {fn}, createEmpty: true)" +
-                               $"  |> fill(usePrevious: true) |> group(columns: [\"_time\"])";
+                               $"|> aggregateWindow(every: {ag}, fn: {fn}, createEmpty: false)" +
+                               $"|> group(columns: [\"_time\"])";
 
 
             var result = await _influxClientService.GetInfluxData(query);
@@ -202,8 +202,8 @@ namespace SmartHome.Application.Services.SmartDevices
             string query = $"from(bucket: \"bucket\")" +
                            $"|> range(start: {start}, stop: {end})" +
                            $"|> filter(fn: (r) => r._measurement == \"{"Lamp data"}\" and r.Id == \"{id}\")" +
-                           $"|> aggregateWindow(every: 1h,fn:mean, createEmpty: true)"+
-                           $"  |> fill(usePrevious: true) |> group(columns: [\"_time\"])";
+                           $"|> aggregateWindow(every: 1h,fn:mean, createEmpty: false)"+
+                           $"|> group(columns: [\"_time\"])";
 
             var result = await _influxClientService.GetInfluxData(query);
 

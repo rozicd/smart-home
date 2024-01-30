@@ -70,6 +70,8 @@ public class MappingProfiles : Profile
         CreateMap<UpdateUserRequestDTO, User>();
 
         CreateMap<Country, CountryResponseDTO>();
+        CreateMap<CarCharger, CarChargerResponseDTO>();
+
 
 
 

@@ -306,7 +306,7 @@ const SmartDevicesPage = ({}) => {
     }
     if (selectedDevice == 9) {
       setTemplate(t.concat(cc));
-      setUrl("car-charger");
+      setUrl("carcharger");
     }
   }, [selectedDevice]);
   const [smartDevices, setSmartDevices] = useState([]);

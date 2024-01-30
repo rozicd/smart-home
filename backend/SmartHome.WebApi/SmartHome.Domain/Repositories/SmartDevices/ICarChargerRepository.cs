@@ -10,6 +10,8 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     public interface ICarChargerRepository
     {
         Task Add(CarCharger sensor);
+        Task<CarCharger> GetById(Guid id);
+
 
     }
 }
