@@ -98,5 +98,10 @@ namespace SmartHome.Application.Services
         {
             return _userRepository.GetSuperAdminByIdAndPass(id, password);
         }
+
+        public Task<User> getByEmail(string email)
+        {
+            return _userRepository.GeyByEmail(email);
+        }
     }
 }

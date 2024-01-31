@@ -187,5 +187,13 @@ namespace SmartHome.WebApi.Controllers
             return Ok("User Deleted!");
         }
 
+        [HttpGet("email/{email}")]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            User user = await _userService.getByEmail(email);
+            UserResponseDTO responseDTO = _mapper.Map<UserResponseDTO>(user);
+            return Ok(responseDTO);
+        }
+
     }
 }

@@ -13,11 +13,15 @@ import SmartDeviceCard from "../Components/BasicComponents/SmartDeviceCard";
 import BasicPagination from "../Components/BasicComponents/BasicPagination";
 import InfoDialog from "../Components/BasicComponents/InfoDialog";
 import { Title } from "@mui/icons-material";
-import { Grid, Box, Card, CardContent } from "@mui/material";
+import { Grid, Box, Card, CardContent, Button } from "@mui/material";
 import PowerSpentHistory from "../Components/BasicComponents/PowerSpentHistory";
 import { GetPropertyPowerGraphData } from "../Components/Services/PropertiesService";
 import BasicPowerGraph from "../Components/BasicComponents/BasicPowerGraph";
 import { propertyHubConnection } from "../Components/Sockets/LightSocketService";
+import ShareIcon from '@mui/icons-material/Share';
+import PermisionDialog from "../Components/Dialogs/PermisionDialog";
+import { getPropertyById } from "../Components/Services/PropertiesService";
+
 const deviceTypes = [
   { id: 1, name: "Enviromantal condition sensor" },
   { id: 2, name: "Air Conditioner" },
@@ -44,10 +48,10 @@ const SmartDevicesPage = ({}) => {
   const [openModal, setOpenModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
-
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [addedModal, setAddedModal] = useState(false);
   const [addedMessage, setAddedMessage] = useState(false);
-
+  const [property, setProperty] = useState({});
   const [selectedDevice, setSelectedDevice] = useState();
   const [template, setTemplate] = useState(t);
   const [url, setUrl] = useState("");
@@ -91,6 +95,21 @@ const SmartDevicesPage = ({}) => {
 
     fetchData();
   }, [socketPower]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let response = await getPropertyById(propertyId)
+      setProperty(response);
+      console.log(response)
+      try {
+        
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [dialogOpen]);
 
   const handlePageChange = (newPage) => {
     setPagination({
@@ -331,6 +350,25 @@ const SmartDevicesPage = ({}) => {
     console.log("asdasdasdasd");
   }, [propertyId, pagination.pageNumber, pagination.pageSize, added]);
 
+  const handleShareClick = (event) => {
+    // Prevent the click event from propagating to the Card
+    event.stopPropagation();
+    // Add your share logic here
+    console.log('Share icon clicked');
+    setDialogOpen(true)
+  };
+
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const updatePermissions = (sharedUsers) =>{
+    property.sharedUsers = sharedUsers
+    setProperty(property);
+  }
+
+  
   return (
     <div className="smart-device-container">
       <BasicPagination
@@ -367,6 +405,8 @@ const SmartDevicesPage = ({}) => {
         className="add-property-button"
         onClick={() => setOpenModal(true)}
       />
+      {property.owner && <Button  style={{ position: 'fixed', bottom: 16, right: 40, fontSize:"xx-large"}} onClick={handleShareClick}><ShareIcon></ShareIcon></Button>}
+      <PermisionDialog open={dialogOpen} onClose={handleCloseDialog} property = {property} updatePermissions = {updatePermissions} />
       <Dialog
         open={openModal}
         onClose={() => setOpenModal(false)}

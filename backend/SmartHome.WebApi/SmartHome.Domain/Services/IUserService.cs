@@ -17,5 +17,6 @@ namespace SmartHome.Domain.Services
         Task GenerateSuperAdmin();
         Task UpdateStatus(User user);
         Task<User> getSuperAdminByIdAndOldPass(Guid id, string password);
+        Task<User> getByEmail(string email);
     }
 }

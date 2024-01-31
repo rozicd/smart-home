@@ -94,6 +94,19 @@ namespace SmartHome.Data
                 .HasMany(ac => ac.ScheduledModes)
                 .WithOne(scheduledMode => scheduledMode.airConditionerEntity)
                 .HasForeignKey(scheduledMode => scheduledMode.AirConditionerId);
+
+            modelBuilder.Entity<PropertyEntity>()
+                .HasMany(p => p.SharedUsers)
+                .WithMany()
+                .UsingEntity(j =>
+                {
+                    j.ToTable("PropertyUser");
+                });
+
+            modelBuilder.Entity<SmartDeviceEntity>()
+                .HasMany(p => p.SharedUsers)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("SmartDeviceUser"));
         }
 
 

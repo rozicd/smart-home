@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useFetch from '../Services/useFetch';
-import { Box, Card, CardContent, CardMedia, Typography, Chip } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Typography, Chip, Button } from '@mui/material';
 import getStaticContent from '../Services/StaticService';
 import { themeOptions } from '../../themeOptions';
 import "./propertyCard.css"
+import PermisionDialog from '../Dialogs/PermisionDialog';
+
 const PropertyCard = ({ property, callback }) => {
   const [imageData, setImageData] = useState('');
   const [loading, setLoading] = useState(true);
@@ -29,6 +31,7 @@ const PropertyCard = ({ property, callback }) => {
     return <p>Loading...</p>;
   }
 
+
   return (
     <Card className="property-card" onClick={() => callback(property.id)} style={{ display: 'flex',margin:'20px', width: '40vw', height: '260px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
       <CardMedia component="img" alt="Property" style={{ flex: 1, objectFit: 'cover', maxWidth: '260px' }} image={imageData} />
@@ -47,6 +50,7 @@ const PropertyCard = ({ property, callback }) => {
               <Typography variant="body1" color="textSecondary">Floors: {property.numberOfFloors}</Typography>
             </Box>
           </Box>
+          
         </CardContent>
       </Box>
     </Card>

@@ -19,6 +19,7 @@ namespace SmartHome.Domain.Models
         public bool IsActive { get; set; }
         public Guid UserId { get; set; }
         public PropertyStatus Status { get; set; }
+        public List<User> SharedUsers { get; set; } = new List<User>();
     }
 
     public enum PropertyStatus

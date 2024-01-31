@@ -1,4 +1,5 @@
-﻿using SmartHome.Domain.Models;
+﻿using SmartHome.DataTransferObjects.Responses;
+using SmartHome.Domain.Models;
 using SmartHome.Domain.Models.SmartDevices;
 using System;
 using System.Collections.Generic;
@@ -21,5 +22,6 @@ namespace SmartHome.DataTransferObjects.Requests
         public string DeviceType { get; set; }
         public string DeviceStatus { get; set; }
         public string Connection { get; set; }
+        public List<UserResponseDTO> SharedUsers { get; set; }
     }
 }
