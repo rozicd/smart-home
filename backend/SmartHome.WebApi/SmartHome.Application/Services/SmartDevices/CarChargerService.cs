@@ -15,6 +15,7 @@ using System.Reactive.Joins;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using SmartHome.Domain.Models;
+using InfluxDB.Client.Core.Flux.Domain;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -152,6 +153,39 @@ namespace SmartHome.Application.Services.SmartDevices
                           .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
         }
+        public async Task<List<FluxTable>> GetChargerActionsInflux(string id)
+        {
+
+
+            string query = $@"
+            from(bucket: ""bucket"")
+              |> range(start: -6h)
+              |> filter(fn: (r) => r[""id""] == ""{id}"")
+              |> filter(fn: (r) => r[""_measurement""] == ""Charger Actions"")
+              |> aggregateWindow(every: 1s, fn: last, createEmpty: false)";
+
+            var result = await _influxClientService.GetInfluxData(query);
+
+            return result;
+        }
+        public async Task<List<FluxTable>> GetChargerActionsInfluxDate(string id, DateTime startDate, DateTime endDate)
+        {
+
+            string start = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string end = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+            string query = $@"
+            from(bucket: ""bucket"")
+              |> range(start: {start},stop:{end} ) 
+              |> filter(fn: (r) => r[""id""] == ""{id}"")
+              |> filter(fn: (r) => r[""_measurement""] == ""Charger Actions"")
+              |> aggregateWindow(every: 1s, fn: last, createEmpty: false)";
+
+            var result = await _influxClientService.GetInfluxData(query);
+
+            return result;
+        }
+
 
     }
 

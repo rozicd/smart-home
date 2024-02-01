@@ -24,6 +24,7 @@ import PowerSpentHistory from "./BasicComponents/PowerSpentHistory";
 import axios from "axios";
 import { API_BASE_URL } from "../App";
 import LoadingComponent from "./BasicComponents/LoadingComponent";
+import CarChargerEventLog from "./BasicComponents/CarChargerEventLog";
 const CarChargerComponent = ({ deviceInfo }) => {
   const [connectors, setConnectors] = useState(
     new Array(deviceInfo.connectorNumber).fill("")
@@ -32,10 +33,29 @@ const CarChargerComponent = ({ deviceInfo }) => {
   const [isThresholdDialogOpen, setThresholdDialogOpen] = useState(false);
   const [newThreshold, setNewThreshold] = useState(100);
   const [thresholdError, setThresholdError] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [chargerActions, setChargerActions] = useState([]);
+  const [fromDate, setFromDate] = useState("");
   const [selectedPlug, setSelectedPlug] = useState("");
   const [connecting, setConnecting] = useState(
     new Array(deviceInfo.connectorNumber).fill(false)
   );
+
+  const getCarActions = () => {
+    axios.get(`${API_BASE_URL}/carcharger/${deviceInfo.id}/history`, {
+      params: {
+        startDate: fromDate,
+        endDate: toDate,
+      },
+      withCredentials: true,
+    }).then((response)=>
+    {
+      console.log(response)
+      setChargerActions(response.data)
+    }).catch((error) => {
+      console.log(error);
+    });;
+  };
 
   const handleThresholdSave = async () => {
     const thresholdValue = parseFloat(newThreshold);
@@ -108,9 +128,9 @@ const CarChargerComponent = ({ deviceInfo }) => {
           newArray[i] = bla; // You can replace 10 with your desired value
           setConnecting((prevArray) => {
             const newArray = [...prevArray];
-  
+
             newArray[i] = false; // You can replace 10 with your desired value
-  
+
             return newArray;
           });
 
@@ -123,6 +143,9 @@ const CarChargerComponent = ({ deviceInfo }) => {
   useEffect(() => {
     connect(deviceInfo.connection);
   }, []);
+  useEffect(() => {
+    getCarActions();
+  }, [toDate,fromDate,connecting,newThreshold]);
 
   useEffect(() => {
     console.log(connecting);
@@ -192,6 +215,13 @@ const CarChargerComponent = ({ deviceInfo }) => {
             );
           }
         })}
+        <Grid item sx={9}>
+          <CarChargerEventLog
+            eventData={chargerActions}
+            setEndDate={setToDate}
+            setStartDate={setFromDate}
+          />
+        </Grid>
       </Grid>
       <Dialog
         open={isThresholdDialogOpen}

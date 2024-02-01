@@ -61,8 +61,8 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
                     var data = new BatteryPowerResponseDTO
                     {
 
-                        Energy = fluxRecord.Values["energy"].ToString(),
-                        Timestamp = fluxRecord.GetTimeInDateTime()
+                        Energy = fluxRecord.GetValueByKey("_value").ToString(),
+                        Timestamp = DateTime.Parse(fluxRecord.GetValueByKey("_time").ToString()),
                     };
 
                     influxData.Add(data);
@@ -95,8 +95,8 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
                     var data = new BatteryPowerResponseDTO
                     {
 
-                        Energy = fluxRecord.Values["energy"].ToString(),
-                        Timestamp = fluxRecord.GetTimeInDateTime()
+                        Energy = fluxRecord.GetValueByKey("_value").ToString(),
+                        Timestamp = DateTime.Parse(fluxRecord.GetValueByKey("_time").ToString()),
                     };
 
                     influxData.Add(data);

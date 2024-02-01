@@ -111,10 +111,42 @@ namespace SmartHome.Application.Services.SmartDevices
         }
         public  async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
         {
-            string query = $"from(bucket: \"bucket\")" +
-                               $"|> range(start: -{h})" +
-                               $"|> filter(fn: (r) => r._measurement == \"Energy\" and r.id == \"{id}\")" +
-                               $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+            string ag = "5s";
+            string fn = "last";
+            if (h == "1h")
+            {
+                ag = "5m";
+                fn = "mean";
+
+            }
+            if (h == "6h")
+            {
+                ag = "30m";
+                fn = "mean";
+
+            }
+            if (h == "12h" || h == "24h")
+            {
+                ag = "1h";
+                fn = "mean";
+
+            }
+            if (h == "7d" || h == "30d")
+            {
+                ag = "1d";
+                fn = "mean";
+
+            }
+            string query = $@"
+            from(bucket: ""bucket"")
+              |> range(start: -{h}) 
+              |> filter(fn: (r) => r[""_measurement""] == ""Energy"")
+              |> filter(fn: (r) => r[""_field""] == ""energy"")
+              |> filter(fn: (r) => r[""id""] == ""{id}"")
+              |> aggregateWindow(every: {ag}, fn: {fn}, createEmpty: false)";
+
+
+
             var result = await _influxClientService.GetInfluxData(query);
 
 
@@ -124,11 +156,26 @@ namespace SmartHome.Application.Services.SmartDevices
         {
             string start = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
             string end = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            int daysApart = Math.Abs((endDate - startDate).Days);
 
-            string query = $"from(bucket: \"bucket\")" +
-                           $"|> range(start: {start}, stop: {end})" +
-                           $"|> filter(fn: (r) => r._measurement == \"Energy\" and r.id == \"{id}\")" +
-                           $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+            string ag = "1h";
+
+            if (daysApart > 3)
+            {
+                ag = "6h";
+            }
+            if (daysApart > 7)
+            {
+                ag = "1d";
+            }
+
+            string query = $@"
+            from(bucket: ""bucket"")
+              |> range(start: {start},stop:{end} ) 
+              |> filter(fn: (r) => r[""_measurement""] == ""Energy"")
+              |> filter(fn: (r) => r[""_field""] == ""energy"")
+              |> filter(fn: (r) => r[""id""] == ""{id}"")
+              |> aggregateWindow(every: {ag}, fn: mean, createEmpty: false)";
 
             var result = await _influxClientService.GetInfluxData(query);
 

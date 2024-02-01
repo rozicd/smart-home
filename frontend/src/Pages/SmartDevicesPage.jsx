@@ -130,7 +130,7 @@ const SmartDevicesPage = ({}) => {
       data.append("energySpending", form.energySpending);
       data.append("size", form.size);
       data.append("efficiency", form.efficiency);
-      data.append("numberOfPanels", form.efficiency);
+      data.append("numberOfPanels", form.numberOfPanels);
     }
     if (selectedDevice == 8) {
       data.append("batterySize", form.batterySize);
