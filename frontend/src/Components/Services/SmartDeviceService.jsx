@@ -118,4 +118,29 @@ export const GetSmartDevicesByProperty = async (pagination) => {
       throw error;
     }
   };
-  
+
+  export const addDeviceUserPermission = async (id, email) =>{
+    try{
+      const response = await axios.put(`${API_BASE_URL}/smart-device/addPermission/${id}`, {Email:email}, {withCredentials:true});
+      return response
+    }catch(error){
+      throw error;
+    }
+  };
+  export const removeDeviceUserPermission = async (id, email) =>{
+    try{
+      const response = await axios.put(`${API_BASE_URL}/smart-device/removePermission/${id}`, {Email:email}, {withCredentials:true});
+      return response
+    }catch(error){
+      throw error;
+    }
+  };
+
+  export const getDevicePermission = async (id) =>{
+    try{
+      const response = await axios.get(`${API_BASE_URL}/smart-device/getPermissions/${id}`, {withCredentials:true})
+      return response;
+    }catch(error){
+      throw error
+    }
+  }

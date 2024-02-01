@@ -11,10 +11,9 @@ import {
   Typography,
 } from '@mui/material';
 
-import { addUserPermission, removeUserPermission } from '../Services/PropertiesService';
-import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
+import { addDeviceUserPermission, removeDeviceUserPermission } from '../Services/SmartDeviceService';
 
-const PermisionDialog = ({ open, onClose, property, updatePermissions}) => {
+const DevicePermisionDialog = ({ open, onClose, users: sharedUsers, deviceId, updateUsers }) => {
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,10 +22,10 @@ const PermisionDialog = ({ open, onClose, property, updatePermissions}) => {
 
     console.log("TAGS:::");
     console.log(tags);
-    if(property.sharedUsers){
-      setTags(property.sharedUsers)
+    if(sharedUsers){
+      setTags(sharedUsers)
     }
-  }, [property.sharedUsers]);
+  }, [sharedUsers]);
 
   const handleTagInputChange = (event) => {
     setTagInput(event.target.value);
@@ -36,11 +35,11 @@ const PermisionDialog = ({ open, onClose, property, updatePermissions}) => {
     if (tagInput.trim() !== '') {
       console.log(tagInput.trim())
       try{
-        const response = await addUserPermission(property.id, tagInput.trim())
+        const response = await addDeviceUserPermission(deviceId, tagInput.trim())
         if(response.status && response.status === 200){
           setTags([...tags, response.data]);
           setTagInput('');
-          updatePermissions(tags);
+          updateUsers(tags);
           setErrorMessage("")
         }
         else{
@@ -58,12 +57,12 @@ const PermisionDialog = ({ open, onClose, property, updatePermissions}) => {
   const handleRemoveTag = async (tagToRemove) => {
     try{
       console.log(tagToRemove);
-      const response = await removeUserPermission(property.id, tagToRemove.id)
+      const response = await removeDeviceUserPermission(deviceId, tagToRemove.email)
       if(response.status && response.status === 200){
         const updatedTags = tags.filter((tag) => tag !== tagToRemove);
         console.log(updatedTags)
         setTags(updatedTags);
-        updatePermissions(tags);
+        updateUsers(tags);
       }
       else{
         
@@ -118,4 +117,4 @@ const PermisionDialog = ({ open, onClose, property, updatePermissions}) => {
   );
 };
 
-export default PermisionDialog;
+export default DevicePermisionDialog;

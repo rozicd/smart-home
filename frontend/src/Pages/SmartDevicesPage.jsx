@@ -351,9 +351,6 @@ const SmartDevicesPage = ({}) => {
   }, [propertyId, pagination.pageNumber, pagination.pageSize, added]);
 
   const handleShareClick = (event) => {
-    // Prevent the click event from propagating to the Card
-    event.stopPropagation();
-    // Add your share logic here
     console.log('Share icon clicked');
     setDialogOpen(true)
   };

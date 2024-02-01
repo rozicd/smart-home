@@ -5,7 +5,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { getDevice } from "../Components/Services/SmartDeviceService";
 import LoadingComponent from "../Components/BasicComponents/LoadingComponent";
 import getStaticContent from "../Components/Services/StaticService";
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, Button } from "@mui/material";
 import BasicDeviceInfoComponent from "../Components/BasicDeviceInfoComponent";
 import LampCardsComponent from "../Components/LampCardsComponents";
 import ECSCardsComponent from "../Components/ECSCardsComponents";
@@ -13,6 +13,7 @@ import ACCardsComponents from "../Components/ACCardsComponents";
 import CarGateCardsComponent from "../Components/CarGateCardsComponent";
 import PanelCardComponent from "../Components/PanelCardsComponent";
 import BatteryCardsComponent from "../Components/BatteryCardsComponent";
+
 
 const DeviceInfoPage = () => {
   const { deviceType, deviceId } = useParams();
@@ -31,6 +32,7 @@ const DeviceInfoPage = () => {
         setDeviceData(deviceInfo);
         const propertyImage = await getStaticContent(deviceInfo.imageUrl);
         setImageData(propertyImage);
+
       } catch (error) {
         console.error("Error fetching device information:", error);
       } finally {
@@ -45,6 +47,8 @@ const DeviceInfoPage = () => {
     return <LoadingComponent />;
   }
 
+
+
   return (
     <Grid container style={{ height: "100%",display:'flex',flexDirection:'row'  }}>
 
@@ -57,7 +61,7 @@ const DeviceInfoPage = () => {
         sm={6}
         paddingRight={"50px"}
         paddingTop={"50px"}
-      >
+        >
         <Box
           style={{
             overflow: "scroll",
