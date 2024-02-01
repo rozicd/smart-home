@@ -14,5 +14,7 @@ namespace SmartHome.Domain.Repositories
         Task<SmartDevice> TurnOff(Guid id);
         Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId);
         Task<string> GetDeviceType(Guid deviceId);
+
+        Task<List<SmartDevice>> GetAllFromPropertyNoPage(Guid propertyId);
     }
 }

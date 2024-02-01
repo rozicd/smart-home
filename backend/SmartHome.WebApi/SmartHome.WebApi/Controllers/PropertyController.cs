@@ -63,11 +63,11 @@ public class PropertyController : BaseController
         return Ok(_mapper.Map<PropertyResponseDTO>(property));
     }
 
-    [HttpGet("user/{userId}")]
+    [HttpGet("user")]
     [Authorize(Roles = "USER")]
-    public async Task<IActionResult> GetPropertiesByUserId(Guid userId, [FromQuery] Pagination page)
+    public async Task<IActionResult> GetPropertiesByUserId([FromQuery] Pagination page)
     {
-        var properties = await _propertyService.GetPropertiesByUserId(userId,page);
+        var properties = await _propertyService.GetPropertiesByUserId(_user.UserId,page);
 
         PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(_mapper.Map<IEnumerable<PropertyResponseDTO>>(properties.Items), properties.PageNumber, properties.PageSize, properties.TotalItems);
 

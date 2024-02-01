@@ -206,5 +206,10 @@ namespace SmartHome.Application.Services
                           .Field("status", status);
             await _influxClientService.WriteDataAsync(point);
         }
+
+        public async Task<List<SmartDevice>> GetAllFromPropertyNoPage(Guid propertyId)
+        {
+            return await _smartDeviceRepository.GetAllFromPropertyNoPage(propertyId);
+        }
     }
 }
