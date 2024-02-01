@@ -53,8 +53,8 @@ public class MappingProfiles : Profile
 
         CreateMap<WashingMachineModeEntity, WashingMachineMode>();
         CreateMap<WashingMachineMode, WashingMachineModeEntity>();
-        CreateMap<SprinkleMode, SprinkleModeEntity>();
-        CreateMap<SprinkleModeEntity, SprinkleMode>();
+        CreateMap<SprinklerSchedule, SprinklerScheduleEntity>();
+        CreateMap<SprinklerScheduleEntity, SprinklerSchedule>();
 
         CreateMap<CountriesAndCities, CountriesAndCitiesDTO>();
         CreateMap<CountriesAndCitiesDTO, CountriesAndCities>();
@@ -72,6 +72,8 @@ public class MappingProfiles : Profile
         CreateMap<UpdateUserRequestDTO, User>();
 
         CreateMap<Country, CountryResponseDTO>();
+        CreateMap<CarCharger, CarChargerResponseDTO>();
+
 
 
 
@@ -100,8 +102,11 @@ public class MappingProfiles : Profile
         CreateMap<SolarPanelSystem, SolarPanelSystemResponseDTO>();
         CreateMap<HomeBattery, HomeBatteryResponseDTO>();
 
+        CreateMap<SprinklerSchedule, SprinklerScheduleResponseDTO>();
+        CreateMap<Sprinkler, SprinklerResponseDTO>();
 
         CreateMap<CreateESCDTO, EnvironmentalConditionsSensor>();
+        CreateMap<SprinklerScheduleDTO, SprinklerSchedule>();
         CreateMap<CreateAirConditionerDTO, AirConditioner>();
 
         CreateMap<PaginationReturnObject<Property>, PropertyResponseDTO>();

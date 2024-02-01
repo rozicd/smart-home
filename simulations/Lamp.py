@@ -37,7 +37,7 @@ class Lamp(SmartDevice):
             lampInfo = msg.payload.decode('utf-8')
             light_treshold, mode,energy_spending = lampInfo.split(',')
             self.light_threshold = int(light_treshold)
-            self.energy_spending = float(energy_spending)/1000
+            self.energy_spending = float(energy_spending)/60000
             if mode == "MANUAL":
                 self.auto_mode = False
             else:
@@ -115,7 +115,7 @@ class Lamp(SmartDevice):
             lux_value = self.solar_elevation_to_lux(solar_elevation)
 
 
-            normalized_solar_elevation = (lux_value) * 100
+            normalized_solar_elevation = (lux_value) * 150
 
             adjusted_value = max(0, normalized_solar_elevation)
 

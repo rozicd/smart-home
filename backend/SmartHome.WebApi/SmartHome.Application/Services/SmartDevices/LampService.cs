@@ -156,10 +156,39 @@ namespace SmartHome.Application.Services.SmartDevices
 
         public async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
         {
+            string ag = "5s";
+            string fn = "last";
+            if (h == "1h")
+            {
+                ag = "5m";
+                fn = "mean";
+
+            }
+            if (h == "6h")
+            {
+                ag = "30m";
+                fn = "mean";
+
+            }
+            if (h == "12h" || h == "24h")
+{
+                ag = "1h";
+                fn = "mean";
+
+            }
+            if (h == "7d" || h == "30d")
+{
+                ag = "10h";
+                fn = "mean";
+
+            }
             string query = $"from(bucket: \"bucket\")" +
                                $"|> range(start: -{h})" +
                                $"|> filter(fn: (r) => r._measurement == \"{"Lamp data"}\" and r.Id == \"{id}\")" +
-                               $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+                               $"|> aggregateWindow(every: {ag}, fn: {fn}, createEmpty: false)" +
+                               $"|> group(columns: [\"_time\"])";
+
+
             var result = await _influxClientService.GetInfluxData(query);
 
 
@@ -173,7 +202,8 @@ namespace SmartHome.Application.Services.SmartDevices
             string query = $"from(bucket: \"bucket\")" +
                            $"|> range(start: {start}, stop: {end})" +
                            $"|> filter(fn: (r) => r._measurement == \"{"Lamp data"}\" and r.Id == \"{id}\")" +
-                           $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+                           $"|> aggregateWindow(every: 1h,fn:mean, createEmpty: false)"+
+                           $"|> group(columns: [\"_time\"])";
 
             var result = await _influxClientService.GetInfluxData(query);
 

@@ -1,9 +1,10 @@
-const API_BASE_URL = 'http://localhost:5090';
+const API_BASE_URL = 'http://localhost:8080';
 
 const getStaticContent = async (path) => {
   try {
+    console.log(path)
     const response = await fetch(`${API_BASE_URL}/${path}`);
-
+    
     if (!response.ok) {
       throw new Error(`Error fetching static content: ${response.statusText}`);
     }

@@ -28,8 +28,8 @@ namespace SmartHome.Application.Services
             htmlTemplate = htmlTemplate.Replace("{{id}}", user.Id.ToString());
             htmlTemplate = htmlTemplate.Replace("{{token}}", activationToken.Token);
             var htmlContent = htmlTemplate;
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
+            //var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            //var response = await client.SendEmailAsync(msg);
         }
 
         public async Task SendApprovePropertyEmail(User user, Property property)
@@ -49,8 +49,8 @@ namespace SmartHome.Application.Services
             var plainTextContent = "Greetings " + user.Name;
             var htmlContent = htmlTemplate;
 
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
+            //var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            //var response = await client.SendEmailAsync(msg);
         }
 
         public async Task SendRejectPropertyEmail(User user, Property property, string description)
@@ -71,8 +71,8 @@ namespace SmartHome.Application.Services
             var plainTextContent = "Greetings " + user.Name;
             var htmlContent = htmlTemplate;
 
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
+            //var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            //var response = await client.SendEmailAsync(msg);
         }
 
         public async Task SendSuperAdminCredentials(User superAdmin)
@@ -89,8 +89,8 @@ namespace SmartHome.Application.Services
             htmlTemplate = htmlTemplate.Replace("{{id}}", superAdmin.Id.ToString());
 
             var htmlContent = htmlTemplate;
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
+            //var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            //var response = await client.SendEmailAsync(msg);
         }
     }
 }

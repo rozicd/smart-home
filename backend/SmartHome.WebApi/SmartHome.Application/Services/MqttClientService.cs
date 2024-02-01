@@ -29,12 +29,27 @@ namespace SmartHome.Application.Services
             await _mqttClient.ConnectAsync(mqttOptions);
         }
 
+        public Task<IMqttClient> GetClient()
+        {
+            return (Task<IMqttClient>)_mqttClient;
+        }
+
         public async Task<MqttClientPublishResult> PublishMessageAsync(string topic, string payload)
         {
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(payload)
                 .WithRetainFlag(true)
+                .Build();
+
+            return await _mqttClient.PublishAsync(message);
+        }
+        public async Task<MqttClientPublishResult> PublishMessageAsyncNoRetain(string topic, string payload)
+        {
+            var message = new MqttApplicationMessageBuilder()
+                .WithTopic(topic)
+                .WithPayload(payload)
+                .WithRetainFlag(false)
                 .Build();
 
             return await _mqttClient.PublishAsync(message);

@@ -43,8 +43,9 @@ const DeviceStatusHistory = ({ deviceInfo }) => {
   };
 
   useEffect(() => {
-    setTimeRangeHours(['hours', 6]);
     fetchData("6");
+    setTimeRangeHours(['hours', 6,null]);
+
     }, []);
 
   const handleSearchChange = (value) => {
@@ -80,7 +81,7 @@ const DeviceStatusHistory = ({ deviceInfo }) => {
         timeRangeValue = 30;
         timeRangeUnit = 'days';
       }
-        setTimeRangeHours([timeRangeUnit, timeRangeValue]);
+        setTimeRangeHours([timeRangeUnit, timeRangeValue,null]);
         fetchData(foundOption.value);
       
     }

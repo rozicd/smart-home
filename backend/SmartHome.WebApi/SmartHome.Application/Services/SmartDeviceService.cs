@@ -109,29 +109,39 @@ namespace SmartHome.Application.Services
             string units;
             string multipicator;
             string dorh;
+            string query;
             if (!(h == "7d" || h == "30d"))
             {
                 aggregation = "1h";
                 units = "1m";
                 multipicator = "60";
                 dorh = "h";
+                query = $"from(bucket: \"bucket\")" +
+               $"|> range(start: -{h})" +
+               $"|> filter(fn: (r) => r._measurement == \"Device status\" and r.Id == \"{id}\")" +
+               $"|> window(every: {aggregation}, createEmpty: false)" +
+               $"|> stateDuration(fn: (r) => r._value == 1, unit: {units})" +
+               $"|> last()" +
+               $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r.stateDuration+1,percentage: (r.stateDuration+1) * 100/" +
+               multipicator + ",units:" + $"\"{dorh}\"" + "}" + "))";
             }
             else
             {
-                aggregation = "1d";
-                units = "1h";
+                aggregation = "1h";
+                units = "1m";
                 multipicator = "24";
                 dorh = "d";
-            }
-
-            string query = $"from(bucket: \"bucket\")" +
+                query = $"from(bucket: \"bucket\")" +
                            $"|> range(start: -{h})" +
                            $"|> filter(fn: (r) => r._measurement == \"Device status\" and r.Id == \"{id}\")" +
                            $"|> window(every: {aggregation}, createEmpty: false)" +
                            $"|> stateDuration(fn: (r) => r._value == 1, unit: {units})" +
                            $"|> last()" +
-                           $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r.stateDuration+1,percentage: (r.stateDuration+1) * 100/" +
+                           "|> map(fn: (r) => ({_value : r.stateDuration+1, _time:r._time}))  |> aggregateWindow(every: 1d, fn: sum)|> filter(fn: (r) => exists r._value and exists r._time) " +
+                           $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r._value/60,percentage: (r._value/60) * 100/" +
                            multipicator + ",units:" + $"\"{dorh}\"" + "}" + "))";
+            }
+
 
 
             var result = await _influxClientService.GetInfluxData(query);   
@@ -148,29 +158,40 @@ namespace SmartHome.Application.Services
             string units;
             string multipicator;
             string dorh;
+            string query;
+
             if ((endDate - startDate).TotalDays <= 2)
             {
                 aggregation = "1h";
                 units = "1m";
                 multipicator = "60";
                 dorh = "h";
+                query = $"from(bucket: \"bucket\")" +
+                           $"|> range(start: {start}, stop: {end})" +
+                        $"|> filter(fn: (r) => r._measurement == \"Device status\" and r.Id == \"{id}\")" +
+                        $"|> window(every: {aggregation}, createEmpty: false)" +
+                        $"|> stateDuration(fn: (r) => r._value == 1, unit: {units})" +
+                        $"|> last()" +
+                        $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r.stateDuration+1,percentage: (r.stateDuration+1) * 100/" +
+                        multipicator + ",units:" + $"\"{dorh}\"" + "}" + "))";
             }
             else
             {
-                aggregation = "1d";
-                units = "1h";
+                aggregation = "1h";
+                units = "1m";
                 multipicator = "24";
                 dorh = "d";
-            }
-
-            string query = $"from(bucket: \"bucket\")" +
+                query = $"from(bucket: \"bucket\")" +
                            $"|> range(start: {start}, stop: {end})" +
                            $"|> filter(fn: (r) => r._measurement == \"Device status\" and r.Id == \"{id}\")" +
                            $"|> window(every: {aggregation}, createEmpty: false)" +
                            $"|> stateDuration(fn: (r) => r._value == 1, unit: {units})" +
                            $"|> last()" +
-                           $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r.stateDuration+1,percentage: (r.stateDuration+1) * 100/" +
-                           multipicator + ",units:"+ $"\"{dorh}\"" + "}" + "))";
+                           " |> map(fn: (r) => ({_value : r.stateDuration+1, _time:r._time}))  |> aggregateWindow(every: 1d, fn: sum) |> filter(fn: (r) => exists r._value and exists r._time) " +
+                           $"|>map(fn: (r) => (" + "{" + "time:r._time,duration: r._value/60,percentage: (r._value/60) * 100/" +
+                           multipicator + ",units:" + $"\"{dorh}\"" + "}" + "))";
+            }
+
 
             var result = await _influxClientService.GetInfluxData(query);
 

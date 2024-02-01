@@ -149,7 +149,7 @@ const SmartDevicesPage = ({}) => {
       data.append("energySpending", form.energySpending);
       data.append("size", form.size);
       data.append("efficiency", form.efficiency);
-      data.append("numberOfPanels", form.efficiency);
+      data.append("numberOfPanels", form.numberOfPanels);
     }
     if (selectedDevice == 8) {
       data.append("batterySize", form.batterySize);
@@ -325,7 +325,7 @@ const SmartDevicesPage = ({}) => {
     }
     if (selectedDevice == 9) {
       setTemplate(t.concat(cc));
-      setUrl("car-charger");
+      setUrl("carcharger");
     }
   }, [selectedDevice]);
   const [smartDevices, setSmartDevices] = useState([]);

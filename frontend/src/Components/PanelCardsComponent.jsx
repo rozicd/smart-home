@@ -19,52 +19,48 @@ import {
 } from "@mui/material";
 import EventLogCard from "./BasicComponents/EventLogCard";
 import { panelHubConnection } from "./Sockets/LightSocketService";
-import { getPanelActions, turnOff,turnOn } from "./Services/PanelService";
+import { getPanelActions, turnOff, turnOn } from "./Services/PanelService";
+import LoadingComponent from "./BasicComponents/LoadingComponent";
 
 const PanelCardsComponent = ({ deviceInfo }) => {
-  const [power,setPower] = useState(0);
-  const [panelStatus,setPanelStatus] = useState(true);
-  const [panelHistory,setPanelHistory] = useState([]);
-  const [toDate,setToDate] = useState("");
-  const [fromDate,setFromDate] = useState("");
-
-
+  const [power, setPower] = useState(0);
+  const [panelStatus, setPanelStatus] = useState(true);
+  const [panelHistory, setPanelHistory] = useState([]);
+  const [toDate, setToDate] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [connecting, setConnecting] = useState(true);
 
   const handleSwitchChange = async () => {
-      const newPowerState = panelStatus? 0 : 1;
-      try {
-        if (newPowerState === 1) {
-          await turnOn(deviceInfo.id);
-
-        } else {
-          await turnOff(deviceInfo.id);
-          setPower(0)
-        }
-      } catch (error) {
-        console.error("Error turning on/off panel:", error);
+    const newPowerState = panelStatus ? 0 : 1;
+    setConnecting(true);
+    try {
+      if (newPowerState === 1) {
+        await turnOn(deviceInfo.id);
+        setPower(1);
+      } else {
+        await turnOff(deviceInfo.id);
+        setPower(0);
       }
-    
+    } catch (error) {
+      console.error("Error turning on/off panel:", error);
+    }
   };
 
   useEffect(() => {
-
     const fetchData = async () => {
-      console.log("data")
+      console.log("data");
 
       try {
-        let data = await getPanelActions(deviceInfo.id,fromDate,toDate)
+        let data = await getPanelActions(deviceInfo.id, fromDate, toDate);
         console.log(data);
-        setPanelHistory(data)
-
+        setPanelHistory(data);
       } catch (error) {
-        console.log(error)
-      } 
+        console.log(error);
+      }
     };
 
     fetchData();
-  }, [toDate,fromDate]);
-
-
+  }, [toDate, fromDate]);
 
   useEffect(() => {
     async function connect() {
@@ -73,62 +69,83 @@ const PanelCardsComponent = ({ deviceInfo }) => {
       }
 
       panelHubConnection.on(deviceInfo.connection, (powerPerMinute) => {
-        console.log(powerPerMinute)
-        setPower(powerPerMinute)
+        console.log(powerPerMinute);
+        setPower(powerPerMinute);
+        setConnecting(false);
       });
     }
     connect();
   }, []);
 
   useEffect(() => {
-    if (power == 0)
-    {
-      setPanelStatus(false)
+    if (power == 0) {
+      setPanelStatus(false);
+    } else {
+      setPanelStatus(true);
     }
-    else 
-    {
-      setPanelStatus(true)
-    }
-    
   }, [power]);
 
- 
- 
-
   return (
-    <Container sx = {{width : "100%"}}>
+    <Container sx={{ width: "100%" }}>
+      <Grid container spacing={2}>
+        <Grid item md={6}>
+          <Card style={{ height: "20vh", padding: "20px" }}>
+            <CardContent
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                height: "80%",
+              }}
+            >
+              <Typography variant="h6">Power Per Minute</Typography>
+              {!connecting && (
+                <Typography align="center" variant="h4">
+                  {power}kWh
+                </Typography>
+              )}
+              {connecting && <LoadingComponent></LoadingComponent>}
+            </CardContent>
+          </Card>
+        </Grid>
 
-    <Grid container spacing={2}>
-      <Grid item  md={6}>
-      <Card style={{ height: "20vh", padding : "20px" }}>
-          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%" }}>
-            <Typography variant="h6">Power Per Minute</Typography>
-            <Typography align="center" variant="h4">
-              {power}kWh
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+        <Grid item md={6}>
+          <Card style={{ height: "20vh", padding: "20px" }}>
+            <CardContent
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                height: "80%",
+              }}
+            >
+              <Typography variant="h6">Status</Typography>
+              <FormControlLabel
+                style={{ width: "80%", height: "20%" }}
+                control={
+                  <Switch
+                    checked={panelStatus}
+                    onChange={handleSwitchChange}
+                    size="medium"
+                    disabled={connecting}
 
-      <Grid item  md={6}>
-      <Card style={{ height: "20vh", padding : "20px" }}>
-          <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly",height:"80%"  }}>
-            <Typography variant="h6">Status</Typography>
-            <FormControlLabel
-              style={{ width: "80%", height:"20%" }}
-              control={<Switch checked={panelStatus} onChange={handleSwitchChange} size="medium"/>}
-              label={panelStatus ? "ON" : "OFF"}
-
-            />
-          </CardContent>
-        </Card>
+                  />
+                }
+                label={panelStatus ? "ON" : "OFF"}
+              />
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12} md={12}>
-        <EventLogCard eventData= {panelHistory} setEndDate={setToDate} setStartDate={setFromDate}/>
+          <EventLogCard
+            eventData={panelHistory}
+            setEndDate={setToDate}
+            setStartDate={setFromDate}
+          />
+        </Grid>
       </Grid>
-
-      
-    </Grid>
     </Container>
   );
 };

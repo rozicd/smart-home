@@ -13,6 +13,8 @@ import ACCardsComponents from "../Components/ACCardsComponents";
 import CarGateCardsComponent from "../Components/CarGateCardsComponent";
 import PanelCardComponent from "../Components/PanelCardsComponent";
 import BatteryCardsComponent from "../Components/BatteryCardsComponent";
+import CarChargerComponent from "../Components/CarChargerComponent";
+import SprinklerCardsComponent from "../Components/SprinklerCardsComponent";
 
 
 const DeviceInfoPage = () => {
@@ -49,6 +51,7 @@ const DeviceInfoPage = () => {
 
 
 
+  console.log(deviceData)
   return (
     <Grid container style={{ height: "100%",display:'flex',flexDirection:'row'  }}>
 
@@ -94,6 +97,19 @@ const DeviceInfoPage = () => {
           )
 
           }
+          {deviceType === "carcharger" &&(
+            <CarChargerComponent
+              deviceInfo={deviceData}
+              />
+          )}
+          {deviceType === "sprinkler" &&(
+            <SprinklerCardsComponent
+              deviceData={deviceData}
+            />
+          )
+
+          }
+          
           {/* Add other device type checks and load corresponding components */}
         </Box>
       </Grid>

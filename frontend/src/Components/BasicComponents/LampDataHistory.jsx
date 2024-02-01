@@ -27,6 +27,7 @@ import {
   GetPowerGraphData,
   GetPowerGraphDataDate,
 } from "../Services/LampService";
+import LampGraph from "./LampGraph";
 const searchOptions = [
   { key: "1", value: "5m" },
   { key: "2", value: "1h" },
@@ -52,9 +53,12 @@ const LampDataHistory = ({ deviceInfo }) => {
     try {
       let search = { id: deviceInfo.id, hours: hrs };
       let data = await GetGraphData(search);
-      console.log(data)
-
-      setLampData(data);
+      const numericData = data.map(entry => ({
+        ...entry,
+        powerStatus: parseFloat(entry.powerStatus),
+      }));
+      console.log(numericData)
+      setLampData(numericData);
     } catch (error) {
       console.log(error);
     }
@@ -62,7 +66,7 @@ const LampDataHistory = ({ deviceInfo }) => {
 
   
   useEffect(() => {
-    fetchData("6");
+    fetchData("6h");
   }, []);
 
 
@@ -131,7 +135,7 @@ const LampDataHistory = ({ deviceInfo }) => {
           >
             <Typography variant="h6">History</Typography>
 
-            <BasicGraph data={lampData} datakey={"currentLight"}></BasicGraph>
+            <LampGraph data={lampData}></LampGraph>
           </CardContent>
         </Card>
       </Grid>

@@ -6,7 +6,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, 
 const BarChartComponent = ({ data, timeRange }) => {
   const [maxBar, setMaxBar] = useState(100);
   const [dedupedData,setDedupedData] = useState([{}]);
+
   useEffect(() => {
+    console.log(data)
     if (timeRange && timeRange[0] === 'hours') {
       setMaxBar(100);
       setDedupedData([{}])
@@ -62,23 +64,26 @@ const BarChartComponent = ({ data, timeRange }) => {
       }));
   
     const deduplicatedData = [...existingTimestamps.values(), ...emptyEntries];
-  
-    deduplicatedData.forEach(entry => {
-      if (isHours) {
-        const hoursDifference = Math.round((currentTime - new Date(entry.timestamp).getTime()) / (60 * 60 * 1000));
-        entry.timestamp = `-${hoursDifference}`;
-      } else {
-        entry.timestamp = new Date(entry.timestamp).toISOString().split('T')[0];
-      }
-    });
-  
+      
+    let lastHr = 0
     deduplicatedData.sort((a, b) => {
       if (isHours) {
-        return parseInt(a.timestamp) - parseInt(b.timestamp);
+        return new Date(a.timestamp) - new Date(b.timestamp);
       } else {
         return new Date(a.timestamp) - new Date(b.timestamp);
       }
     });
+
+    deduplicatedData.reverse().forEach(entry => {
+      console.log(entry)
+      if (isHours) {
+        entry.timestamp = `-${lastHr}`;
+        lastHr+=1
+      } else {
+        entry.timestamp = new Date(entry.timestamp).toISOString().split('T')[0];
+      }
+    });
+    deduplicatedData.reverse()
   
     return deduplicatedData;
   };
@@ -157,42 +162,41 @@ const PieChartComponent = ({ data, timeRange }) => {
 
   const units = timeRange && timeRange[0] === 'days' ? 'hours' : 'minutes';
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+  const renderCustomizedLabel = ({ cx, cy, innerRadius, outerRadius, percent, index }) => {
+    const topRightX = cx + outerRadius+70; // Adjust the x-coordinate for top right label
+    const topRightY = cy - outerRadius-25; // Adjust the y-coordinate for top right label
   
-    const labelValue = index === 0 ? totalOnline : totalOffline; // Choose the appropriate value based on the slice
+    const bottomLeftX = cx - outerRadius-70; // Adjust the x-coordinate for bottom left label
+    const bottomLeftY = cy + outerRadius+25; // Adjust the y-coordinate for bottom left label
+  
+    const labelValue = index === 0 ? totalOnline : totalOffline;
     const labelText = timeRange && timeRange[0] === 'days' ? `${labelValue} hours` : `${labelValue} minutes`;
-  
-    const isLeftSide = x > cx; // Check if the label is on the left side
-    const distance = 70; // Adjust the distance based on your preference
-    const textDistance = 20; // Adjust the distance of the text from the end of the line
-  
-    let textX, textY;
-  
-    if (index === 0) {
-      // Position "Online" label at the top right
-      textX = cx + outerRadius - textDistance;
-      textY = cy - outerRadius + textDistance;
-    } else {
-      // Position "Offline" label at the bottom left
-      textX = cx - outerRadius + textDistance;
-      textY = cy + outerRadius - textDistance;
-    }
   
     return (
       <g>
-        {/* Label text */}
-        <text
-          x={textX}
-          y={textY}
-          fill={pieData[index].color}
-          textAnchor={isLeftSide ? 'start' : 'end'} // Dynamically set textAnchor based on the side
-          dominantBaseline="middle"
-        >
-          {`${labelText} (${(percent * 100).toFixed(2)}%)`}
-        </text>
+        {index === 0 && (
+          <text
+            x={topRightX}
+            y={topRightY}
+            fill={pieData[0].color}
+            textAnchor="end"
+            dominantBaseline="hanging"
+          >
+            {`${labelText} (${(percent * 100).toFixed(2)}%)`}
+          </text>
+        )}
+  
+        {index === 1 && (
+          <text
+            x={bottomLeftX}
+            y={bottomLeftY}
+            fill={pieData[1].color}
+            textAnchor="start"
+            dominantBaseline="baseline"
+          >
+            {`${labelText} (${(percent * 100).toFixed(2)}%)`}
+          </text>
+        )}
       </g>
     );
   };

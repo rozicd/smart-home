@@ -4,11 +4,13 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.Domain.Models.SmartDevices;
 using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
+using SmartHome.Application.Services.SmartDevices;
+using SmartHome.DataTransferObjects.Responses;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("car-charger")]
+    [Route("carcharger")]
     public class CarChargerController : BaseController
     {
         private readonly ICarChargerService _carChargerService;
@@ -33,6 +35,66 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             await _carChargerService.Add(response);
 
             return Ok();
+        }
+        [HttpPost("treshold")]
+        public async Task<IActionResult> ChangeTreshold([FromBody] ChangeCarTresholdDTO cct)
+        {
+           
+            await _carChargerService.ChangeTreshold(cct.Id,cct.Plug,cct.Treshold,_user.Email);
+
+            
+            return Ok();
+        }
+        [HttpGet("{chargerId}")]
+        public async Task<IActionResult> GetChargerById(Guid chargerId)
+        {
+            CarCharger charger = await _carChargerService.GetById(chargerId);
+
+            var chargerDTO = _mapper.Map<CarChargerResponseDTO>(charger);
+
+            return Ok(chargerDTO);
+        }
+        [HttpGet("{id}/history")]
+        public async Task<IActionResult> GetCarActions(string id, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            try
+            {
+                if (!startDate.HasValue)
+                {
+                    startDate = DateTime.UtcNow.AddHours(-6);
+                }
+
+                if (!endDate.HasValue)
+                {
+                    endDate = DateTime.UtcNow.AddHours(1);
+                }
+
+                var fluxTables = await _carChargerService.GetChargerActionsInfluxDate(id, startDate.Value, endDate.Value);
+                var influxData = new List<CarChargerActionsDTO>();
+
+                foreach (var fluxTable in fluxTables)
+                {
+                    foreach (var fluxRecord in fluxTable.Records)
+                    {
+                                
+                        var data = new CarChargerActionsDTO
+                        {
+                            User = fluxRecord.GetValueByKey("user").ToString(),
+                            Action = fluxRecord.GetValueByKey("action").ToString(),
+                            Field = fluxRecord.GetValueByKey("_field").ToString(),
+                            Value = fluxRecord.GetValueByKey("_value").ToString(),
+                            Timestamp = fluxRecord.GetValueByKey("_time").ToString(),
+                        };
+
+                        influxData.Add(data);
+                    }
+                }
+                return Ok(influxData);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
         }
     }
 

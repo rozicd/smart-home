@@ -59,7 +59,7 @@ namespace SmartHome.Application.HostedServices
                     mqttClientService.PublishMessageAsync("property/create", property.Id.ToString()).Wait();
                     propertiesService.ListenOnCharge(property);
                     var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
-                    Thread.Sleep(1000);
+                    Thread.Sleep(2000);
 
                     foreach (var device in devices)
                     {
