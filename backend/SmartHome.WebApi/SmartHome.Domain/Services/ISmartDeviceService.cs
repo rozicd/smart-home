@@ -12,6 +12,8 @@ namespace SmartHome.Domain.Services
     {
         Task<PaginationReturnObject<SmartDevice>> GetAll(Pagination page);
         Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId);
+        Task<List<SmartDevice>> GetAllFromPropertyNoPage(Guid propertyId);
+
 
 
 

@@ -42,8 +42,11 @@ namespace SmartHome.Application.Services.SmartDevices
             homeBattery.Id = Guid.NewGuid();
             homeBattery.Connection = "property/" + homeBattery.PropertyId + "/device/" + homeBattery.Id;
             await _homeBatteryRepository.Add(homeBattery);
-            _mqttClientService.PublishMessageAsync("property/" + homeBattery.PropertyId.ToString() + "/create", homeBattery.Id.ToString() + "," + "HomeBattery").Wait();
-            Thread.Sleep(1000);
+            try
+            {
+                _mqttClientService.PublishMessageAsync("property/" + homeBattery.PropertyId.ToString() + "/create", homeBattery.Id.ToString() + "," + "HomeBattery").Wait();
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
             await this.Connect(homeBattery.Id);
         }
         override public async Task<SmartDevice> Connect(Guid id)
