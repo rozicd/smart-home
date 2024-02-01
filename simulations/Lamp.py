@@ -115,7 +115,7 @@ class Lamp(SmartDevice):
             lux_value = self.solar_elevation_to_lux(solar_elevation)
 
 
-            normalized_solar_elevation = (lux_value) * 100
+            normalized_solar_elevation = (lux_value) * 150
 
             adjusted_value = max(0, normalized_solar_elevation)
 

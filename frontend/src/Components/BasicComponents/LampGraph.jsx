@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 // const data = [
@@ -18,8 +19,12 @@ const convertTimestamps = data => {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
   };
 const LampGraph = ({ data }) => {
-    const convertedData = convertTimestamps(data);
+    const [convertedData,setConvertedData] = useState(convertTimestamps(data));
 
+    useEffect(() => {
+      setConvertedData(convertTimestamps(data));
+    }, [data]);
+  
   
     const minTimestamp = Math.min(...convertedData.map(item => item.timestamp));
     const maxTimestamp = Math.max(...convertedData.map(item => item.timestamp));
@@ -32,7 +37,7 @@ const LampGraph = ({ data }) => {
           domain={[minTimestamp, maxTimestamp]}
           tickFormatter={formatDate}
         />
-        <YAxis dataKey="powerStatus" />
+        <YAxis dataKey="currentLight" domain={[0,100]} />
         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
   
         <Line data={convertedData} type="monotone" dataKey="currentLight" stroke="blue" name="Current Light" />

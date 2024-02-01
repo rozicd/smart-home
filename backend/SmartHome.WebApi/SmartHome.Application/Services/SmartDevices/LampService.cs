@@ -178,7 +178,7 @@ namespace SmartHome.Application.Services.SmartDevices
             }
             if (h == "7d" || h == "30d")
 {
-                ag = "1d";
+                ag = "10h";
                 fn = "mean";
 
             }
