@@ -43,14 +43,21 @@ namespace SmartHome.WebApi.Controllers
             if (_user == null)
             {
                 response.Status = Status.INACTIVE;
-                response.Role = Role.USER;
+                if (user.Role == Role.USER)
+                {
+                    response.Role = Role.USER;
+                }
+                else
+                {
+                    response.Role = Role.ADMIN;
+                }
             }
             else if(_user.Role == Role.SUPERADMIN)
             {
                 response.Status = Status.ACTIVE;
                 response.Role = Role.ADMIN;
             }
-            
+            response.Status = Status.ACTIVE;
             User addedUser = await _userService.Add(response);
             if(addedUser.Status == Status.INACTIVE) {
                 ActivationToken activationToken = await _activationTokenService.AddOne(addedUser.Id);

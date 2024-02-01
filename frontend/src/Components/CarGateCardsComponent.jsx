@@ -94,6 +94,24 @@ const CarGateCardsComponent = ({ deviceData }) => {
 
     fetchData();
   }, [toDate,fromDate]);
+  
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        let data = await getCarActions(deviceData.id,fromDate,toDate)
+        setCarGateHistory(data)
+
+      } catch (error) {
+        console.log(error)
+      } 
+    };
+
+    fetchData();
+  }, []);
+
+
 
   useEffect(() => {
     async function connect() {

@@ -119,8 +119,14 @@ const SmartDevicesPage = ({}) => {
     }
     if (selectedDevice == 5) {
       data.append("energySpending", form.energySpending);
-      for (var i = 0; i < form.AllowedLicensePlates.length; i++) {
-        data.append("allowedLicensePlates", form.AllowedLicensePlates[i]);
+      if (form.AllowedLicensePlates){
+        for (var i = 0; i < form.AllowedLicensePlates.length; i++) {
+          data.append("allowedLicensePlates", form.AllowedLicensePlates[i]);
+        }
+      }
+      else{
+        data.append("allowedLicensePlates", []);
+
       }
     }
     if (selectedDevice == 6) {
