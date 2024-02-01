@@ -66,7 +66,7 @@ const LampDataHistory = ({ deviceInfo }) => {
 
   
   useEffect(() => {
-    fetchData("6");
+    fetchData("6h");
   }, []);
 
 
