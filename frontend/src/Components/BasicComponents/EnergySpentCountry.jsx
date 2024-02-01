@@ -36,7 +36,7 @@ const EnergySpentCountry = ({}) => {
 
   const [selectedSearchParam, setSelectedSearchParam] = useState("1");
   const [countryVisible, setCountryVisible] = useState(false);
-  const [cityVisible, setCityVisible] = useState(false);
+  const [cityVisible, setCityVisible] = useState(true);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
@@ -46,7 +46,6 @@ const EnergySpentCountry = ({}) => {
   const [selectedCity, setSelectedCity] = useState("x");
   const [data, setData] = useState([]);
   const handleSearchClick = async () => {
-
     if (toDate == "" || fromDate == "") {
       setErrorModal(true);
       setErrorMessage("Please Select Valid Dates");
@@ -70,16 +69,28 @@ const EnergySpentCountry = ({}) => {
       start: fromDate,
       end: toDate,
     };
-    console.log(search)
-    fetchEnergy(search,true)
+    console.log(search);
+    fetchEnergy(search, true);
   };
   const handleCountryChange = (value) => {
+    setSpent(0);
+    setGenerated(0);
+    setData([]);
+
     setSelectedCountry(value);
   };
   const handleCityChange = (value) => {
+    setSpent(0);
+    setGenerated(0);
+    setData([]);
     setSelectedCity(value);
   };
   const handleSearchParamChange = (value) => {
+    setSpent(0);
+    setGenerated(0);
+    setData([]);
+    
+
     setCountryVisible(false);
     setCityVisible(false);
 
@@ -92,7 +103,10 @@ const EnergySpentCountry = ({}) => {
   const handleSearchChange = (value) => {
     const foundOption = searchOptions.find((option) => option.key === value);
     setDateVisibility(false);
-    if (value == "6") {setDateVisibility(true);return}
+    if (value == "6") {
+      setDateVisibility(true);
+      return;
+    }
 
     let n = "";
     let t = "";
@@ -128,11 +142,10 @@ const EnergySpentCountry = ({}) => {
         console.error("Error:", error);
       });
   };
-  const fetchEnergy = (search,date = false) => {
-    let url = `${API_BASE_URL}/properties/country/energy`
-    if (date == true)
-    {
-        url = `${API_BASE_URL}/properties/country/energy/date`
+  const fetchEnergy = (search, date = false) => {
+    let url = `${API_BASE_URL}/properties/country/energy`;
+    if (date == true) {
+      url = `${API_BASE_URL}/properties/country/energy/date`;
     }
     axios
       .post(url, search, {
@@ -249,11 +262,11 @@ const EnergySpentCountry = ({}) => {
           </Grid>
         </Grid>
         <InfoDialog
-        open={errorModal}
-        onClose={() => setErrorModal(false)}
-        title={"Error"}
-        content={errorMessage}
-      ></InfoDialog>
+          open={errorModal}
+          onClose={() => setErrorModal(false)}
+          title={"Error"}
+          content={errorMessage}
+        ></InfoDialog>
       </CardContent>
     </Card>
   );
