@@ -43,7 +43,14 @@ namespace SmartHome.WebApi.Controllers
             if (_user == null)
             {
                 response.Status = Status.INACTIVE;
-                response.Role = Role.USER;
+                if (user.Role == Role.USER)
+                {
+                    response.Role = Role.USER;
+                }
+                else
+                {
+                    response.Role = Role.ADMIN;
+                }
             }
             else if(_user.Role == Role.SUPERADMIN)
             {
