@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities;
+using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Exceptions;
 using SmartHome.Domain.Models;
 using SmartHome.Domain.Repositories;
@@ -15,6 +16,8 @@ namespace SmartHome.Data.Repositories
     {
         private readonly IMapper _mapper;
         private readonly DbSet<PropertyEntity> _properties;
+        private readonly DbSet<UserEntity> _users;
+        private readonly DbSet<SmartDeviceEntity> _smartDevices;
         private readonly DatabaseContext _context;
 
         public PropertyRepository(DatabaseContext context, IMapper mapper)
@@ -22,6 +25,8 @@ namespace SmartHome.Data.Repositories
             _context = context;
             _properties = context.Set<PropertyEntity>();
             _mapper = mapper;
+            _users = context.Set<UserEntity>();
+            _smartDevices = context.Set<SmartDeviceEntity>();
         }
 
         public async Task Add(Property property)
@@ -35,7 +40,8 @@ namespace SmartHome.Data.Repositories
         public async Task<PaginationReturnObject<Property>> GetPropertiesByUserId(Guid userId, Pagination pagination)
         {
             var query = _properties
-                .Where(p => p.UserId == userId);
+                .Where(p => p.UserId == userId || p.SharedUsers.Any(u => u.Id == userId));
+
 
             var totalItems = await query.CountAsync();
 
@@ -150,6 +156,65 @@ namespace SmartHome.Data.Repositories
             res.Cities = cities;
             res.Countries = countries;
             return res;
+        }
+
+        public async Task AddUserPermision(Guid propertyId, User user)
+        {
+            var propertyEntity = await _properties.FirstOrDefaultAsync(p => p.Id == propertyId);
+            if (propertyEntity == null)
+            {
+                throw new ResourceNotFoundException($"Proprerty with id {propertyId} was not found");
+            }
+            var userEntity = _users.FirstOrDefault(u => u.Email == user.Email);
+            if (userEntity == null)
+            {
+                throw new ResourceNotFoundException($"Proprerty with id {propertyId} was not found");
+            }
+            if (!propertyEntity.SharedUsers.Contains(userEntity)) 
+            {
+                propertyEntity.SharedUsers.Add(userEntity);
+
+                var devices = await _smartDevices.Where(d => d.PropertyId == propertyId).ToListAsync();
+
+                foreach (var device in devices)
+                {
+                    if (!device.SharedUsers.Contains(userEntity))
+                    {
+                        device.SharedUsers.Add(userEntity);
+                    }
+                }
+
+
+                await _context.SaveChangesAsync();
+            }
+
+        }
+
+        public async Task RemoveUserPermision(Guid propertyId, User user)
+        {
+            var propertyEntity = await _properties.FirstOrDefaultAsync(p => p.Id == propertyId);
+            if (propertyEntity == null)
+            {
+                throw new ResourceNotFoundException($"Property with id {propertyId} was not found");
+            }
+
+            var userEntity = propertyEntity.SharedUsers.FirstOrDefault(u => u.Id == user.Id);
+            if (userEntity == null)
+            {
+                throw new ResourceNotFoundException($"User with Id {user.Id} was not found in property with id {propertyId}");
+            }
+
+            propertyEntity.SharedUsers.Remove(userEntity);
+            var devices = await _smartDevices.Where(d => d.PropertyId == propertyId).ToListAsync();
+
+            foreach (var device in devices)
+            {
+                
+                 device.SharedUsers.Remove(userEntity);
+                
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

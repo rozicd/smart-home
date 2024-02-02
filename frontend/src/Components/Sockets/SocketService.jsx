@@ -18,6 +18,10 @@ const ACHubConnection = new signalR.HubConnectionBuilder()
   .withUrl("http://localhost:8080/ACHub",{withCredentials:true})
   .withAutomaticReconnect()
   .build();
+  const WMHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl("http://localhost:8080/WMHub",{withCredentials:true})
+  .withAutomaticReconnect()
+  .build();
 
 
-export { lampHubConnection, ecsHubConnection, ACHubConnection,sprinklerHubConnection };
+export { lampHubConnection, ecsHubConnection, ACHubConnection,sprinklerHubConnection, WMHubConnection };

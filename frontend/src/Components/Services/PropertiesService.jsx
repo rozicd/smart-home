@@ -138,6 +138,43 @@ const GetPropertyPowerGraphDataDate = async (search) => {
   }
 };
 
+const getPropertyById = async (id) =>{
+  try{
+    const response = await axios.get(`${API_BASE_URL}/properties/${id}`, {
+      withCredentials:true
+    });
+    return response.data;
+  }catch(error){
+    throw error
+  }
+}
+
+const addUserPermission = async (id, email) =>{
+  try{
+    const response = await axios.put(`${API_BASE_URL}/properties/addPermision/${id}`, {Email:email},{
+      withCredentials:true
+    });
+    console.log(response);
+    return response
+  }catch(error)
+  {
+    throw error
+  }
+}
+const removeUserPermission = async (id, userId) =>{
+  try{
+    const response = await axios.put(`${API_BASE_URL}/properties/removePermision/${id}`, {Id:userId},{
+      data:{userId:userId},
+      withCredentials:true
+    });
+    return response
+  }catch(error)
+  {
+    throw error
+  }
+}
+
+
 export {
   GetPropertyPowerGraphDataDate,
   getPropertiesByUserId,
@@ -146,5 +183,8 @@ export {
   approveProperty,
   rejectProperty,
   GetPropertyPowerGraphData,
-  getProperties
+  getProperties,
+  getPropertyById,
+  addUserPermission,
+  removeUserPermission
 };

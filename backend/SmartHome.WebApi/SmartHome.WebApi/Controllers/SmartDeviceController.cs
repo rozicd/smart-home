@@ -16,15 +16,18 @@ namespace SmartHome.WebApi.Controllers
     {
         private readonly ISmartDeviceServiceFactory _smartDeviceServiceFactory;
         private readonly ISmartDeviceService _smartDeviceService;
+        private readonly IPropertyService _propertyService;
 
         public SmartDeviceController(
             ISmartDeviceServiceFactory smartDeviceServiceFactory,
             ISmartDeviceService smartDeviceService,
+            IPropertyService propertyService,
             IMapper mapper)
             : base(mapper)
         {
             _smartDeviceServiceFactory = smartDeviceServiceFactory;
             _smartDeviceService = smartDeviceService;
+            _propertyService = propertyService;
         }
 
         [HttpGet("")]
@@ -38,6 +41,12 @@ namespace SmartHome.WebApi.Controllers
         public async Task<IActionResult> GetAll([FromQuery] PropertySmartDeviceRequestDTO request)
         {
             var devices = await _smartDeviceService.GetAllFromProperty(request.Page, request.PropertyId);
+            var property = await _propertyService.GetPropertyById(request.PropertyId);
+            if(property.UserId != _user.UserId)
+            {
+                devices.Items = devices.Items.Where(device => device.SharedUsers.Any(user => user.Id == _user.UserId)).ToList();
+                devices.TotalItems = devices.Items.Count();
+            }
             return Ok(devices);
         }
 
@@ -126,6 +135,40 @@ namespace SmartHome.WebApi.Controllers
             }
 
             return Ok(influxData);
+        }
+        [HttpPut("addPermission/{id}")]
+        public async Task<IActionResult> AddUserPermission(Guid id, [FromBody]AddUserPermissionRequestDTO dto)
+        {
+            User user = await _smartDeviceService.addUserPermission(id, dto.Email);
+            return Ok(user);
+        }
+        [HttpPut("removePermission/{id}")]
+        public async Task<IActionResult> RemoveUserPermission(Guid id, [FromBody] AddUserPermissionRequestDTO dto)
+        {
+            User user = await _smartDeviceService.RemoveUserPermission(id, dto.Email);
+            return Ok(user);
+        }
+
+        [HttpGet("getPermissions/{id}")]
+        public async Task<IActionResult> getPermisions(Guid id)
+        {
+            PermissionsResponseDTO permissionsResponseDTO = new PermissionsResponseDTO();
+            var smartDevice = await _smartDeviceService.GetDeviceById(id);
+            if(smartDevice.UserId == _user.UserId)
+            {
+                List<UserResponseDTO> users = new List<UserResponseDTO>();
+                foreach(User user in smartDevice.SharedUsers)
+                {
+                    UserResponseDTO dto = _mapper.Map<UserResponseDTO>(user);
+                    users.Add(dto);
+                }
+                permissionsResponseDTO = new PermissionsResponseDTO
+                {
+                    Owner = true,
+                    SharedUsers = users
+                };
+            }
+            return Ok(permissionsResponseDTO);
         }
 
     }

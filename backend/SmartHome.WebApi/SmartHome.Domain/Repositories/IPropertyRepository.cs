@@ -19,5 +19,7 @@ namespace SmartHome.Domain.Repositories
         Task<CountriesAndCities> GetCountries();
         Task<List<Property>> GetPropertiesByCity(string city);
         Task<List<Property>> GetPropertiesByCountry(string country);
+        Task AddUserPermision(Guid propertyId, User user);
+        Task RemoveUserPermision(Guid propertyId, User user);
     }
 }

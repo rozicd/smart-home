@@ -59,8 +59,14 @@ public class PropertyController : BaseController
         {
             return NotFound("Property not found");
         }
+        PropertyResponseDTO propertyResponseDTO = _mapper.Map<PropertyResponseDTO>(property);
+        if (propertyResponseDTO.UserId == _user.UserId)
+        {
+            propertyResponseDTO.Owner = true;
+        }
 
-        return Ok(_mapper.Map<PropertyResponseDTO>(property));
+
+        return Ok(propertyResponseDTO);
     }
 
     [HttpGet("user")]
@@ -68,8 +74,15 @@ public class PropertyController : BaseController
     public async Task<IActionResult> GetPropertiesByUserId([FromQuery] Pagination page)
     {
         var properties = await _propertyService.GetPropertiesByUserId(_user.UserId,page);
+        var propertyResponseDTOs = properties.Items.Select(property =>
+        {
+            var propertyResponseDTO = _mapper.Map<PropertyResponseDTO>(property);
+            propertyResponseDTO.Owner = property.UserId == _user.UserId;
+            return propertyResponseDTO;
+        }).ToList();
 
-        PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(_mapper.Map<IEnumerable<PropertyResponseDTO>>(properties.Items), properties.PageNumber, properties.PageSize, properties.TotalItems);
+
+        PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(propertyResponseDTOs, properties.PageNumber, properties.PageSize, properties.TotalItems);
 
 
         return Ok(response);
@@ -203,10 +216,9 @@ public class PropertyController : BaseController
 
         CountryEnergyHistory ceh = await _propertyService.GetCountryEnergyData(bh.Name,"", bh.Tag, bh.Start, bh.End);
         return Ok(ceh);
-
-
     }
 
+    
     [HttpPost("power/date")]
     public async Task<IActionResult> GetPowerDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
     {
@@ -240,6 +252,22 @@ public class PropertyController : BaseController
         }
 
         return Ok(influxData);
+    }
+
+    [HttpPut("addPermision/{propertyId}")]
+    public async Task<IActionResult> addUserPermision(Guid propertyId, [FromBody] AddUserPermissionRequestDTO addUserPermissionRequestDTO)
+    {
+        User user = await _userService.getByEmail(addUserPermissionRequestDTO.Email);
+        await _propertyService.AddUserPermision(propertyId, user);
+        return Ok(user);
+    }
+
+    [HttpPut("removePermision/{propertyId}")]
+    public async Task<IActionResult> removeUserPermision(Guid propertyId, [FromBody] RemoveUserPermissionRequestDTO removeUserPermissionRequestDTO)
+    {
+        User user = await _userService.GetById(removeUserPermissionRequestDTO.Id);
+        await _propertyService.RemoveUserPermision(propertyId, user);
+        return Ok(user);
     }
 
 }

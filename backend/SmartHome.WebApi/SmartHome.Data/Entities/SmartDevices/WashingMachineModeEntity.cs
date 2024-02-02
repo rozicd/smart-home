@@ -9,6 +9,6 @@ namespace SmartHome.Data.Entities.SmartDevices
     public class WashingMachineModeEntity
     {
         public Guid Id { get; set; }
-        public string ModeName { get; set; }
+        public string Name { get; set; }
     }
 }

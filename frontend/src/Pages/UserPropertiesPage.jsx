@@ -3,7 +3,7 @@ import { getPropertiesByUserId } from '../Components/Services/PropertiesService'
 import PropertyCard from '../Components/BasicComponents/PropertyCard';
 import AddButton from '../Components/BasicComponents/AddButton';
 import BasicPagination from '../Components/BasicComponents/BasicPagination';
-import InfoDialog from '../Components/BasicComponents/InfoDialog'; // Import the InfoDialog
+import InfoDialog from '../Components/BasicComponents/InfoDialog';
 import PropertyStepper from '../Components/BasicComponents/PropertyStepper';
 import { useNavigate } from 'react-router-dom';
 import './UserPropertiesPage.css';

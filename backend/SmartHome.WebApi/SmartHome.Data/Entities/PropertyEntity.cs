@@ -20,6 +20,7 @@ namespace SmartHome.Data.Entities
         public bool IsActive { get; set; }
         public Guid UserId { get; set; }
         public PropertyStatus Status { get; set; }
+        public virtual List<UserEntity> SharedUsers { get; set; } = new List<UserEntity>();
     }
 
 }

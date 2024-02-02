@@ -207,6 +207,20 @@ namespace SmartHome.Application.Services
             await _influxClientService.WriteDataAsync(point);
         }
 
+        public async Task<Domain.Models.User> addUserPermission(Guid id, string email)
+        {
+            return await _smartDeviceRepository.addUserPermission(id, email);
+        }
+
+        public async Task<Domain.Models.User> RemoveUserPermission(Guid id, string email)
+        {
+            return await _smartDeviceRepository.removeUserPermission(id, email);
+        }
+
+        public async Task<SmartDevice> GetDeviceById(Guid id)
+        {
+            return await _smartDeviceRepository.getById(id);
+        }
         public async Task<List<SmartDevice>> GetAllFromPropertyNoPage(Guid propertyId)
         {
             return await _smartDeviceRepository.GetAllFromPropertyNoPage(propertyId);

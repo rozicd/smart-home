@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Property = SmartHome.Domain.Models.Property;
+using User = SmartHome.Domain.Models.User;
 
 namespace SmartHome.Application.Services
 {
@@ -247,6 +248,16 @@ namespace SmartHome.Application.Services
             ceh.Spent = spent;
             ceh.Generated = generated;
             return ceh;
+        }
+
+        public async Task AddUserPermision(Guid propertyId, User user)
+        {
+            await _propertyRepository.AddUserPermision(propertyId, user);
+        }
+
+        public async Task RemoveUserPermision(Guid propertyId, User user)
+        {
+            await _propertyRepository.RemoveUserPermision(propertyId, user);
         }
     }
 }

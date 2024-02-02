@@ -71,7 +71,8 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
     var influxDbUrl = "http://localhost:8086";
 
 
-    var token = "AcdcXN2uiOck4QoW0e0QCAtBoD1bXC2lo7OfiMl-TTwkNVrLMxoeoZRwOKuHVHB6VEN2PQqE10pfge5W40YM_g==";
+    var token = "J7ecaapfL8hlLF7HpviZPUEA1ZbjJqHwf1ZIgiQaUKWfH_GNpbzMDimjOJMhUeSPOFw2iTkdGTQum9ni42VZ5g==";
+
 
 
     var bucket = "bucket";
@@ -136,7 +137,7 @@ builder.Services.AddLogging(builder =>
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings_TestConnection"));
+    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
     options.EnableSensitiveDataLogging(false);
     options.LogTo(Console.WriteLine, LogLevel.None); 
 
@@ -184,6 +185,7 @@ app.MapHub<LampHub>("/lampHub");
 
 app.MapHub<ECSHub>("/ECSHub");
 app.MapHub<ACHub>("/ACHub");
+app.MapHub<WMHub>("/WMHub");
 app.MapHub<CarGateHub>("/carGateHub");
 app.MapHub<SolarPanelSystemHub>("/panelHub");
 app.MapHub<HomeBatteryHub>("/batteryHub");

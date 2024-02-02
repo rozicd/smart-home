@@ -8,6 +8,7 @@ namespace SmartHome.DataTransferObjects.Requests
 {
     public class WashingMachineModeDTO
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
 
     }
