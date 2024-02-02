@@ -61,6 +61,7 @@ namespace SmartHome.Application.Services.SmartDevices
                 var repository = serviceProvider.GetRequiredService<IHomeBatteryRepository>();
 
                 battery = await repository.GetById(device.Id);
+
             }
             await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{battery.BatterySize},{battery.BatteryLevel}");
             string batteryTopic = device.Connection + "/battery_level";

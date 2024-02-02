@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using User = SmartHome.Domain.Models.User;
 
 namespace SmartHome.Application.Services
 {
@@ -42,9 +43,16 @@ namespace SmartHome.Application.Services
             return await _smartDeviceRepository.GetAll(page);
         }
 
-        public async Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId)
+        public async Task<PaginationReturnObject<SmartDevice>> GetAllFromProperty(Pagination page, Guid propertyId, LoggedUser user)
         {
-            return await _smartDeviceRepository.GetAllFromProperty(page, propertyId);
+            var devices = await _smartDeviceRepository.GetAllFromProperty(page, propertyId);
+
+            if (devices.Items.Count() != 0 && devices.Items.ElementAt(0).Property.UserId != user.UserId)
+            {
+                devices.Items = devices.Items.Where(device => device.SharedUsers.Any(user => user.Id == user.Id)).ToList();
+                devices.TotalItems = devices.Items.Count();
+            }
+            return devices;
         }
 
         virtual public async Task Disconnect(Guid id)
@@ -207,14 +215,20 @@ namespace SmartHome.Application.Services
             await _influxClientService.WriteDataAsync(point);
         }
 
-        public async Task<Domain.Models.User> addUserPermission(Guid id, string email)
+        public async Task<User> addUserPermission(Guid id, string email)
         {
-            return await _smartDeviceRepository.addUserPermission(id, email);
+            User user = await _smartDeviceRepository.addUserPermission(id, email);
+            RedisRepository<PaginationReturnObject<Domain.Models.Property>> redis = new RedisRepository<PaginationReturnObject<Domain.Models.Property>>();
+            redis.DeleteAllUserProperty(user.Id.ToString());
+            return user;
         }
 
-        public async Task<Domain.Models.User> RemoveUserPermission(Guid id, string email)
+        public async Task<User> RemoveUserPermission(Guid id, string email)
         {
-            return await _smartDeviceRepository.removeUserPermission(id, email);
+            User user = await _smartDeviceRepository.removeUserPermission(id, email);
+            RedisRepository<PaginationReturnObject<Domain.Models.Property>> redis = new RedisRepository<PaginationReturnObject<Domain.Models.Property>>();
+            redis.DeleteAllUserProperty(user.Id.ToString());
+            return user;
         }
 
         public async Task<SmartDevice> GetDeviceById(Guid id)

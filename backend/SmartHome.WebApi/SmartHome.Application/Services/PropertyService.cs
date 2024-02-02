@@ -9,6 +9,7 @@ using SmartHome.Domain.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,12 +38,24 @@ namespace SmartHome.Application.Services
 
         public async Task AddProperty(Property property)
         {
+            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
+            redis.DeleteAllUserProperty(property.UserId.ToString());
             await _propertyRepository.Add(property);
         }
 
         public async Task<PaginationReturnObject<Property>> GetPropertiesByUserId(Guid userId, Pagination pagination)
         {
-            return await _propertyRepository.GetPropertiesByUserId(userId, pagination);
+            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
+            PaginationReturnObject<Property> res;
+            res = redis.Get($"property/{userId.ToString()}/{pagination.PageNumber}/{pagination.PageSize}");
+            if (res == null)
+            {
+                res = await _propertyRepository.GetPropertiesByUserId(userId, pagination);
+                redis.DeleteAllUserProperty(userId.ToString());
+                redis.Add($"property/{userId.ToString()}/{pagination.PageNumber}/{pagination.PageSize}", res);
+            }
+
+            return res;
         }
 
         public async Task<PaginationReturnObject<Property>> GetPropertiesByStatus(PropertyStatus status, Pagination pagination)
@@ -252,11 +265,15 @@ namespace SmartHome.Application.Services
 
         public async Task AddUserPermision(Guid propertyId, User user)
         {
+            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
+            redis.DeleteAllUserProperty(user.Id.ToString());
             await _propertyRepository.AddUserPermision(propertyId, user);
         }
 
         public async Task RemoveUserPermision(Guid propertyId, User user)
         {
+            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
+            redis.DeleteAllUserProperty(user.Id.ToString());
             await _propertyRepository.RemoveUserPermision(propertyId, user);
         }
     }

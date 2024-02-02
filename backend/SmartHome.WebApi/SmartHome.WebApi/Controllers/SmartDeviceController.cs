@@ -40,13 +40,8 @@ namespace SmartHome.WebApi.Controllers
         [HttpGet("property")]
         public async Task<IActionResult> GetAll([FromQuery] PropertySmartDeviceRequestDTO request)
         {
-            var devices = await _smartDeviceService.GetAllFromProperty(request.Page, request.PropertyId);
-            var property = await _propertyService.GetPropertyById(request.PropertyId);
-            if(property.UserId != _user.UserId)
-            {
-                devices.Items = devices.Items.Where(device => device.SharedUsers.Any(user => user.Id == _user.UserId)).ToList();
-                devices.TotalItems = devices.Items.Count();
-            }
+            var devices = await _smartDeviceService.GetAllFromProperty(request.Page, request.PropertyId,_user);
+            
             return Ok(devices);
         }
 
