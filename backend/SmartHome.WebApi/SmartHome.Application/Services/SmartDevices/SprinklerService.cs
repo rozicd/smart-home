@@ -46,8 +46,7 @@ namespace SmartHome.Application.Services.SmartDevices
             sprinkler.Id = Guid.NewGuid();
             sprinkler.Connection = "property/" + sprinkler.PropertyId + "/device/" + sprinkler.Id;
             await _sprinklerRepository.Add(sprinkler);
-            _mqttClientService.PublishMessageAsync("property/" + sprinkler.PropertyId.ToString() + "/create", sprinkler.Id.ToString() + "," + "Sprinkler").Wait();
-            Thread.Sleep(1000);
+            _mqttClientService.PublishMessageAsync("property/" + sprinkler.PropertyId.ToString() + "/create", sprinkler.Id.ToString() + "," + "Sprinkler");
             await this.Connect(sprinkler.Id);
         }
 

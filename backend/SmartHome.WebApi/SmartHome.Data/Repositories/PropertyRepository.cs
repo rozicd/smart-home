@@ -35,8 +35,6 @@ namespace SmartHome.Data.Repositories
         public async Task<PaginationReturnObject<Property>> GetPropertiesByUserId(Guid userId, Pagination pagination)
         {
             var query = _properties
-                .Include(p => p.City)
-                    .ThenInclude(c => c.Country)
                 .Where(p => p.UserId == userId);
 
             var totalItems = await query.CountAsync();
@@ -45,15 +43,13 @@ namespace SmartHome.Data.Repositories
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)
                 .ToListAsync();
-
+            Console.WriteLine(properties);
             return new PaginationReturnObject<Property>(_mapper.Map<IEnumerable<Property>>(properties), pagination.PageNumber, pagination.PageSize, totalItems);
         }
 
         public async Task<PaginationReturnObject<Property>> GetPropertiesByStatus(PropertyStatus status, Pagination pagination)
         {
             var query = _properties
-                .Include(p => p.City)
-                    .ThenInclude(c => c.Country)
                 .Where(p => p.Status == status);
 
             var totalItems = await query.CountAsync();
@@ -68,8 +64,6 @@ namespace SmartHome.Data.Repositories
         public async Task<List<Property>> GetPropertiesByCountry(string country)
         {
             var query = _properties
-                .Include(p => p.City)
-                    .ThenInclude(c => c.Country)
                 .Where(p => p.City.Country.Name == country);
 
 
@@ -81,8 +75,6 @@ namespace SmartHome.Data.Repositories
         public async Task<List<Property>> GetPropertiesByCity(string city)
         {
             var query = _properties
-                .Include(p => p.City)
-                    .ThenInclude(c => c.Country)
                 .Where(p => p.City.Name == city);
 
 
@@ -116,9 +108,7 @@ namespace SmartHome.Data.Repositories
 
         public async Task<PaginationReturnObject<Property>> GetAllProperties(Pagination pagination)
         {
-            var query = _properties
-               .Include(p => p.City)
-                   .ThenInclude(c => c.Country);
+            var query = _properties;
 
             var totalItems = await query.CountAsync();
 
@@ -132,9 +122,7 @@ namespace SmartHome.Data.Repositories
 
         public async Task<CountriesAndCities> GetCountries()
         {
-            var query = _properties
-               .Include(p => p.City)
-                   .ThenInclude(c => c.Country);
+            var query = _properties;
 
             var properties = await query.ToListAsync();
 

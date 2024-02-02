@@ -12,7 +12,7 @@ obj/
 
 ### ReactNative ###
 # React Native Stack Base
-
+./backend/SmartHome.WebApi/SmartHome.WebApi/wwwroot
 .expo
 __generated__
 
