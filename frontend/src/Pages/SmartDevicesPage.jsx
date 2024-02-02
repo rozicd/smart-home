@@ -132,6 +132,11 @@ const SmartDevicesPage = ({}) => {
       data.append("maximumTemperature", form.maximumTemperature);
       data.append("minimumTemperature", form.minimumTemperature);
     }
+    if(selectedDevice == 3){
+      data.append("energySpending", form.energySpending);
+      data.append("modes", form.Modes);
+    }
+
     if (selectedDevice == 4) {
       data.append("energySpending", form.energySpending);
       data.append("lightThreshold", form.lightThreshold);
@@ -174,6 +179,18 @@ const SmartDevicesPage = ({}) => {
     }
     setOpenModal(false);
   };
+
+  let wm = [
+    {
+      item: "BasicInput",
+      label: "Energy Spending",
+      type: "number",
+      itemValue: "energySpending",
+    },
+    {
+      item:"MultipleSelect"
+    }
+  ]
 
   let l = [
     {
@@ -299,6 +316,11 @@ const SmartDevicesPage = ({}) => {
     if (selectedDevice == 2) {
       setTemplate(t.concat(ac));
       setUrl("airconditioner");
+    }
+
+    if (selectedDevice ===3){
+      setTemplate(t.concat(wm));
+      setUrl("washingmachine")
     }
 
     if (selectedDevice == 4) {

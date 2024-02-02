@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SmartHome.DataTransferObjects.Requests
 {
-    public class WashingMachineModeDTO
+    public class ChangeWMModeRequestDTO
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-
+        public string Mode { get; set; }
     }
 }

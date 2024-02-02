@@ -71,7 +71,7 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
     var influxDbUrl = "http://localhost:8086";
 
 
-    var token = "ZqgHocXYE-wlr76ucjWaUpjF0qKVmbeWjGme9s-h5zzDdol4qTNCl9tbANULxmKdLKbv5D-SqNwkXHaCBH93Bw==";
+    var token = "J7ecaapfL8hlLF7HpviZPUEA1ZbjJqHwf1ZIgiQaUKWfH_GNpbzMDimjOJMhUeSPOFw2iTkdGTQum9ni42VZ5g==";
 
 
     var bucket = "bucket";
@@ -184,6 +184,7 @@ app.MapHub<LampHub>("/lampHub");
 
 app.MapHub<ECSHub>("/ECSHub");
 app.MapHub<ACHub>("/ACHub");
+app.MapHub<WMHub>("/WMHub");
 app.MapHub<CarGateHub>("/carGateHub");
 app.MapHub<SolarPanelSystemHub>("/panelHub");
 app.MapHub<HomeBatteryHub>("/batteryHub");

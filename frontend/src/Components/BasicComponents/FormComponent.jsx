@@ -7,6 +7,7 @@ import Dropzone from "react-dropzone";
 import { Box } from "@mui/material";
 import {Typography} from "@mui/material";
 import RegistrationInput from "./RegistrationInput";
+import MultipleSelect from "./MultipleSelect";
 
 const FormComponent = ({ props, form, change }) => {
   const [imageFile, setImageFile] = useState(null);
@@ -103,6 +104,10 @@ const FormComponent = ({ props, form, change }) => {
           onAddRegistration={(registrations) => change("AllowedLicensePlates", registrations)}
         />
       );
+    case "MultipleSelect":
+        return(
+          <MultipleSelect onModeChange={(modes) => change("Modes", modes)}/>
+        )
     default:
       return null;
   }

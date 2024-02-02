@@ -53,6 +53,10 @@ public class MappingProfiles : Profile
 
         CreateMap<WashingMachineModeEntity, WashingMachineMode>();
         CreateMap<WashingMachineMode, WashingMachineModeEntity>();
+        CreateMap<WashingMachineMode, WashingMachineModeDTO>();
+        CreateMap<WashingMachineModeDTO, WashingMachineMode>();
+        CreateMap<WashingMachineResponseDTO, WashingMachine>();
+        CreateMap<WashingMachine, WashingMachineResponseDTO>();
         CreateMap<SprinklerSchedule, SprinklerScheduleEntity>();
         CreateMap<SprinklerScheduleEntity, SprinklerSchedule>();
 

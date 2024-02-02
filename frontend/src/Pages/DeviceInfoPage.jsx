@@ -15,6 +15,7 @@ import PanelCardComponent from "../Components/PanelCardsComponent";
 import BatteryCardsComponent from "../Components/BatteryCardsComponent";
 import CarChargerComponent from "../Components/CarChargerComponent";
 import SprinklerCardsComponent from "../Components/SprinklerCardsComponent";
+import WashingMachineCardsComponent from "../Components/WhashingMachineCardsComponent";
 
 
 const DeviceInfoPage = () => {
@@ -109,6 +110,9 @@ const DeviceInfoPage = () => {
           )
 
           }
+          {deviceType === "washingmachine" &&(
+            <WashingMachineCardsComponent deviceInfo={deviceData}/>
+          )}
           
           {/* Add other device type checks and load corresponding components */}
         </Box>

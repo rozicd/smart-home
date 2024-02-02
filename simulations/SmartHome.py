@@ -17,6 +17,7 @@ from SmartDevice import SmartDevice
 from SolarPanelSystem import SolarPanelSystem
 from HomeBattery import HomeBattery
 from CarCharger import CarCharger
+from WashingMachine import WashingMachine
 # >>>>>>> b953a224467ecd2bb35e8bd9a7e9bde48830008e
 
 
@@ -151,7 +152,8 @@ class SmartHome:
                 elif command[1] == 'Sprinkler':
                     smart_device = Sprinkler(device_key)
                     self.client.subscribe(device_key+'/spending')
-
+                elif command[1] == 'WashingMachine':
+                    smart_device = WashingMachine(device_key)
                 else:
                     smart_device = SmartDevice(device_key)
 

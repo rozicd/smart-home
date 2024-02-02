@@ -107,6 +107,11 @@ namespace SmartHome.Data
                 .HasMany(p => p.SharedUsers)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("SmartDeviceUser"));
+
+            modelBuilder.Entity<WashingMachineEntity>()
+                .HasMany(w => w.Modes)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("WashingMachineWashingModes"));
         }
 
 
@@ -117,6 +122,23 @@ namespace SmartHome.Data
 
             modelBuilder.Entity<CountryEntity>().HasData(countries);
             modelBuilder.Entity<CityEntity>().HasData(cities);
+
+            var washingMachineModes = new List<WashingMachineModeEntity>
+            {
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Regular Wash" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Quick Wash" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Delicate Cycle" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Heavy Duty Wash" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Wool Cycle" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Permanent Press" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Hand Wash" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Sportswear Cycle" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Baby Clothes Cycle" },
+                new WashingMachineModeEntity { Id = Guid.NewGuid(), Name = "Allergen Cycle" },
+            };
+
+            modelBuilder.Entity<WashingMachineModeEntity>().HasData(washingMachineModes);
+
         }
 
         private List<CountryEntity> ReadCountriesFromCsv()

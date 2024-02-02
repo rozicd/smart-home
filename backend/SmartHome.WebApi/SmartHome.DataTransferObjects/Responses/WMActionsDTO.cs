@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHome.DataTransferObjects.Requests
+namespace SmartHome.DataTransferObjects.Responses
 {
-    public class WashingMachineModeDTO
+    public class WMActionsDTO
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Mode { get; set; }
+        public DateTime? Timestamp { get; set; } 
 
     }
 }
