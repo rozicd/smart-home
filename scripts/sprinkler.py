@@ -5,21 +5,17 @@ from influxdb_client import InfluxDBClient, Point, WritePrecision
 from datetime import datetime, timedelta
 import time
 
-# InfluxDB connection details
 influx_url = "http://localhost:8086"
 influx_token = "jIgP-SC2-N5FtigPJFwx31rnHEfS9RSVzqgilBd-jAJF4JENWdPLyIsNgUX05lwjX3YoiE6hQQ8lIbTOZ77ZPQ=="
 influx_org = "organization"
 influx_bucket = "bucket"
 
-# Initialize InfluxDB client
 client = InfluxDBClient(url=influx_url, token=influx_token, org=influx_org)
 write_api = client.write_api()
 
-# Sprinkler ID and user name
-sprinkler_id = "7b131530-0310-4bcb-88a5-aef6614235f5"  # Replace with your actual sprinkler ID
+sprinkler_id = "6dcdc30e-e1f4-43a2-a2b3-0d281ceced05"
 user_name = "System"
 
-# Write sprinkler actions for the past 90 days in batches of 100 with a pause of 60 seconds
 end_date = datetime.utcnow()
 start_date = end_date - timedelta(days=90)
 

@@ -59,7 +59,6 @@ namespace SmartHome.Application.HostedServices
                     mqttClientService.PublishMessageAsync("property/create", property.Id.ToString());
                     propertiesService.ListenOnCharge(property);
 
-
                 }
                 Thread.Sleep(2000);
 
@@ -68,6 +67,7 @@ namespace SmartHome.Application.HostedServices
 
 
                     var devices = devicesService.GetAllFromPropertyNoPage(property.Id).Result;
+
 
                     foreach (var device in devices)
                     {
@@ -81,6 +81,7 @@ namespace SmartHome.Application.HostedServices
                         ISmartDeviceActionsService smartDeviceActionService = smartDeviceServiceFactory.GetServiceAsync(device.Id).Result;
 
                         smartDeviceActionService.Connect(device.Id);
+
                     }
 
 

@@ -99,6 +99,7 @@ public class PropertyController : BaseController
     }
 
     [HttpPut("{id}/approve")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
     public async Task<IActionResult> ApproveProperty(Guid id)
     {
         Property property = await _propertyService.GetPropertyById(id);

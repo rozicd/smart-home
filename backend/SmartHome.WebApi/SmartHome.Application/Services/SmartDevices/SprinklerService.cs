@@ -46,8 +46,7 @@ namespace SmartHome.Application.Services.SmartDevices
             sprinkler.Id = Guid.NewGuid();
             sprinkler.Connection = "property/" + sprinkler.PropertyId + "/device/" + sprinkler.Id;
             await _sprinklerRepository.Add(sprinkler);
-            _mqttClientService.PublishMessageAsync("property/" + sprinkler.PropertyId.ToString() + "/create", sprinkler.Id.ToString() + "," + "Sprinkler").Wait();
-            Thread.Sleep(1000);
+            _mqttClientService.PublishMessageAsync("property/" + sprinkler.PropertyId.ToString() + "/create", sprinkler.Id.ToString() + "," + "Sprinkler");
             await this.Connect(sprinkler.Id);
         }
 
@@ -65,7 +64,7 @@ namespace SmartHome.Application.Services.SmartDevices
                 sprinkler = await repository.GetByIdAsync(device.Id);
             }
             string schedulesString = string.Join(",", (await _sprinklerRepository.GetSprinklerSchedulesAsync(sprinkler.Id)).Select(s => $"{s.Id}:-:{s.StartTime}:-:{s.DurationMinutes}"));
-            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{sprinkler.Power},{schedulesString}");
+            await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{sprinkler.Power},{sprinkler.EnergySpending},{schedulesString}");
             var client = await _mqttClientService.SubscribeAsync(device.Connection + "/powerStatus");
             client.ApplicationMessageReceivedAsync += async e =>
             {

@@ -43,7 +43,7 @@ const DeviceStatusHistory = ({ deviceInfo }) => {
   };
 
   useEffect(() => {
-    fetchData("6");
+    fetchData("6h");
     setTimeRangeHours(['hours', 6,null]);
 
     }, []);
@@ -131,7 +131,7 @@ const DeviceStatusHistory = ({ deviceInfo }) => {
 
   return (
 <Grid container spacing={2} style={{ width: "77%", marginTop: '70px', textAlign: 'center',justifyContent:'center',wrap:"nowrap"}}>
-  <Typography sx={{ fontSize: '2rem', marginBottom: '20px' }}>AVAILABILITY</Typography>
+  <Typography sx={{ fontSize: '2rem', marginBottom: '10px',marginTop:'10px' }}>AVAILABILITY</Typography>
       {/* Row with Pie Chart and Bar Chart */}
       <Grid container item xs={12} spacing={2} flexDirection={"column"} wrap="nowrap">
         <Grid item xs={6} style= {{marginTop: '20px'}}>
@@ -208,7 +208,6 @@ const DeviceStatusHistory = ({ deviceInfo }) => {
         </Card>
       </Grid>
 
-      {/* Error Dialog */}
       <InfoDialog
         open={errorModal}
         onClose={() => setErrorModal(false)}

@@ -57,9 +57,21 @@ const SprinklerCardsComponent = ({ deviceData }) => {
       }
 
       sprinklerHubConnection.on(deviceData.connection+"/power", (powerV) => {
-        setSprinklerData({powerV:power,schedules:sprinklerData.schedules})
+        setSprinklerData({power:powerV,schedules:sprinklerData.schedules})
       });
-
+      sprinklerHubConnection.on(
+        deviceData.connection + "/schedule",
+        (scheduleId) => {
+          console.log(scheduleId)
+          console.log(prevSprinklerData)
+          setSprinklerData((prevSprinklerData) => ({
+            ...prevSprinklerData,
+            schedules: prevSprinklerData.schedules.filter(
+              (schedule) => schedule.id !== scheduleId
+            ),
+          }));
+        }
+      );
       if (!isSubscribedToActions.current) {
         console.log("SUBSCRIBE ACTIONS");
         sprinklerHubConnection.on(
@@ -74,17 +86,6 @@ const SprinklerCardsComponent = ({ deviceData }) => {
               };
               setEventLog((prevHistory) => [...prevHistory, newAction]);
             }
-          }
-        );
-        sprinklerHubConnection.on(
-          deviceData.connection + "/schedule",
-          (scheduleId) => {
-            setSprinklerData((prevSprinklerData) => ({
-              ...prevSprinklerData,
-              schedules: prevSprinklerData.schedules.filter(
-                (schedule) => schedule.id !== scheduleId
-              ),
-            }));
           }
         );
         isSubscribedToActions.current = true;
@@ -238,41 +239,51 @@ const SprinklerCardsComponent = ({ deviceData }) => {
         <EventLogCard eventData={eventLog} setEndDate={setToDate} setStartDate={setFromDate} />
       </Grid>
 
-      {/* Dialog for adding a new schedule */}
-      <Dialog open={isDialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Add Schedule</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Start Time"
-            type="datetime-local"
-            value={newScheduleData.dateTime.toISOString().substring(0, 16)}
-            onChange={(e) =>
-              setNewScheduleData((prevData) => ({
-                ...prevData,
-                dateTime: new Date(e.target.value),
-              }))
-            }
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            label="Duration (minutes)"
-            type="number"
-            value={newScheduleData.duration}
-            onChange={(e) =>
-              setNewScheduleData((prevData) => ({
-                ...prevData,
-                duration: parseInt(e.target.value, 10),
-              }))
-            }
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleAddSchedule}>Add</Button>
-        </DialogActions>
-      </Dialog>
+      <Dialog open={isDialogOpen} onClose={handleDialogClose} fullWidth maxWidth="xs">
+  <DialogTitle>Add Schedule</DialogTitle>
+  <DialogContent>
+    <div style={{ marginBottom: '16px', marginTop:'16px' }}>
+      <TextField
+        label="Start Time"
+        type="datetime-local"
+        value={newScheduleData.dateTime.toISOString().substring(0, 16)}
+        onChange={(e) =>
+          setNewScheduleData((prevData) => ({
+            ...prevData,
+            dateTime: new Date(e.target.value),
+          }))
+        }
+        InputLabelProps={{
+          shrink: true,
+        }}
+        fullWidth
+      />
+    </div>
+    <div>
+      <TextField
+        label="Duration (minutes)"
+        type="number"
+        value={newScheduleData.duration}
+        onChange={(e) =>
+          setNewScheduleData((prevData) => ({
+            ...prevData,
+            duration: parseInt(e.target.value, 10),
+          }))
+        }
+        fullWidth
+      />
+    </div>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleDialogClose} color="primary">
+      Cancel
+    </Button>
+    <Button onClick={handleAddSchedule} color="primary">
+      Add
+    </Button>
+  </DialogActions>
+</Dialog>
+
     </Grid>
   );
 };

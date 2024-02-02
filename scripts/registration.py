@@ -4,6 +4,7 @@ import faker
 fake = faker.Faker()
 
 # Number of records to generate
+
 num_records = 100
 
 # Header for the CSV file
