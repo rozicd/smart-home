@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
+using SmartHome.Data.Entities;
 using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Exceptions;
 using SmartHome.Domain.Models;
@@ -21,12 +22,16 @@ namespace SmartHome.Data.Repositories
     {
         private readonly IMapper _mapper;
         private readonly DbSet<SmartDeviceEntity> _smartDevices;
+        private readonly DbSet<PropertyEntity> _properties;
+        private readonly DbSet<UserEntity> _users;
         private readonly DatabaseContext _context;
         public SmartDeviceRepository(DatabaseContext context, IMapper mapper)
         {
             _context = context;
             _smartDevices = context.Set<SmartDeviceEntity>();
             _mapper = mapper;
+            _properties = context.Set<PropertyEntity>();
+            _users = context.Set<UserEntity>();
         }
        
 
@@ -151,6 +156,50 @@ namespace SmartHome.Data.Repositories
             }
 
             return null; 
+        }
+
+        public async Task<User> addUserPermission(Guid id, string email)
+        {
+            var smartDevice = await _smartDevices.FirstOrDefaultAsync(s=> s.Id == id);
+            var userEntity = await _users.FirstOrDefaultAsync(s=> s.Email == email);
+            if(userEntity == null)
+            {
+                throw new ResourceNotFoundException($"User with email: {email} was not found");
+            }
+            if(!smartDevice.SharedUsers.Contains(userEntity))
+            {
+                var property = await _properties.FirstOrDefaultAsync(p => p.Id == smartDevice.PropertyId);
+                smartDevice.SharedUsers.Add(userEntity);
+                if (!property.SharedUsers.Contains(userEntity)){
+                    property.SharedUsers.Add(userEntity); 
+                }
+                await _context.SaveChangesAsync();
+            }
+            return _mapper.Map<User>(userEntity);
+        }
+
+        public async Task<User> removeUserPermission(Guid id, string email)
+        {
+            var smartDevice = await _smartDevices.FirstOrDefaultAsync(s => s.Id == id);
+            var userEntity = await _users.FirstOrDefaultAsync(s => s.Email == email);
+            if (userEntity == null)
+            {
+                throw new ResourceNotFoundException($"User with email: {email} was not found");
+            }
+            smartDevice.SharedUsers.Remove(userEntity);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<User>(userEntity);
+        }
+
+        public async Task<SmartDevice> getById(Guid id)
+        {
+            var smartDeviceEntity = await  _smartDevices.FirstOrDefaultAsync(s => s.Id == id);
+            if (smartDeviceEntity == null) 
+            {
+                throw new ResourceNotFoundException($"Smart device with Id: {id} was not found");
+            }
+            SmartDevice smart = _mapper.Map<SmartDevice>(smartDeviceEntity);
+            return smart;
         }
     }
 }

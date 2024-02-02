@@ -18,5 +18,6 @@ namespace SmartHome.Data.Entities.SmartDevices
         public virtual PropertyEntity Property { get; set; }
         public Guid PropertyId {  get; set; }
 
+        public virtual List<UserEntity> SharedUsers { get; set; } = new List<UserEntity>();
     }
 }

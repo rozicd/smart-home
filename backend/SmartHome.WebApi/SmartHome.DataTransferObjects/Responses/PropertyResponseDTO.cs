@@ -20,5 +20,7 @@ namespace SmartHome.DataTransferObjects.Responses
         public bool IsActive { get; set; }
         public Guid UserId { get; set; }
         public PropertyStatus Status { get; set; }
+        public List<UserResponseDTO> SharedUsers { get; set; }
+        public bool Owner { get; set; }
     }
 }

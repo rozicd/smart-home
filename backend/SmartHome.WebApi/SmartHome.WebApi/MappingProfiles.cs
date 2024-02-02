@@ -16,6 +16,7 @@ public class MappingProfiles : Profile
         CreateMap<UserEntity, User>();
         CreateMap<SmartDevice, SmartDeviceEntity>();
         CreateMap<SmartDeviceEntity, SmartDevice>();
+        
 
         CreateMap<EnvironmentalConditionsSensor, EnvironmentalConditionsSensorEntity>()
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
@@ -52,6 +53,10 @@ public class MappingProfiles : Profile
 
         CreateMap<WashingMachineModeEntity, WashingMachineMode>();
         CreateMap<WashingMachineMode, WashingMachineModeEntity>();
+        CreateMap<WashingMachineMode, WashingMachineModeDTO>();
+        CreateMap<WashingMachineModeDTO, WashingMachineMode>();
+        CreateMap<WashingMachineResponseDTO, WashingMachine>();
+        CreateMap<WashingMachine, WashingMachineResponseDTO>();
         CreateMap<SprinklerSchedule, SprinklerScheduleEntity>();
         CreateMap<SprinklerScheduleEntity, SprinklerSchedule>();
 
@@ -67,6 +72,7 @@ public class MappingProfiles : Profile
         CreateMap<CountryEntity, Country>();
         CreateMap<CreateUserRequestDTO, User>();
         CreateMap<User, UserResponseDTO>();
+        CreateMap<UserResponseDTO, User>();
         CreateMap<UpdateUserRequestDTO, User>();
 
         CreateMap<Country, CountryResponseDTO>();

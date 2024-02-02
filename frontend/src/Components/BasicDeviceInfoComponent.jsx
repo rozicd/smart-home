@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -13,6 +13,9 @@ import {
 import BasicForm from "./BasicComponents/BasicForm";
 import { connect } from "./Services/SmartDeviceService";
 import DeviceStatusHistory from "./BasicComponents/DeviceStatusHistory";
+import ShareIcon from '@mui/icons-material/Share';
+import { getDevicePermission } from "../Components/Services/SmartDeviceService";
+import DevicePermisionDialog from "./Dialogs/DevicePermisionDialog";
 
 const template = [
   { item: "BasicInput", itemValue: "connection", label: "Connection" },
@@ -20,6 +23,8 @@ const template = [
 
 const BasicDeviceInfoComponent = ({ imageData, deviceData }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [permission, setPermission] = useState({});
+  const [open, setOpen] = useState(false);
 
   const Connect = async (connection) => {
     const data = new FormData();
@@ -30,6 +35,25 @@ const BasicDeviceInfoComponent = ({ imageData, deviceData }) => {
     deviceData.connection = connection.connection;
   };
 
+  useEffect(() => {
+    const fetchPermission = async() =>{
+      const response = await getDevicePermission(deviceData.id);
+      setPermission(response.data);  
+    };
+    fetchPermission();
+  }, [deviceData.id]);
+
+  const updateUsers = (users) =>{
+    permission.sharedUsers = users;
+    setPermission(permission);
+  }
+  const handleShare = () =>{
+    setOpen(true);
+  }
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
   return (
     <Grid
       container
@@ -62,6 +86,7 @@ const BasicDeviceInfoComponent = ({ imageData, deviceData }) => {
             image={imageData}
           />
         </Card>
+        {permission.owner && <Button onClick={handleShare}><ShareIcon></ShareIcon></Button>}
 
         <Card item style={{ height: "30%", width: "50%", marginTop:"50px" }}>
           <CardContent style={{ display: "flex", flexDirection: "row" }}>
@@ -152,6 +177,7 @@ const BasicDeviceInfoComponent = ({ imageData, deviceData }) => {
           <DeviceStatusHistory style={{height:'30%',marginTop: "60px",}} deviceInfo={deviceData} />
           </Grid>
         </Box>
+        <DevicePermisionDialog open={open} onClose={handleCloseDialog} deviceId={deviceData.id} users={permission.sharedUsers} updateUsers={updateUsers}></DevicePermisionDialog>
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
         <Container
           sx={{

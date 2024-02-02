@@ -149,6 +149,15 @@ namespace SmartHome.Data.Repositories
 
         }
 
+        public async Task<User> GeyByEmail(string email)
+        {
+            UserEntity user = await _users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                throw new ResourceNotFoundException($"User with email: {email} was mot found");
+            }
+            return _mapper.Map<User>(user);
+        }
     }
 
 }

@@ -10,6 +10,9 @@ namespace SmartHome.Domain.Repositories.SmartDevices
     public interface IWashingMachineRepository
     {
         Task Add(WashingMachine sensor);
+        Task<List<WashingMachineMode>> GetWashingMachineModes();
+        Task<WashingMachine> getById(Guid id);
+
 
     }
 }

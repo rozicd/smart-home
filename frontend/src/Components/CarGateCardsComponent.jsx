@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import EventLogCard from "./BasicComponents/EventLogCard";
+
 import { openGate, closeGate, changeMode, addLicensePlate, removeLicensePlate, getCarActions } from './Services/CarGateService';
 import { carGateHubConnection } from "./Sockets/LightSocketService";
 

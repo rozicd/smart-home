@@ -22,5 +22,8 @@ namespace SmartHome.Domain.Services
         Task<List<FluxTable>> GetPropertyPowerInfluxData(string id, string h);
         Task<List<FluxTable>> GetPropertyPowerInfluxDataDate(string id, DateTime startDate, DateTime endDate);
         Task<CountryEnergyHistory> GetCountryEnergyData(string country, string h,string tag,DateTime? startDate, DateTime? endDate);
+        Task AddUserPermision(Guid propertyId, User user);
+        Task RemoveUserPermision(Guid propertyId, User user);
+
     }
 }

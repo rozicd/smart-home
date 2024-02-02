@@ -9,7 +9,7 @@ namespace SmartHome.Data.Entities.SmartDevices
 {
     public class WashingMachineEntity :SmartDeviceEntity
     {
-        public virtual List<WashingMachineModeEntity> Modes { get; set; }
+        public virtual List<WashingMachineModeEntity> Modes { get; set; } = new List<WashingMachineModeEntity>();
         public virtual WashingMachineModeEntity? CurrentMode { get; set; }
         public DateTime StartTime { get; set; }
     }

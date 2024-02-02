@@ -1,4 +1,5 @@
-﻿using SmartHome.Domain.Models;
+﻿using SmartHome.Data.Entities.SmartDevices;
+using SmartHome.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,5 @@ namespace SmartHome.Data.Entities
 
 
     }
- 
+
 }

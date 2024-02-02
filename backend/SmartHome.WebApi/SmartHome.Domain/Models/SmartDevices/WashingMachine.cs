@@ -8,7 +8,7 @@ namespace SmartHome.Domain.Models.SmartDevices
 {
     public class WashingMachine : SmartDevice
     {
-        public List<WashingMachineMode> Modes { get; set; }
+        public virtual List<WashingMachineMode> Modes { get; set; } = new List<WashingMachineMode>();
         public WashingMachineMode? CurrentMode { get; set; }
         public DateTime StartTime { get; set; }
 
