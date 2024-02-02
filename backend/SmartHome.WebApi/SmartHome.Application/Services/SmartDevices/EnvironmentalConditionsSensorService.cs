@@ -1,4 +1,5 @@
 ﻿using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Core.Flux.Domain;
 using InfluxDB.Client.Writes;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
@@ -107,19 +108,47 @@ namespace SmartHome.Application.Services.SmartDevices
         private async Task SendInfluxDataAsync(EnvironmentalConditionsSensor sensor, float airHumidity, float roomTemperature) 
         {
             var point = PointData
-              .Measurement(sensor.Name)
-              .Field("AirHumidity", airHumidity)
-              .Field("RoomTemperature", roomTemperature)
+              .Measurement("ESC readings")
+              .Tag("Id", sensor.Id.ToString())
+              .Field("airHumidity", airHumidity)
+              .Field("roomTemperature", roomTemperature)
               .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
             await _influxClientService.WriteDataAsync(point);
         }
 
-        public async Task GetInfluxData(string name, string start, string stop)
+        public async Task<List<FluxTable>> GetInfluxDataDateRangeAsync(string id, DateTime startDate, DateTime endDate)
         {
+            int daysApart = Math.Abs((endDate - startDate).Days);
 
+            string ag = "1h";
+            if(daysApart < 1)
+            {
+                ag = "5s";
+            }
+
+            if (daysApart > 3)
+            {
+                ag = "30m";
+            }
+            if (daysApart > 7)
+            {
+                ag = "1h";
+            }
+
+            string start = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string end = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string query = $"from(bucket: \"bucket\")" +
+                           $"|> range(start: {start}, stop: {end})" +
+                           $"|> filter(fn: (r) => r._measurement == \"ESC readings\")" +
+                           $"|> filter(fn: (r) => r[\"Id\"] == \"{id}\")" +
+                           $"|> aggregateWindow(every:{ag}, fn: mean, createEmpty: false)" +
+                           $"|> sort(columns: [\"_time\"], desc: false)" +
+                           $"|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")";
+
+            var result = await _influxClientService.GetInfluxData(query);
+
+            return result;
         }
-
-
 
     }
 }

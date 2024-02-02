@@ -8,8 +8,8 @@ namespace SmartHome.DataTransferObjects.Requests
 {
     public class EcsInfluxRangeRequestDTO
     {
-        public string Name { get; set; }
-        public string start { get; set; }
-        public string end { get; set; }
+        public Guid Id { get; set; }
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
     }
 }

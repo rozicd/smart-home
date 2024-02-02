@@ -83,7 +83,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         {
             if (!startDate.HasValue)
             {
-                startDate = DateTime.UtcNow.AddHours(-6);
+                startDate = DateTime.UtcNow.AddHours(-24);
             }
 
             if (!endDate.HasValue)
