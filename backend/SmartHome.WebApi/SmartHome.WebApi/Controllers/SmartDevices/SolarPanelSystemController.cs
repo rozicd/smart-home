@@ -10,7 +10,7 @@ using SmartHome.DataTransferObjects.Responses;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("solarpanelsystem")]
+    [Route("api/solarpanelsystem")]
     public class SolarPanelSystemController : BaseController
     {
         private readonly ISolarPanelSystemService _solarPanelSystemService;

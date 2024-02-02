@@ -12,7 +12,7 @@ using SmartHome.Domain.Services.SmartDevices;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("environmentalconditionssensor")]
+    [Route("api/environmentalconditionssensor")]
     public class EnvironmentalConditionsSensorController : BaseController
     {
         private readonly IEnvironmentalConditionsSensorService _ecsService;

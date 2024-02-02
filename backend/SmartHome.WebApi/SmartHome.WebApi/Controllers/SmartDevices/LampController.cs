@@ -11,7 +11,7 @@ using SmartHome.Application.Services.SmartDevices;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("lamp")]
+    [Route("api/lamp")]
     public class LampController : BaseController
     {
         private readonly ILampService _lampService;

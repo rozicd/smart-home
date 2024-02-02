@@ -28,13 +28,13 @@ namespace SmartHome.Application.HostedServices
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // Call DoWork directly when the service starts
-            DoWork(null);
+            DoWorkAsync(null);
 
             // Return a completed task
             return Task.CompletedTask;
         }
 
-        private void DoWork(object state)
+        private async Task DoWorkAsync(object state)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
@@ -66,7 +66,7 @@ namespace SmartHome.Application.HostedServices
                 {
 
 
-                    var devices = devicesService.GetAllFromPropertyNoPage(property.Id).Result;
+                    var devices = await devicesService.GetAllFromPropertyNoPage(property.Id);
 
 
                     foreach (var device in devices)

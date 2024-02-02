@@ -14,7 +14,7 @@ using SmartHome.DataTransferObjects.Responses;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("sprinkler")]
+    [Route("api/sprinkler")]
     public class SprinklerController : BaseController
     {
         private readonly ISprinklerService _sprinklerService;

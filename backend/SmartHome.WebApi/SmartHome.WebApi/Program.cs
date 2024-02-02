@@ -129,18 +129,18 @@ builder.Services.AddSignalR();
 
 builder.Services.AddLogging(builder =>
 {
-    builder.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.None); // Disable command level logs
-    builder.AddFilter(DbLoggerCategory.Database.Transaction.Name, LogLevel.None); // Disable transaction level logs
-                                                                                  // Add more filters as needed
+    builder.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.None); 
+    builder.AddFilter(DbLoggerCategory.Database.Transaction.Name, LogLevel.None); 
 });
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
     options.EnableSensitiveDataLogging(false);
-    options.LogTo(Console.WriteLine, LogLevel.None); 
+    options.LogTo(Console.WriteLine, LogLevel.None);
 
 }, ServiceLifetime.Scoped);
+builder.Services.AddMemoryCache();
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
