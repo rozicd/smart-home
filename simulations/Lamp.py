@@ -128,7 +128,7 @@ class Lamp(SmartDevice):
             print(self.light_strength)
             print(self.power_state)
             print(self.light_threshold)
-            self.client.publish(self.topicLight, f"{self.light_strength},{self.power_state}")
+            self.client.publish(self.topicLight, f"{float(self.light_strength)},{int(self.power_state)}")
 
 
             time.sleep(10)

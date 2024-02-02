@@ -105,8 +105,11 @@ namespace SmartHome.Data.Repositories.SmartDevices
         public async Task<List<SprinklerSchedule>> GetSprinklerSchedulesAsync(Guid sprinklerId)
         {
             IQueryable<SprinklerScheduleEntity> query = _sprinklerSchedules;
-            query = query.Where(device => device.SprinklerId == sprinklerId);
-
+            try
+            {
+                query = query.Where(device => device.SprinklerId == sprinklerId);
+            }
+            catch(Exception ex) { Console.WriteLine(ex.Message); }
             return _mapper.Map<List<SprinklerSchedule>>(query.ToList());
         }
     }

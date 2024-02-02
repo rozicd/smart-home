@@ -149,7 +149,6 @@ const SmartDevicesPage = ({}) => {
         }
       }
       else{
-        data.append("allowedLicensePlates", []);
 
       }
     }

@@ -71,6 +71,8 @@ namespace SmartHome.Application.Services
 
         public async Task UpdateProperty(Property property)
         {
+            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
+            redis.Delete(property.Id.ToString());
             await _propertyRepository.Update(property);
         }
 
