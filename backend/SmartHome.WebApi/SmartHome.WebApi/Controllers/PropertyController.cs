@@ -69,17 +69,18 @@ public class PropertyController : BaseController
         return Ok(propertyResponseDTO);
     }
 
-    [HttpGet("user/{userId}")]
+    [HttpGet("user")]
     [Authorize(Roles = "USER")]
-    public async Task<IActionResult> GetPropertiesByUserId(Guid userId, [FromQuery] Pagination page)
+    public async Task<IActionResult> GetPropertiesByUserId([FromQuery] Pagination page)
     {
-        var properties = await _propertyService.GetPropertiesByUserId(userId,page);
+        var properties = await _propertyService.GetPropertiesByUserId(_user.UserId,page);
         var propertyResponseDTOs = properties.Items.Select(property =>
         {
             var propertyResponseDTO = _mapper.Map<PropertyResponseDTO>(property);
-            propertyResponseDTO.Owner = property.UserId == userId;
+            propertyResponseDTO.Owner = property.UserId == _user.UserId;
             return propertyResponseDTO;
         }).ToList();
+
 
         PaginationReturnObject<PropertyResponseDTO> response = new PaginationReturnObject<PropertyResponseDTO>(propertyResponseDTOs, properties.PageNumber, properties.PageSize, properties.TotalItems);
 
@@ -111,6 +112,7 @@ public class PropertyController : BaseController
     }
 
     [HttpPut("{id}/approve")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
     public async Task<IActionResult> ApproveProperty(Guid id)
     {
         Property property = await _propertyService.GetPropertyById(id);

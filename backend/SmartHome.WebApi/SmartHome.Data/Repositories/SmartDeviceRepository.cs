@@ -99,6 +99,15 @@ namespace SmartHome.Data.Repositories
             return result;
         }
 
+        public async Task<List<SmartDevice>> GetAllFromPropertyNoPage(Guid propertyId)
+        {
+           List<SmartDeviceEntity> devices = await _smartDevices
+            .Where(device => device.PropertyId == propertyId)
+            .ToListAsync();
+
+            return _mapper.Map<List<SmartDevice>>(devices);
+        }
+
         public async Task<SmartDevice> TurnOn(Guid id)
         {
             var existingDevice = await _smartDevices.FirstOrDefaultAsync(s => s.Id == id);

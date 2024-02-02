@@ -13,7 +13,9 @@ class Sprinkler(SmartDevice):
         self.schedules = {}
         self.sprinkler_thread = None
         self.schedule_thread = None
-
+        self.energy_spending = 0
+        self.send_lamp_energy_thread = None
+        self.is_send_lamp_energy_running = False
     def on_connect(self, client, userdata, flags, rc):
         super().on_connect(client, userdata, flags, rc)
         self.client.subscribe(self.name + "/info")
@@ -28,18 +30,22 @@ class Sprinkler(SmartDevice):
         if msg.topic == self.name + "/info":
             sprinkler_info = command.split(',')
             self.power = sprinkler_info[0] == "True"
-            if sprinkler_info[1] != "":
-                self.schedules = self.parse_schedules(sprinkler_info[1:])
+            self.energy_spending = float(sprinkler_info[1])/1000
+            if sprinkler_info[2] != "":
+                self.schedules = self.parse_schedules(sprinkler_info[2:])
             else:
                 self.schedules = {}
             print("SPRINKLEEEEER")
             print(f"Power: {self.power}")
+            print(f"Energy: {self.energy_spending}")
             print(f"Schedules: {self.schedules}")
 
             if self.sprinkler_thread is None:
                 self.sprinkler_thread = threading.Thread(target=self.run_sprinkler)
                 self.sprinkler_thread.daemon = True
                 self.sprinkler_thread.start()
+                self.send_lamp_energy_thread = threading.Thread(target=self.sendEnergySpending)
+                self.send_lamp_energy_thread.start()
 
             if self.schedule_thread is None:
                 self.schedule_thread = threading.Thread(target=self.run_schedule)
@@ -81,6 +87,10 @@ class Sprinkler(SmartDevice):
 
         return schedules
 
+    def sendEnergySpending(self):
+        while self.send_lamp_energy_thread:
+            self.client.publish(self.name +"/spending", f"{self.energy_spending}")
+            time.sleep(60)
     def run_sprinkler(self):
         while True:
 

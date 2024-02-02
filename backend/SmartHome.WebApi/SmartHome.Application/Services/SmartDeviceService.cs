@@ -221,5 +221,9 @@ namespace SmartHome.Application.Services
         {
             return await _smartDeviceRepository.getById(id);
         }
+        public async Task<List<SmartDevice>> GetAllFromPropertyNoPage(Guid propertyId)
+        {
+            return await _smartDeviceRepository.GetAllFromPropertyNoPage(propertyId);
+        }
     }
 }

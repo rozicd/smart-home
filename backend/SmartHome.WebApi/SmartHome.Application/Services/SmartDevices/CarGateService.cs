@@ -42,8 +42,7 @@ namespace SmartHome.Application.Services.SmartDevices
             carGate.Id = Guid.NewGuid();
             carGate.Connection = "property/" + carGate.PropertyId + "/device/" + carGate.Id;
             await _carGateRepository.Add(carGate);
-            _mqttClientService.PublishMessageAsync("property/" + carGate.PropertyId.ToString() + "/create", carGate.Id.ToString() + "," + "CarGate").Wait();
-            Thread.Sleep(1000);
+            _mqttClientService.PublishMessageAsync("property/" + carGate.PropertyId.ToString() + "/create", carGate.Id.ToString() + "," + "CarGate");
             await this.Connect(carGate.Id);
         }
 

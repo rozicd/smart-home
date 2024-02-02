@@ -42,8 +42,7 @@ namespace SmartHome.Application.Services.SmartDevices
             lamp.Id = Guid.NewGuid();
             lamp.Connection = "property/" + lamp.PropertyId + "/device/" + lamp.Id;
             await _lampRepository.Add(lamp);
-            _mqttClientService.PublishMessageAsync("property/" + lamp.PropertyId.ToString() + "/create", lamp.Id.ToString() + "," + "Lamp").Wait();
-            Thread.Sleep(1000);
+            _mqttClientService.PublishMessageAsync("property/" + lamp.PropertyId.ToString() + "/create", lamp.Id.ToString() + "," + "Lamp");
             await this.Connect(lamp.Id);
         }
 

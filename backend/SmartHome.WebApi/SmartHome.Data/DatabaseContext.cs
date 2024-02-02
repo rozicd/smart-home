@@ -48,17 +48,15 @@ namespace SmartHome.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<CountryEntity>()
-                .HasMany(c => c.Cities)
-                .WithOne(city => city.Country)
-                .HasForeignKey(city => city.CountryId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<PropertyEntity>()
+                            .HasOne(c => c.City)
+                            .WithMany()
+                            .HasForeignKey(c => c.CityId);
 
             modelBuilder.Entity<CityEntity>()
-                .HasMany(city => city.Properties)
-                .WithOne(property => property.City)
-                .HasForeignKey(property => property.CityId)
-                .OnDelete(DeleteBehavior.Cascade);
+                             .HasOne(c => c.Country)
+                             .WithMany()
+                             .HasForeignKey(c => c.CountryId);
 
             SeedCountriesAndCities(modelBuilder);
            

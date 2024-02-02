@@ -51,15 +51,23 @@ namespace SmartHome.Application.HostedServices
                 };
 
                 var properties = propertiesService.GetPropertiesByStatus(Domain.Models.PropertyStatus.Approved, pagination).Result.Items;
+                mqttClientService.ConnectAsync().Wait();
 
                 foreach (var property in properties)
                 {
 
-                    mqttClientService.ConnectAsync().Wait();
-                    mqttClientService.PublishMessageAsync("property/create", property.Id.ToString()).Wait();
+                    mqttClientService.PublishMessageAsync("property/create", property.Id.ToString());
                     propertiesService.ListenOnCharge(property);
-                    var devices = devicesService.GetAllFromProperty(pagination, property.Id).Result.Items;
-                    Thread.Sleep(2000);
+
+                }
+                Thread.Sleep(2000);
+
+                foreach (var property in properties)
+                {
+
+
+                    var devices = devicesService.GetAllFromPropertyNoPage(property.Id).Result;
+
 
                     foreach (var device in devices)
                     {
@@ -68,12 +76,12 @@ namespace SmartHome.Application.HostedServices
                         Console.WriteLine(device.Name);
                         Console.WriteLine(device.Connection);
 
-                        mqttClientService.ConnectAsync().Wait();
-                        mqttClientService.PublishMessageAsync("property/" + property.Id.ToString() + "/create", device.Id.ToString() + "," + device.Type).Wait();
+                        mqttClientService.PublishMessageAsync("property/" + property.Id.ToString() + "/create", device.Id.ToString() + "," + device.Type);
 
                         ISmartDeviceActionsService smartDeviceActionService = smartDeviceServiceFactory.GetServiceAsync(device.Id).Result;
-                        smartDeviceActionService.Connect(device.Id).Wait();
-                        Thread.Sleep(100);
+
+                        smartDeviceActionService.Connect(device.Id);
+
                     }
 
 

@@ -5,7 +5,7 @@ const API_BASE_URL = "http://localhost:8080";
 const getPropertiesByUserId = async (userId, pagination) => {
   try {
     const response = await axios.get(
-      `${API_BASE_URL}/properties/user/${userId}`,
+      `${API_BASE_URL}/properties/user`,
       {
         params: {
           PageNumber: pagination.pageNumber,

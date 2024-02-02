@@ -12,7 +12,7 @@ influx_org = "organization"
 influx_bucket = "bucket"
 
 # Lamp ID (replace with your actual lamp ID)
-lamp_id = "a54e7a70-9a8a-4e8d-9fb9-d2941d94b7f0"
+lamp_id = "80e655a3-9312-4857-90bd-586fd5ab761c"
 
 # Connect to InfluxDB
 client = InfluxDBClient(url=influx_url, token=influx_token, org=influx_org)

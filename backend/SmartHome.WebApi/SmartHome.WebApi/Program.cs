@@ -74,6 +74,7 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
     var token = "J7ecaapfL8hlLF7HpviZPUEA1ZbjJqHwf1ZIgiQaUKWfH_GNpbzMDimjOJMhUeSPOFw2iTkdGTQum9ni42VZ5g==";
 
 
+
     var bucket = "bucket";
     var organization = "organization";
 
@@ -170,7 +171,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
 
     var context = services.GetRequiredService<DatabaseContext>();
-    if (context.Database.GetPendingMigrations().Any())
+    if ((await context.Database.GetPendingMigrationsAsync()).Any())
     {
         await context.Database.MigrateAsync();
     }

@@ -17,5 +17,7 @@ namespace SmartHome.Domain.Repositories
         Task<User> addUserPermission(Guid id, string email);
         Task<User> removeUserPermission(Guid id, string email);
         Task<SmartDevice> getById(Guid id);
+
+        Task<List<SmartDevice>> GetAllFromPropertyNoPage(Guid propertyId);
     }
 }
