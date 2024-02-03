@@ -38,7 +38,8 @@ namespace SmartHome.Application.Services
 
         public async Task AddProperty(Property property)
         {
-         
+            //var redisRepository = RedisRepository<PaginationReturnObject<Property>>.Instance;
+            //redisRepository.DeleteAllUserProperty(property.UserId.ToString());
             await _propertyRepository.Add(property);
         }
 

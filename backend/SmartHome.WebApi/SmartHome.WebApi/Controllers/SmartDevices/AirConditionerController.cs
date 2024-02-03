@@ -117,6 +117,8 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             }
             return Ok(influxData);
         }
+
+      
     }
 
 }

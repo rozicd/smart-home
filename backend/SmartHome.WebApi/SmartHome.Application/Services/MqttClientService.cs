@@ -27,6 +27,7 @@ namespace SmartHome.Application.Services
                 .Build();
             await _mqttClient.ConnectAsync(mqttOptions);
         }
+        
 
       
 
