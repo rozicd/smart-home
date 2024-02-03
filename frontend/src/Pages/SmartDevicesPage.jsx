@@ -179,8 +179,10 @@ const SmartDevicesPage = ({}) => {
       setAddedModal(true);
     } catch (error) {
       if (error.response) {
+        if (error.response.data) {
         setErrorMessage(error.response.data);
         setErrorModal(true);
+        }
       }
     }
     setOpenModal(false);
@@ -189,7 +191,7 @@ const SmartDevicesPage = ({}) => {
   let wm = [
     {
       item: "BasicInput",
-      label: "Energy Spending",
+      label: "Energy Spending(Wh)",
       type: "number",
       itemValue: "energySpending",
     },
@@ -207,7 +209,7 @@ const SmartDevicesPage = ({}) => {
     },
     {
       item: "BasicInput",
-      label: "Energy Spending",
+      label: "Energy Spending(Wh)",
       type: "number",
       itemValue: "energySpending",
     },
@@ -215,7 +217,7 @@ const SmartDevicesPage = ({}) => {
   let ecs = [
     {
       item: "BasicInput",
-      label: "Energy Spending",
+      label: "Energy Spending(Wh)",
       type: "number",
       itemValue: "energySpending",
     },
@@ -224,7 +226,7 @@ const SmartDevicesPage = ({}) => {
   let cg = [
     {
       item: "BasicInput",
-      label: "Energy Spending",
+      label: "Energy Spending(Wh)",
       type: "number",
       itemValue: "energySpending",
     },
@@ -236,7 +238,7 @@ const SmartDevicesPage = ({}) => {
   let s = [
     {
       item: "BasicInput",
-      label: "Energy Spending",
+      label: "Energy Spending(Wh)",
       type: "number",
       itemValue: "energySpending",
     },
@@ -244,7 +246,7 @@ const SmartDevicesPage = ({}) => {
   let ac = [
     {
       item: "BasicInput",
-      label: "Energy Spending",
+      label: "Energy Spending(Wh)",
       type: "number",
       itemValue: "energySpending",
     },
@@ -276,7 +278,7 @@ const SmartDevicesPage = ({}) => {
     },
     {
       item: "BasicInput",
-      label: "Efficiency",
+      label: "Efficiency(Wh)",
       type: "number",
       itemValue: "efficiency",
     },
@@ -284,7 +286,7 @@ const SmartDevicesPage = ({}) => {
   let hb = [
     {
       item: "BasicInput",
-      label: "Battery Size",
+      label: "Battery Size(kWh)",
       type: "number",
       itemValue: "batterySize",
     },
@@ -292,7 +294,7 @@ const SmartDevicesPage = ({}) => {
   let cc = [
     {
       item: "BasicInput",
-      label: "Charging Power",
+      label: "Charging Power(kWh)",
       type: "number",
       itemValue: "chargingPower",
     },
@@ -439,12 +441,13 @@ const SmartDevicesPage = ({}) => {
             backgroundColor: "snow",
             display: "flex",
             alignItems: "center",
+            justifyContent: "center",
             flexDirection: "column",
           }}
-          style={{ minWidth: "70%", padding: "10%", alignItems: "center" }}
+          style={{ minWidth: "70%", padding: "10px", alignItems: "center" }}
         >
           <BasicSelect
-            style={{ width: "5vw" }}
+            style = {{flexWrap:"wrap", alignItems:"center"}}
             label={"Sensor Type"}
             collection={deviceTypes}
             valueParam={"id"}

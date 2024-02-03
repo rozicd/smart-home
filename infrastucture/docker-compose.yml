@@ -39,6 +39,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ../backend/SmartHome.WebApi/SmartHome.WebApi/wwwroot:/data
   redis:
     image: redis:latest
     container_name: redis_container

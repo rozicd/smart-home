@@ -14,7 +14,7 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 200,
     },
   },
 };
@@ -56,7 +56,7 @@ export default function MultipleSelect({onModeChange}) {
   
     return (
       <div>
-        <FormControl sx={{ m: 1, width: 300 }}>
+        <FormControl sx={{ m: 1, width: 200, marginTop : "20px" }}>
           <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
           <Select
             labelId="demo-multiple-checkbox-label"
