@@ -109,6 +109,11 @@ namespace SmartHome.Application.Services
             };
             return smartDevice;
         }
+        public async Task<float> GetDeviceLastValue(Guid id)
+        {
+           
+            return 0;
+        }
 
         public async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
         {
@@ -218,16 +223,14 @@ namespace SmartHome.Application.Services
         public async Task<User> addUserPermission(Guid id, string email)
         {
             User user = await _smartDeviceRepository.addUserPermission(id, email);
-            RedisRepository<PaginationReturnObject<Domain.Models.Property>> redis = new RedisRepository<PaginationReturnObject<Domain.Models.Property>>();
-            redis.DeleteAllUserProperty(user.Id.ToString());
+       
             return user;
         }
 
         public async Task<User> RemoveUserPermission(Guid id, string email)
         {
             User user = await _smartDeviceRepository.removeUserPermission(id, email);
-            RedisRepository<PaginationReturnObject<Domain.Models.Property>> redis = new RedisRepository<PaginationReturnObject<Domain.Models.Property>>();
-            redis.DeleteAllUserProperty(user.Id.ToString());
+          
             return user;
         }
 

@@ -50,7 +50,7 @@ builder.Services.AddScoped<IAirConditionerService, AirConditionerService>();
 builder.Services.AddScoped<IAirConditionerRepository, AirConditionerRepository>();
 builder.Services.AddScoped<ILampRepository, LampRepository>();
 builder.Services.AddScoped<ILampService, LampService>();
-builder.Services.AddScoped<IMqttClientService, MqttClientService>();
+builder.Services.AddSingleton<IMqttClientService, MqttClientService>();
 
 builder.Services.AddScoped<ICarGateRepository, CarGateRepository>();
 builder.Services.AddScoped<ICarGateService, CarGateService>();
@@ -71,7 +71,7 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
     var influxDbUrl = "http://localhost:8086";
 
 
-    var token = "ZqgHocXYE-wlr76ucjWaUpjF0qKVmbeWjGme9s-h5zzDdol4qTNCl9tbANULxmKdLKbv5D-SqNwkXHaCBH93Bw==";
+    var token = "VAc08rXCKhl2VBwkfDsD-zNVmOPfuW04gy0WNl8qqPQrZmEPNrzoHF8FulRTnIQ3agbhAwL0vGxYsXpGzKT8qQ==";
 
 
     var bucket = "bucket";
@@ -136,7 +136,7 @@ builder.Services.AddLogging(builder =>
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
+    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings_TestConnection"));
     options.EnableSensitiveDataLogging(false);
     options.LogTo(Console.WriteLine, LogLevel.None); 
 

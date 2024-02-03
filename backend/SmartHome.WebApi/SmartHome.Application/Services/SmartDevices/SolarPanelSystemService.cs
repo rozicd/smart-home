@@ -85,6 +85,8 @@ namespace SmartHome.Application.Services.SmartDevices
                         await _hubContext.Clients.All.SendAsync(device.Connection, powerPerMinute);
                         await SendPowerInfluxDataAsync(device.Id.ToString(), powerPerMinute);
 
+               
+
 
 
                     }
@@ -99,11 +101,13 @@ namespace SmartHome.Application.Services.SmartDevices
 
             return device;
         }
+        
         public async Task TurnOn(Guid lampId, LoggedUser user)
         {
             var sps = await _solarPanelSystemRepository.GetById(lampId);
             await _mqttClientService.PublishMessageAsync(sps.Connection + "/turnOn", $"on");
             await SendInfluxDataAsync(user, sps.Id.ToString(), "On");
+
 
         }
 
@@ -112,6 +116,7 @@ namespace SmartHome.Application.Services.SmartDevices
             var sps = await _solarPanelSystemRepository.GetById(lampId);
             await _mqttClientService.PublishMessageAsync(sps.Connection + "/turnOff", $"off");
             await SendInfluxDataAsync(user, sps.Id.ToString(), "Off");
+   
 
         }
         private async Task SendInfluxDataAsync(LoggedUser user,string id, string command)

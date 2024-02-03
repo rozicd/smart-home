@@ -11,19 +11,21 @@ namespace SmartHome.Application.Services
 {
     public class MqttClientService : IMqttClientService
     {
+        private IMqttClient _mqttClient;
 
 
-        public async Task<IMqttClient> ConnectAsync()
+        public async Task ConnectAsync()
         {
             var factory = new MqttFactory();
 
-            IMqttClient _mqttClient = factory.CreateMqttClient();
+            _mqttClient = factory.CreateMqttClient();
             var mqttOptions = new MqttClientOptionsBuilder()
                 .WithClientId(Guid.NewGuid().ToString())
                 .WithTcpServer("localhost", 8883)
+                .WithKeepAlivePeriod(TimeSpan.FromMinutes(30)) // Set a longer keep-alive interval
+
                 .Build();
             await _mqttClient.ConnectAsync(mqttOptions);
-            return _mqttClient;
         }
 
       
@@ -31,46 +33,40 @@ namespace SmartHome.Application.Services
         public async Task<MqttClientPublishResult> PublishMessageAsync(string topic, string payload)
         {
 
-            IMqttClient client = await this.ConnectAsync();
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(payload)
                 .WithRetainFlag(true)
                 .Build();
-            MqttClientPublishResult res = await client.PublishAsync(message);
-            await client.DisconnectAsync();
+            MqttClientPublishResult res = await _mqttClient.PublishAsync(message);
             return res;
         }
         public async Task<MqttClientPublishResult> PublishMessageAsyncNoRetain(string topic, string payload)
         {
 
 
-            IMqttClient client = await this.ConnectAsync();
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(payload)
                 .WithRetainFlag(false)
                 .Build();
-            MqttClientPublishResult res = await client.PublishAsync(message);
-            await client.DisconnectAsync();
+            MqttClientPublishResult res = await _mqttClient.PublishAsync(message);
             return res;
         }
 
         public async Task<IMqttClient> SubscribeAsync(string topic)
         {
 
-            IMqttClient client = await this.ConnectAsync();
 
-            await client.SubscribeAsync(topic);
+            await _mqttClient.SubscribeAsync(topic);
 
-            return client;
+            return _mqttClient;
         }
         public async Task UnubscribeAsync(string topic)
         {
-            IMqttClient client = await this.ConnectAsync();
 
 
-            await client.UnsubscribeAsync(topic);
+            await _mqttClient.UnsubscribeAsync(topic);
            
         }
 
