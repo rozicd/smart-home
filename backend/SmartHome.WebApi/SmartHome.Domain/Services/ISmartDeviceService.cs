@@ -17,6 +17,8 @@ namespace SmartHome.Domain.Services
         Task<SmartDevice> GetDeviceById(Guid id);
         Task<List<SmartDevice>> GetAllFromPropertyNoPage(Guid propertyId);
 
+        Task<float> GetDeviceLastValue(Guid id);
+
 
 
 
