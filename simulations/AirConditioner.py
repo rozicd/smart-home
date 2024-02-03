@@ -42,7 +42,7 @@ class AirConditioner(SmartDevice):
         if msg.topic == self.name + "/info":
             ac_info = msg.payload.decode("utf-8")
             current_temperature, energy_spending = ac_info.split(',')
-            self.energy_spending = float(energy_spending)/1000
+            self.energy_spending = float(energy_spending)/60000
             print(self.topic_ac)
             self.start_send_ac_tick_thread()
         elif msg.topic == self.name + "/turnOn":
