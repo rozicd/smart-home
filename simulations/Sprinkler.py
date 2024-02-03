@@ -32,7 +32,7 @@ class Sprinkler(SmartDevice):
             print(command)
             sprinkler_info = command.split(',')
             self.power = sprinkler_info[0] == "True"
-            self.energy_spending = float(sprinkler_info[1])/1000
+            self.energy_spending = float(sprinkler_info[1])/60000
             if sprinkler_info[2] != "":
                 self.schedules = self.parse_schedules(sprinkler_info[2:])
             else:

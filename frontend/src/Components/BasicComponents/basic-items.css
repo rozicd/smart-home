@@ -3,34 +3,14 @@
 }
 .form-item
 {
-    margin: 8px;
     margin-top: 20px !important;
-    width: 20vw;
 }
 
 .map-container {
     height: 400px;
     width: 400px;
 }
-.basic-form
-{
-    background-color: snow;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center; 
 
-}
-.basic-form h2 {
-    margin: 0;
-    text-align: center;
-    font-weight: normal; 
-    border-bottom: 1px solid gray; 
-    width: 100%;
-    color: darkslategrey;
-}
 
 .header{
     width: 100%;

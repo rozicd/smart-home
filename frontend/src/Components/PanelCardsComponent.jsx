@@ -45,9 +45,7 @@ const PanelCardsComponent = ({ deviceInfo }) => {
       });
   };
 
-  useEffect(() => {
-    getLastData();
-  }, []);
+
 
   const handleSwitchChange = async () => {
     const newPowerState = panelStatus ? 0 : 1;

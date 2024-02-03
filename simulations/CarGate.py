@@ -35,7 +35,7 @@ class CarGate(SmartDevice):
             gate_info = command.split(',')
             self.mode = gate_info[0]
             self.gate_status = "CLOSED"
-            self.energy_spending = float(gate_info[1])/1000
+            self.energy_spending = float(gate_info[1])/60000
             self.allowed_vehicles = set(gate_info[2:])
             if len(self.allowed_vehicles):
                 self.allowed_vehicles = set()

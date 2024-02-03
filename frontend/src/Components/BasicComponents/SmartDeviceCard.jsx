@@ -81,7 +81,7 @@ const SmartDeviceCard = ({ device }) => {
         }}
         component="img"
         alt="Property"
-        style={{ objectFit: "contain",width: "260px", height: "160px", border: "1px solid #f1f2f3" }}
+        style={{ objectFit: "contain",width: "200px", height: "160px", border: "1px solid #f1f2f3", display: "flex"}}
         image={imageData}
       />
       <Box style={{ display: "flex", flexDirection: "column", flex: 1 }}>
