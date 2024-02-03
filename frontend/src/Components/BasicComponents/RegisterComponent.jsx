@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { register } from "../Services/UserService";
 import BasicButton from "./BasicButton";
 import { useNavigate } from "react-router-dom";
+import InfoDialog from "./InfoDialog";
 
 
 const registerTemplate = 
@@ -42,8 +43,16 @@ const registerTemplate =
 const RegisterComponent = ({headerName = "REGISTER"}) => {
     const navigate = useNavigate();
     const [profilePicture, setProfilePicture] = useState({});
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState("");
+    const [dialogContent, setDialogContent] = useState("");
+
     const [formState, setFormState] = useState({});
 
+      const handleCloseDialog = () => {
+        setDialogOpen(false);
+        navigate("/")
+      };
 
       const handleProfilePictureChange = (picture) => {
         setProfilePicture(picture);
@@ -64,12 +73,13 @@ const RegisterComponent = ({headerName = "REGISTER"}) => {
         try{
           const response = await register(userDTO)
           if(response){
-            window.alert("Registration is successful!")
-            navigate("/")
+            setDialogContent("Registration is successful!")
+            setDialogOpen(true)
           }
         }catch(error){
           console.log(error)
-          window.alert(error.response.data.title)
+          setDialogContent("Registration is successful!")
+          setDialogOpen(true)
         }
         
       }
@@ -88,6 +98,7 @@ const RegisterComponent = ({headerName = "REGISTER"}) => {
             <BasicButton text = {'Go back'} variant={'text'}></BasicButton>
           </Link>
         </div>
+        <InfoDialog open={dialogOpen} onClose={handleCloseDialog} content={dialogContent}></InfoDialog>
       </div>
     );
   };

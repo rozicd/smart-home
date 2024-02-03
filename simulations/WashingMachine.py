@@ -57,26 +57,32 @@ class WashingMachine(SmartDevice):
             self.check_scheduled_modes_thread = threading.Thread(target=self.check_for_scheduled_mode)
             self.check_scheduled_modes_thread.start()
 
+    from datetime import datetime, timedelta
+
     def check_for_scheduled_mode(self):
         while self.is_wm_thread_running:
-            current_time = datetime.now().time()
-            current_time = current_time.replace(microsecond=0)
-            new_current_time = datetime.now().time().replace(microsecond=0)
+            current_datetime = datetime.now().replace(microsecond=0)
+            new_current_datetime = datetime.now().replace(microsecond=0)
+
             for scheduled_mode in self.sch_modes:
                 start_time_str = scheduled_mode["DateTime"]
-                start_time = datetime.strptime(start_time_str, "%Y-%m-%dT%H:%M:%S").time()
-                end_time = start_time.replace(second=10, microsecond=0)
-                if start_time == current_time:
+                start_time = datetime.strptime(start_time_str, "%Y-%m-%dT%H:%M:%S")
+                end_time = start_time + timedelta(seconds=10)
+
+                if start_time == current_datetime:
+                    print("usao")
                     self.powerState = 1
                     self.mode = scheduled_mode["Mode"]
-                if end_time == new_current_time:
+
+                if end_time == new_current_datetime:
                     self.powerState = 0
                     self.mode = ""
+
     def send_wm_info(self):
         while self.is_wm_thread_running:
             print("publishing on topic: ", self.wm_topic)
             self.client.publish(self.wm_topic, f"{self.mode}, {self.powerState}")
-            time.sleep(10)
+            time.sleep(5)
 
     def on_connect(self, client, userdata, flags, rc):
         super().on_connect(client, userdata, flags, rc)

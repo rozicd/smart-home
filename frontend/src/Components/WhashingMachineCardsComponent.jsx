@@ -98,7 +98,6 @@ const WashingMachineCardsComponent = ({deviceInfo}) => {
           await WMHubConnection.start();
         }
         WMHubConnection.on(deviceInfo.connection, (payloadObject) =>{
-            console.log(payloadObject)
           setPowerState(payloadObject.powerState)
           setCurrentMode(payloadObject.mode)
         });
