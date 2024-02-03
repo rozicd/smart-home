@@ -7,6 +7,7 @@ using SmartHome.Domain.Services;
 using SmartHome.Application.Services.SmartDevices;
 using SmartHome.DataTransferObjects.Responses;
 using InfluxDB.Client.Core.Flux.Domain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -26,6 +27,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddHomeBattery([FromForm] CreateHomeBatteryDTO homeBattery)
         {
             HomeBattery response = _mapper.Map<HomeBattery>(homeBattery);
@@ -38,6 +40,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok();
         }
         [HttpGet("{batteryId}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetSystemById(Guid batteryId)
         {
             HomeBattery battery = await _homeBatteryService.GetById(batteryId);
@@ -47,6 +50,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok(batteryDTO);
         }
         [HttpPost("power")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetPowerInLastHour([FromBody] DeviceHistoryRequestDTO bh)
         {
             List<FluxTable> fluxTables = await _homeBatteryService.GetInfluxDataAsync(bh.Id.ToString(),bh.Hours);
@@ -72,6 +76,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok(influxData);
         }
         [HttpPost("power/date")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetPowerDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
         {
             TimeSpan dateRange = bh.EndDate - bh.StartDate;

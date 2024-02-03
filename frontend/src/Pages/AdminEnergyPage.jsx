@@ -39,7 +39,7 @@ const AdminEnergyPage = ({ user }) => {
 
   const fetchProperties = () => {
     axios
-      .get(`${API_BASE_URL}/properties`, { params: pagination })
+      .get(`${API_BASE_URL}/properties`, { params: pagination,withCredentials: true })
 
       .then((response) => {
         setProperties(response.data.items);
