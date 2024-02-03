@@ -10,11 +10,17 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogTitle,
+  TextField
 } from "@mui/material";
 import { WMHubConnection } from "./Sockets/SocketService";
-import { turnWMOff, turnWMOn, changeWMMode, getWMActions } from "./Services/WashingMachineService";
+import { turnWMOff, turnWMOn, changeWMMode, getWMActions, addWMScheduledMode } from "./Services/WashingMachineService";
 import WMHistoryComponent from "./WMHistoryComponent";
+import { set } from "lodash";
 const WashingMachineCardsComponent = ({deviceInfo}) => {
   const [powerOn, setPowerOn] = useState(false);
   const [powerState, setPowerState] = useState(0);
@@ -24,6 +30,9 @@ const WashingMachineCardsComponent = ({deviceInfo}) => {
   const [toDate,setToDate] = useState(null);
   const [fromDate,setFromDate] = useState(null);
   const [WMhistoryData, setWMHistoryData] = useState([])
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [scheduleDateTime, setScheduleDateTime] = useState(new Date());
+
 
   const handleSwitchChange = async() => {
     if(powerState === 0){
@@ -42,6 +51,29 @@ const WashingMachineCardsComponent = ({deviceInfo}) => {
         }
         
     }
+  };
+
+  const handleAddSchedule = async () =>{
+    console.log("time:", scheduleDateTime);
+    console.log("mode:", selectedMode);
+    try{
+      const response = await addWMScheduledMode(deviceInfo.id, scheduleDateTime, selectedMode);
+      console.log(response);
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+  
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+  
+  const handleDateTimeChange = (event) => {
+    setScheduleDateTime(event.target.value);
   };
 
   const handleModeChange = (event) => {
@@ -168,10 +200,37 @@ const WashingMachineCardsComponent = ({deviceInfo}) => {
             <Button variant="contained" color="primary" onClick={handleSubmit} disabled={powerState === 0}>
               Submit
             </Button>
+            <Button variant="text" color="primary" onClick={handleDialogOpen} disabled={selectedMode === ""}>
+              Add Schedule
+            </Button>
           </CardContent>
         </Card>
       </Grid>
       <WMHistoryComponent wmHistory={WMhistoryData} setStartDate={setFromDate} setEndDate={setToDate}></WMHistoryComponent>
+      <Dialog open={isDialogOpen} onClose={handleDialogClose}>
+      <DialogTitle>Add Schedule</DialogTitle>
+      <DialogContent>
+        <TextField
+          id="datetime"
+          label="Schedule Datetime"
+          type="datetime-local"
+          value={scheduleDateTime}
+          onChange={handleDateTimeChange}
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleDialogClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleAddSchedule} color="primary">
+          Add Schedule
+        </Button>
+      </DialogActions>
+    </Dialog>
     </Grid>
   );
 };

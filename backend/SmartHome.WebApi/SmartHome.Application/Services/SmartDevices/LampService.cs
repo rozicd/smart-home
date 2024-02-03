@@ -156,29 +156,29 @@ namespace SmartHome.Application.Services.SmartDevices
         public async Task<List<FluxTable>> GetInfluxDataAsync(string id, string h)
         {
             string ag = "5s";
-            string fn = "last";
+            string fn = "median";
             if (h == "1h")
             {
                 ag = "5m";
-                fn = "mean";
+                fn = "median";
 
             }
             if (h == "6h")
             {
                 ag = "30m";
-                fn = "mean";
+                fn = "median";
 
             }
             if (h == "12h" || h == "24h")
 {
                 ag = "1h";
-                fn = "mean";
+                fn = "median";
 
             }
             if (h == "7d" || h == "30d")
 {
                 ag = "10h";
-                fn = "mean";
+                fn = "median";
 
             }
             string query = $"from(bucket: \"bucket\")" +
@@ -201,7 +201,7 @@ namespace SmartHome.Application.Services.SmartDevices
             string query = $"from(bucket: \"bucket\")" +
                            $"|> range(start: {start}, stop: {end})" +
                            $"|> filter(fn: (r) => r._measurement == \"{"Lamp data"}\" and r.Id == \"{id}\")" +
-                           $"|> aggregateWindow(every: 1h,fn:mean, createEmpty: false)"+
+                           $"|> aggregateWindow(every: 1h,fn:median, createEmpty: false)" +
                            $"|> group(columns: [\"_time\"])";
 
             var result = await _influxClientService.GetInfluxData(query);

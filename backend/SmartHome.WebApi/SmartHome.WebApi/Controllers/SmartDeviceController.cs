@@ -165,6 +165,17 @@ namespace SmartHome.WebApi.Controllers
             }
             return Ok(permissionsResponseDTO);
         }
+        [HttpGet("lastdata/{id}")]
+        public async Task<IActionResult> GetDeviceLastData(Guid id)
+        {
+            float value = await _smartDeviceService.GetDeviceLastValue(id);
+            if (value == null) 
+            {
+                return NotFound("No data");
+            }
+
+            return Ok(value);
+        }
 
     }
 }

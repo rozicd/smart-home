@@ -83,7 +83,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         {
             WMScheduledMode wMScheduledMode = _mapper.Map<WMScheduledMode>(createWMScheduledModeRequestDTO);
             WashingMachine wm = await _washingMachineService.AddScheduledMode(id, wMScheduledMode, _user);
-            return Ok(_mapper.Map<WashingMachineModesResponseDTO>(wm));
+            return Ok(_mapper.Map<WashingMachineResponseDTO>(wm));
         }
 
 

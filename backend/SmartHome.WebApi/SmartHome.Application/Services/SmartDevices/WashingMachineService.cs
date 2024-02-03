@@ -151,8 +151,8 @@ namespace SmartHome.Application.Services.SmartDevices
         {
             WashingMachine wm = await _washingMachineRepository.AddScheduledMode(id, wmScheduledMode);
             var serializedScheduledModes = JsonConvert.SerializeObject(wm.ScheduledModes);
-            await _mqttClientService.PublishMessageAsync(wm.Connection = "/schedule", $"{serializedScheduledModes}");
-            await SendInfluxDataAsync(wm, wmScheduledMode + "(Scheduled)", loggedUser);
+            await _mqttClientService.PublishMessageAsync(wm.Connection + "/schedule", $"{serializedScheduledModes}");
+            await SendInfluxDataAsync(wm, wmScheduledMode.Mode + "(Scheduled)", loggedUser);
             return wm;
         }
     }

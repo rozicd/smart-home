@@ -91,11 +91,12 @@ namespace SmartHome.Application.Services.SmartDevices
                 Console.WriteLine(plugTopic);
 
 
-                await _mqttClientService.SubscribeAsync(plugTopic);
+                client = await _mqttClientService.SubscribeAsync(plugTopic);
 
                 client.ApplicationMessageReceivedAsync += async e =>
                 {
                     int index = i;
+                    Console.WriteLine("XHAAAA" + i);
                     string receivedTopic = e.ApplicationMessage.Topic;
                     if (receivedTopic == plugTopic)
                     {

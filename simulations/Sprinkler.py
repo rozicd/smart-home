@@ -28,6 +28,8 @@ class Sprinkler(SmartDevice):
         command = msg.payload.decode('utf-8')
 
         if msg.topic == self.name + "/info":
+            print("SPRINKLER INFOOOO")
+            print(command)
             sprinkler_info = command.split(',')
             self.power = sprinkler_info[0] == "True"
             self.energy_spending = float(sprinkler_info[1])/1000
@@ -41,6 +43,7 @@ class Sprinkler(SmartDevice):
             print(f"Schedules: {self.schedules}")
 
             if self.sprinkler_thread is None:
+                print("SPRINKLER")
                 self.sprinkler_thread = threading.Thread(target=self.run_sprinkler)
                 self.sprinkler_thread.daemon = True
                 self.sprinkler_thread.start()
@@ -48,6 +51,7 @@ class Sprinkler(SmartDevice):
                 self.send_lamp_energy_thread.start()
 
             if self.schedule_thread is None:
+                print("SCHEDULE")
                 self.schedule_thread = threading.Thread(target=self.run_schedule)
                 self.schedule_thread.daemon = True
                 self.schedule_thread.start()

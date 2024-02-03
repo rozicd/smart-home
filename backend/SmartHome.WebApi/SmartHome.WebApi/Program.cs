@@ -50,7 +50,7 @@ builder.Services.AddScoped<IAirConditionerService, AirConditionerService>();
 builder.Services.AddScoped<IAirConditionerRepository, AirConditionerRepository>();
 builder.Services.AddScoped<ILampRepository, LampRepository>();
 builder.Services.AddScoped<ILampService, LampService>();
-builder.Services.AddScoped<IMqttClientService, MqttClientService>();
+builder.Services.AddSingleton<IMqttClientService, MqttClientService>();
 
 builder.Services.AddScoped<ICarGateRepository, CarGateRepository>();
 builder.Services.AddScoped<ICarGateService, CarGateService>();
@@ -69,7 +69,6 @@ builder.Services.AddScoped<ICarChargerService, CarChargerService>();
 builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
-
 
     var token = "KxlFDU7Y3bqHuhO_w0xdmbXH8lhnDHwP144_TVkDKFGeNxKL1bBSeBpm1Gg9o_Lp1ESB1nH12TiXgCxQsnD-yw==";
 

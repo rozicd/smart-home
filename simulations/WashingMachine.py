@@ -18,8 +18,10 @@ class WashingMachine(SmartDevice):
         self.energy_spending = 0
         self.send_wm_tick_thread = None
         self.is_wm_thread_running = False
+        self.check_scheduled_modes_thread = None
         self.mode = ""
         self.wm_topic = name + "/wm"
+        self.sch_modes = []
 
     def on_message(self, client, userdata, message):
         print(message.topic)
@@ -42,13 +44,34 @@ class WashingMachine(SmartDevice):
             mode = message.payload.decode("utf-8")
             print(mode)
             self.mode = mode
+        elif message.topic == self.name + "/schedule":
+            sch_modes = message.payload.decode("utf-8")
+            print(sch_modes)
+            self.sch_modes = json.loads(sch_modes)
 
     def start_sent_wm_tick_thread(self):
         if not self.is_wm_thread_running:
             self.is_wm_thread_running = True
             self.send_wm_tick_thread = threading.Thread(target=self.send_wm_info)
             self.send_wm_tick_thread.start()
+            self.check_scheduled_modes_thread = threading.Thread(target=self.check_for_scheduled_mode)
+            self.check_scheduled_modes_thread.start()
 
+    def check_for_scheduled_mode(self):
+        while self.is_wm_thread_running:
+            current_time = datetime.now().time()
+            current_time = current_time.replace(microsecond=0)
+            new_current_time = datetime.now().time().replace(microsecond=0)
+            for scheduled_mode in self.sch_modes:
+                start_time_str = scheduled_mode["DateTime"]
+                start_time = datetime.strptime(start_time_str, "%Y-%m-%dT%H:%M:%S").time()
+                end_time = start_time.replace(second=10, microsecond=0)
+                if start_time == current_time:
+                    self.powerState = 1
+                    self.mode = scheduled_mode["Mode"]
+                if end_time == new_current_time:
+                    self.powerState = 0
+                    self.mode = ""
     def send_wm_info(self):
         while self.is_wm_thread_running:
             print("publishing on topic: ", self.wm_topic)
@@ -61,3 +84,4 @@ class WashingMachine(SmartDevice):
         self.client.subscribe(self.name + "/turnOn")
         self.client.subscribe(self.name + "/turnOff")
         self.client.subscribe(self.name + "/modeChange")
+        self.client.subscribe(self.name + "/schedule")

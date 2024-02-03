@@ -217,7 +217,7 @@ namespace SmartHome.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLazyLoadingProxies();
-            optionsBuilder.EnableSensitiveDataLogging(false);
+            optionsBuilder.EnableSensitiveDataLogging(true);
             optionsBuilder.UseLoggerFactory(null);
 
 
