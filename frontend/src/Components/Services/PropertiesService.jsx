@@ -25,7 +25,7 @@ const getPropertiesByUserId = async (userId, pagination) => {
 
 const getProperties = async (pagination) => {
   axios
-    .get(`${API_BASE_URL}/properties`)
+    .get(`${API_BASE_URL}/properties`,{withCredentials: true,})
     .then((response) => {
       console.log(response.data)
       return response.data

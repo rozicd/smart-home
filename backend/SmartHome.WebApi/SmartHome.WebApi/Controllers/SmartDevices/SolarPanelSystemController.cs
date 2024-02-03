@@ -6,6 +6,7 @@ using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.Application.Services.SmartDevices;
 using SmartHome.DataTransferObjects.Responses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -25,6 +26,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddSolarPanelSystem([FromForm] CreateSolarPanelSystemDTO solarPanelSystem)
         {
             SolarPanelSystem response = _mapper.Map<SolarPanelSystem>(solarPanelSystem);
@@ -37,6 +39,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok();
         }
         [HttpGet("{systemId}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetSystemById(Guid systemId)
         {
             SolarPanelSystem system = await _solarPanelSystemService.GetById(systemId);
@@ -46,7 +49,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok(systemDTO);
         }
         [HttpPost("turnOn")]
-
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOn([FromBody] TurnOnOffDTO turnOnDTO)
         {
             await _solarPanelSystemService.TurnOn(turnOnDTO.LampId,_user);
@@ -54,12 +57,14 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("turnOff")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOff([FromBody] TurnOnOffDTO turnOffDTO)
         {
             await _solarPanelSystemService.TurnOff(turnOffDTO.LampId,_user);
             return Ok();
         }
         [HttpGet("{id}/history")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetCarActions(Guid id, DateTime? startDate = null, DateTime? endDate = null)
         {
             try

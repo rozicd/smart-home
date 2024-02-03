@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using SmartHome.Application.Services.SmartDevices;
 using SmartHome.DataTransferObjects.Responses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -29,6 +30,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddSprinkler([FromForm] CreateSprinklerDTO sprinkler)
         {
             Sprinkler response = _mapper.Map<Sprinkler>(sprinkler);
@@ -41,6 +43,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok();
         }
         [HttpGet("{sprinklerId}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetSprinklerById(Guid sprinklerId)
         {
             Sprinkler sprinkler = await _sprinklerService.GetById(sprinklerId);
@@ -80,6 +83,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return userEmail;
         }
         [HttpPost("{id}/turn-on")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOnSprinkler(Guid id)
         {
             await _sprinklerService.TurnOn(id, GetUserEmailFromCookie());
@@ -87,6 +91,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("{id}/turn-off")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOffSprinkler(Guid id)
         {
             await _sprinklerService.TurnOff(id, GetUserEmailFromCookie());
@@ -94,6 +99,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("{id}/add-schedule")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddSprinklerSchedule(Guid id, [FromBody] SprinklerScheduleDTO schedule)
         {
             var sprinklerResponse = _mapper.Map<SprinklerScheduleResponseDTO>(await _sprinklerService.AddSchedule(id, _mapper.Map<SprinklerSchedule>(schedule)));
@@ -101,6 +107,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("{id}/remove-schedule")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> RemoveSprinklerSchedule(Guid id, [FromBody] RemoveSprinklerScheduleDTO scheduleId)
         {
             await _sprinklerService.RemoveSchedule(id, scheduleId.ScheduleId);
@@ -108,6 +115,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("{sprinklerId}/history")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetSprinklerActions(Guid sprinklerId, DateTime? startDate = null, DateTime? endDate = null)
         {
             try

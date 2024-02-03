@@ -6,6 +6,7 @@ using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.Application.Services.SmartDevices;
 using SmartHome.DataTransferObjects.Responses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -25,6 +26,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddCarCharger([FromForm] CreateCarChargerDTO carCharger)
         {
             CarCharger response = _mapper.Map<CarCharger>(carCharger);
@@ -37,6 +39,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok();
         }
         [HttpPost("treshold")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> ChangeTreshold([FromBody] ChangeCarTresholdDTO cct)
         {
            
@@ -46,6 +49,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok();
         }
         [HttpGet("{chargerId}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetChargerById(Guid chargerId)
         {
             CarCharger charger = await _carChargerService.GetById(chargerId);
@@ -55,6 +59,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok(chargerDTO);
         }
         [HttpGet("{id}/history")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetCarActions(string id, DateTime? startDate = null, DateTime? endDate = null)
         {
             try

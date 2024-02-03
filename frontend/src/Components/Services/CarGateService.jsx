@@ -13,17 +13,17 @@ export const closeGate = async (carGateId) => {
 };
 
 export const changeMode = async (carGateId, newMode) => {
-  await axios.put(`${API_BASE_URL}/${carGateId}/changemode`, { NewMode: newMode });
+  await axios.put(`${API_BASE_URL}/${carGateId}/changemode`, { NewMode: newMode },{withCredentials: true,});
 };
 
 export const addLicensePlate = async (carGateId, licensePlate) => {
-  await axios.post(`${API_BASE_URL}/${carGateId}/addlicenseplate`, { LicensePlate: licensePlate });
+  await axios.post(`${API_BASE_URL}/${carGateId}/addlicenseplate`, { LicensePlate: licensePlate },{withCredentials: true,});
 };
 
 export const removeLicensePlate = async (carGateId, licensePlate) => {
-  await axios.delete(`${API_BASE_URL}/${carGateId}/removelicenseplate`, {
+  await axios.put(`${API_BASE_URL}/${carGateId}/removelicenseplate`, {
     data: { LicensePlate: licensePlate }
-  });
+  },{withCredentials: true,});
 };
 
 export const getCarActions = async (id, startDate, endDate) => {

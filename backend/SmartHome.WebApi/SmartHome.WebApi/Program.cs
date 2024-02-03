@@ -71,15 +71,14 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
     var influxDbUrl = "http://localhost:8086";
 
 
-    var token = "VAc08rXCKhl2VBwkfDsD-zNVmOPfuW04gy0WNl8qqPQrZmEPNrzoHF8FulRTnIQ3agbhAwL0vGxYsXpGzKT8qQ==";
+    var token = Environment.GetEnvironmentVariable("INFLUX_TOKEN");
 
-
+    
     var bucket = "bucket";
     var organization = "organization";
 
     return new InfluxClientService(influxDbUrl, token, bucket, organization);
 });
-
 
 
 builder.Services.AddCors(options =>
@@ -136,7 +135,7 @@ builder.Services.AddLogging(builder =>
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings_TestConnection"));
+    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
     options.EnableSensitiveDataLogging(false);
     options.LogTo(Console.WriteLine, LogLevel.None); 
 

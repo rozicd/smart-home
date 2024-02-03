@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InfluxDB.Client.Core.Flux.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Application.Services;
 using SmartHome.Application.Services.SmartDevices;
@@ -30,6 +31,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddECS([FromForm] CreateSmartDeviceRequestDTO esc)
         {
 
@@ -47,6 +49,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("{environmentalConditionsSensorId}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetEcsById(Guid environmentalConditionsSensorId)
         {
             EnvironmentalConditionsSensor sensor = await _ecsService.GetById(environmentalConditionsSensorId);
@@ -56,6 +59,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok(sensorDTO);
         }
         [HttpGet("data")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetEscData([FromQuery] EcsInfluxRangeRequestDTO ecsInfluxRangeRequestDTO)
         {
             List<ESCData> data = await _influxClientService.GetESCDataAsync(ecsInfluxRangeRequestDTO.Name, ecsInfluxRangeRequestDTO.start, ecsInfluxRangeRequestDTO.end);
