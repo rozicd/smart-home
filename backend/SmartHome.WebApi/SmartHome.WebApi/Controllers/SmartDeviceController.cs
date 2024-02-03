@@ -12,7 +12,7 @@ using SmartHome.Domain.Services;
 namespace SmartHome.WebApi.Controllers
 {
     [ApiController]
-    [Route("smart-device")]
+    [Route("api/smart-device")]
     public class SmartDeviceController : BaseController
     {
         private readonly ISmartDeviceServiceFactory _smartDeviceServiceFactory;

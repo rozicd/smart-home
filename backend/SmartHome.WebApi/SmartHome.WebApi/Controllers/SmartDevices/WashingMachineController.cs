@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("washingmachine")]
+    [Route("api/washingmachine")]
     public class WashingMachineController : BaseController
     {
         private readonly IWashingMachineService _washingMachineService;

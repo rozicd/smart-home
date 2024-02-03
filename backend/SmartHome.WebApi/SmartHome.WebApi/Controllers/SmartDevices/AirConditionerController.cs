@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("airconditioner")]
+    [Route("api/airconditioner")]
     public class AirConditionerController : BaseController
     {
         private readonly IAirConditionerService _airConditionerService;
