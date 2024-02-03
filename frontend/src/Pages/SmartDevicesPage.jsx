@@ -80,7 +80,7 @@ const SmartDevicesPage = ({}) => {
       console.log("data");
 
       try {
-        let search = { id: propertyId, hours: "6h" };
+        let search = { id: propertyId, hours: "5m" };
         console.log("SEARCH!!", search);
         let data = await GetPropertyPowerGraphData(search);
         console.log("data");
