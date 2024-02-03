@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("sprinkler")]
+    [Route("api/sprinkler")]
     public class SprinklerController : BaseController
     {
         private readonly ISprinklerService _sprinklerService;

@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("cargate")]
+    [Route("api/cargate")]
     public class CarGateController : BaseController
     {
         private readonly ICarGateService _carGateService;

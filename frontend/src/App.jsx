@@ -25,7 +25,7 @@ import CheckForSuperAdmin from "./Pages/CheckForSuperAdmin";
 import DeviceInfoPage from "./Pages/DeviceInfoPage";
 import AdminEnergyPage from "./Pages/AdminEnergyPage";
 import CheckForAmin from "./Pages/CheckForAdmin";
-export const API_BASE_URL = "http://localhost:8080";
+export const API_BASE_URL = "http://localhost:8080/api";
 import PropertyEnergyPage from "./Pages/PropertyEnergy";
 
 const AuthenticatedHome = CheckAuthentication({
