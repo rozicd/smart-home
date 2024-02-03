@@ -8,6 +8,7 @@ namespace SmartHome.Application.HostedServices
 {
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using SmartHome.Application.Services;
     using SmartHome.Domain.Models;
     using SmartHome.Domain.Models.SmartDevices;
     using SmartHome.Domain.Repositories;
@@ -23,6 +24,7 @@ namespace SmartHome.Application.HostedServices
         public SimulationService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+            
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -36,6 +38,8 @@ namespace SmartHome.Application.HostedServices
 
         private void DoWork(object state)
         {
+            var redisRepository = RedisRepository<List<Property>>.Instance;
+
             using (var scope = _serviceProvider.CreateScope())
             {
                 var deviceRepository = scope.ServiceProvider.GetRequiredService<ISmartDeviceRepository>();
@@ -53,6 +57,8 @@ namespace SmartHome.Application.HostedServices
                 var properties = propertiesService.GetPropertiesByStatus(Domain.Models.PropertyStatus.Approved, pagination).Result.Items;
                 mqttClientService.ConnectAsync().Wait();
 
+               
+                
                 foreach (var property in properties)
                 {
 

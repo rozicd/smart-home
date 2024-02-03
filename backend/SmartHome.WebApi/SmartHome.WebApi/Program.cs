@@ -70,10 +70,8 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
 
-
     var token = Environment.GetEnvironmentVariable("INFLUX_TOKEN");
 
-    
     var bucket = "bucket";
     var organization = "organization";
 

@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartHome.Application.Services
 {
@@ -12,7 +8,9 @@ namespace SmartHome.Application.Services
     {
         private static readonly Lazy<ConnectionMultiplexer> LazyConnection = new Lazy<ConnectionMultiplexer>(() =>
         {
-            return ConnectionMultiplexer.Connect("localhost:6379,abortConnect=false");
+            var configurationOptions = ConfigurationOptions.Parse("localhost:6379,abortConnect=false");
+            configurationOptions.KeepAlive = 1800;
+            return ConnectionMultiplexer.Connect(configurationOptions);
         });
 
         private readonly IDatabase _db;
@@ -61,7 +59,7 @@ namespace SmartHome.Application.Services
             foreach (var endpoint in endpoints)
             {
                 var server = LazyConnection.Value.GetServer(endpoint);
-                var keys = server.Keys(pattern: "*"); // Specify a pattern to match all keys
+                var keys = server.Keys(pattern: "*");
                 foreach (var key in keys)
                 {
                     Delete(key);
@@ -76,7 +74,7 @@ namespace SmartHome.Application.Services
             foreach (var endpoint in endpoints)
             {
                 var server = LazyConnection.Value.GetServer(endpoint);
-                var keys = server.Keys(pattern: $"property/{id}/*"); // Specify the pattern to match keys starting with "property/"
+                var keys = server.Keys(pattern: $"property/{id}/*");
                 foreach (var key in keys)
                 {
                     Delete(key);
@@ -87,6 +85,7 @@ namespace SmartHome.Application.Services
 
         public void Dispose()
         {
+            // Dispose logic, if needed
         }
     }
 }
