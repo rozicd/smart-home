@@ -58,13 +58,41 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
             return Ok(sensorDTO);
         }
-        [HttpGet("data")]
-        [Authorize(Roles = "USER")]
-        public async Task<IActionResult> GetEscData([FromQuery] EcsInfluxRangeRequestDTO ecsInfluxRangeRequestDTO)
-        {
-            List<ESCData> data = await _influxClientService.GetESCDataAsync(ecsInfluxRangeRequestDTO.Name, ecsInfluxRangeRequestDTO.start, ecsInfluxRangeRequestDTO.end);
 
-            return Ok(data);
+        [HttpGet("history/{id}")]
+        [Authorize(Roles = "USER")]
+        public async Task<IActionResult> GetEscData(Guid id, DateTime? start = null, DateTime? end = null)
+        {
+            if (!start.HasValue)
+            {
+                start = DateTime.UtcNow.AddHours(-1);
+            }
+
+            if (!end.HasValue)
+            {
+                end = DateTime.UtcNow;
+            }
+            var fluxTables = await _ecsService.GetInfluxDataDateRangeAsync(id.ToString(), start.Value, end.Value);
+            var influxData = new List<ESCData>();
+            foreach (var fluxTable in fluxTables)
+            {
+                int i = 0;
+                foreach (var fluxRecord in fluxTable.Records)
+                {
+                    Console.WriteLine(fluxRecord.Values);
+                    var data = new ESCData
+                    {
+                        RoomTemperate = float.Parse(fluxRecord.Values["roomTemperature"].ToString()),
+                        AirHumidity = float.Parse(fluxRecord.Values["airHumidity"].ToString()),
+                        Timestamp = fluxRecord.GetTimeInDateTime()
+                    };
+
+                    Console.WriteLine(i);
+                    influxData.Add(data);
+                }
+            }
+            return Ok(influxData);
+
         }
 
     }

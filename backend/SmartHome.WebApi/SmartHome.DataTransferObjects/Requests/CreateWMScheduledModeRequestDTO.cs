@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SmartHome.DataTransferObjects.Requests
 {
-    public class EcsInfluxRangeRequestDTO
+    public class CreateWMScheduledModeRequestDTO
     {
-        public Guid Id { get; set; }
-        public DateTime start { get; set; }
-        public DateTime end { get; set; }
+        public DateTime DateTime { get; set; }
+        public string Mode { get; set; }
     }
 }

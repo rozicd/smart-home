@@ -50,3 +50,12 @@ export const getWMActions = async (id, startDate, endDate) =>{
     }
   }
 
+export const addWMScheduledMode = async (id, dateTime, mode) =>{
+    try{
+        const response = await axios.put(`${API_BASE_URL}/washingmachine/addScheduled/${id}`, {DateTime:dateTime, Mode:mode}, {withCredentials:true})
+        return response.data
+    }catch(error)
+    {
+        throw error
+    }
+}

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Domain.Models.SmartDevices
 {
-    public class ESCData
+    public class WMScheduledMode
     {
-        public DateTime?  Timestamp { get; set; }
-        public float RoomTemperate { get; set; }
-        public float AirHumidity { get; set; }
+        public Guid Id { get; set; }
+        public DateTime DateTime { get; set; }
+        public string Mode { get; set; }
     }
 }

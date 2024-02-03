@@ -110,6 +110,11 @@ namespace SmartHome.Data
                 .HasMany(w => w.Modes)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("WashingMachineWashingModes"));
+            modelBuilder.Entity<WashingMachineEntity>()
+                .HasMany(w => w.ScheduledModes)
+                .WithOne(scheduledMode => scheduledMode.WashingMachine)
+                .HasForeignKey(scheduledMode => scheduledMode.WashingMachineId);
+
         }
 
 

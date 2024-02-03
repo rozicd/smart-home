@@ -16,6 +16,7 @@ namespace SmartHome.Domain.Services.SmartDevices
         Task TurnOn(Guid id);
         Task TurnOff(Guid id);
         Task changeMode(LoggedUser loggedUser, string mode, WashingMachine washingMachine);
+        Task<WashingMachine> AddScheduledMode(Guid id, WMScheduledMode wmScheduledMode, LoggedUser loggedUser);
 
     }
 }

@@ -53,6 +53,7 @@ namespace SmartHome.Application.Services
 
         public async Task<PaginationReturnObject<Property>> GetPropertiesByStatus(PropertyStatus status, Pagination pagination)
         {
+
             return await _propertyRepository.GetPropertiesByStatus(status,pagination);
         }
 
@@ -64,6 +65,7 @@ namespace SmartHome.Application.Services
 
         public async Task UpdateProperty(Property property)
         {
+
             await _propertyRepository.Update(property);
         }
 

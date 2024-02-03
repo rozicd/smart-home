@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InfluxDB.Client.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Data.Entities.SmartDevices;
 using SmartHome.Domain.Exceptions;
@@ -34,6 +35,19 @@ namespace SmartHome.Data.Repositories.SmartDevices
             await _washingMachines.AddAsync(washingMachineEntity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<WashingMachine> AddScheduledMode(Guid id, WMScheduledMode mode)
+        {
+            WashingMachineEntity washingMachineEntity = await _washingMachines.FirstOrDefaultAsync(wm => wm.Id == id);
+            if(washingMachineEntity == null)
+            {
+                throw new NotFoundException($"WM with ID {id} not found");
+            }
+            WMScheduledModeEntity wmScheduledModeEntity = _mapper.Map<WMScheduledModeEntity>(mode);
+            washingMachineEntity.ScheduledModes.Add(wmScheduledModeEntity);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<WashingMachine>(washingMachineEntity);
+         }
 
         public async Task<WashingMachine> getById(Guid id)
         {

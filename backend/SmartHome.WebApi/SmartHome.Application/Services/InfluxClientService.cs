@@ -42,7 +42,7 @@ namespace SmartHome.Application.Services
             await writeApi.WritePointAsync(pointData,this._bucket, this._organization);
         }
 
-        public async Task<List<ESCData>> GetESCDataAsync(string name, string start, string stop)
+        /*public async Task<List<ESCData>> GetESCDataAsync(string name, string start, string stop)
         {
             var queryApi = _client.GetQueryApi();
             string fluxQuery = $"from(bucket: \"bucket\") |> range(start: {start}, stop: {stop}) |> filter(fn: (r) => r[\"_measurement\"] == \"{name}\") |> filter(fn: (r) => r[\"_field\"] == \"RoomTemperature\" or r[\"_field\"] == \"AirHumidity\") |> aggregateWindow(every: 10s, fn: mean, createEmpty: false) |> yield(name: \"mean\")";
@@ -78,7 +78,7 @@ namespace SmartHome.Application.Services
             }
             return data;
 
-        }
+        }*/
 
     }
 }

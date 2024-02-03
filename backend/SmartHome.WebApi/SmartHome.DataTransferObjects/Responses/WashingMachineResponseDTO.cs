@@ -22,5 +22,6 @@ namespace SmartHome.DataTransferObjects.Responses
         public string Connection { get; set; }
 
         public List<WashingMachineModeDTO> Modes { get; set; }
+        public List<WMScheduledModeResponseDTO> ScheduledModes { get; set; }
     }
 }

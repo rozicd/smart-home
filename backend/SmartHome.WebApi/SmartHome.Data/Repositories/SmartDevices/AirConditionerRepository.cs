@@ -38,7 +38,7 @@ namespace SmartHome.Data.Repositories.SmartDevices
             AirConditionerEntity airConditionerEntity = await _airConditioners.FirstOrDefaultAsync(ac => ac.Id == Id);
             if (airConditionerEntity == null)
             {
-                throw new NotFoundException($"AC with ID {airConditionerEntity.Id} not found");
+                throw new NotFoundException($"AC with ID {Id} not found");
             }
             ACScheduledModeEntity aCScheduledModeEntity = _mapper.Map<ACScheduledModeEntity>(scheduledMode);
             airConditionerEntity.ScheduledModes.Add(aCScheduledModeEntity);
