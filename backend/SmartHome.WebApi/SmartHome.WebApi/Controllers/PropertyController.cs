@@ -51,6 +51,7 @@ public class PropertyController : BaseController
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "USER,ADMIN,SUPERADMIN")]
     public async Task<IActionResult> GetPropertyById(Guid id)
     {
         Property property = await _propertyService.GetPropertyById(id);
@@ -88,6 +89,8 @@ public class PropertyController : BaseController
         return Ok(response);
     }
     [HttpGet("")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
+
     public async Task<IActionResult> GetAllProperties([FromQuery] Pagination page)
     {
         var properties = await _propertyService.GetAllProperties(page);
@@ -159,6 +162,7 @@ public class PropertyController : BaseController
     }
 
     [HttpPost("power")]
+    [Authorize(Roles = "USER,ADMIN,SUPERADMIN")]
     public async Task<IActionResult> GetPowerInLastHour([FromBody] DeviceHistoryRequestDTO bh)
     {
         List<FluxTable> fluxTables = await _propertyService.GetPropertyPowerInfluxData(bh.Id.ToString(), bh.Hours);
@@ -193,6 +197,7 @@ public class PropertyController : BaseController
 
     }
     [HttpPost("country/energy")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
     public async Task<IActionResult> CountryHistory([FromBody] EnergyHistory bh)
     {
 
@@ -202,6 +207,7 @@ public class PropertyController : BaseController
 
     }
     [HttpPost("country/energy/date")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN")]
     public async Task<IActionResult> CountryHistoryDate([FromBody] EnergyHistoryDate bh)
     {
         TimeSpan dateRange = bh.Start - bh.End;
@@ -220,6 +226,7 @@ public class PropertyController : BaseController
 
     
     [HttpPost("power/date")]
+    [Authorize(Roles = "USER,ADMIN,SUPERADMIN")]
     public async Task<IActionResult> GetPowerDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
     {
         TimeSpan dateRange = bh.EndDate - bh.StartDate;
@@ -255,6 +262,7 @@ public class PropertyController : BaseController
     }
 
     [HttpPut("addPermision/{propertyId}")]
+    [Authorize(Roles = "USER")]
     public async Task<IActionResult> addUserPermision(Guid propertyId, [FromBody] AddUserPermissionRequestDTO addUserPermissionRequestDTO)
     {
         User user = await _userService.getByEmail(addUserPermissionRequestDTO.Email);
@@ -263,6 +271,7 @@ public class PropertyController : BaseController
     }
 
     [HttpPut("removePermision/{propertyId}")]
+    [Authorize(Roles = "USER")]
     public async Task<IActionResult> removeUserPermision(Guid propertyId, [FromBody] RemoveUserPermissionRequestDTO removeUserPermissionRequestDTO)
     {
         User user = await _userService.GetById(removeUserPermissionRequestDTO.Id);

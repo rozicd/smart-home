@@ -70,16 +70,13 @@ builder.Services.AddSingleton<IInfluxClientService>(provider =>
 {
     var influxDbUrl = "http://localhost:8086";
 
-
-    var token = "PgC_zfSJkeAmIuec-lb1FXnGYa-nTeF7srFcbjpMk4JxiZQ3hZnGYI_auLX0Mexm7NQ5fgGAIgB1uwoiewDzkg==";
-
+    var token = Environment.GetEnvironmentVariable("INFLUX_TOKEN");
 
     var bucket = "bucket";
     var organization = "organization";
 
     return new InfluxClientService(influxDbUrl, token, bucket, organization);
 });
-
 
 
 builder.Services.AddCors(options =>

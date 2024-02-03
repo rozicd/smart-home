@@ -127,7 +127,7 @@ def points_from_queue(action_queue):
 
     return points
 
-car_gate_id = "2c24c889-b58b-433a-b3ef-9759ccacde5f"
+car_gate_id = "9f45ed48-ee26-4f78-b6c2-b12d30ee4533"
 gate_status = "CLOSED"
 mode = "PUBLIC"
 allowed_vehicles = set()

@@ -62,8 +62,8 @@ export const GetSmartDevicesByProperty = async (pagination) => {
       deviceType = "smart-device"
     }
     try {
-      const response = await fetch(`${API_BASE_URL}/${deviceType.toLowerCase()}/${deviceId}`);
-      const data = await response.json();
+      const response = await axios.get(`${API_BASE_URL}/${deviceType.toLowerCase()}/${deviceId}`,{withCredentials: true}  );
+      const data = await response.data;
       return data;
     } catch (error) {
       throw new Error("Error fetching device information");
@@ -75,8 +75,8 @@ export const GetSmartDevicesByProperty = async (pagination) => {
       deviceType = "smart-device"
     }
     try {
-      const response = await fetch(`${API_BASE_URL}/${deviceType.toLowerCase()}/data?Name=${dataParams.Name}&start=${dataParams.start}&end=${dataParams.end}`);
-      const data = await response.json();
+      const response = await axios.get(`${API_BASE_URL}/${deviceType.toLowerCase()}/data?Name=${dataParams.Name}&start=${dataParams.start}&end=${dataParams.end}`,{withCredentials: true});
+      const data = await response.data;
       return data;
     } catch (error) {
       throw new Error("Error fetching device information");

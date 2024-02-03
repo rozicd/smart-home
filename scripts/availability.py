@@ -13,7 +13,7 @@ influx_bucket = "bucket"
 client = InfluxDBClient(url=influx_url, token=influx_token, org=influx_org)
 write_api = client.write_api()
 
-device_id = "a11e852a-34ce-46a7-a94f-b0bbbcd0d21f"
+device_id = "3bfb7881-10a9-4a33-8a31-b936300bc87a"
 
 end_date = datetime.utcnow()
 start_date = end_date - timedelta(days=90)
@@ -44,4 +44,4 @@ while current_date <= end_date:
 if points:
     write_api.write(bucket=influx_bucket, record=points)
 
-pause.seconds(3)
+pause.seconds(6)

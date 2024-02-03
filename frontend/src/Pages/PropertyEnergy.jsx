@@ -46,7 +46,7 @@ const PropertyEnergyPage = () => {
 
   const fetchProperty = () => {
     axios
-      .get(`${API_BASE_URL}/properties/${property}`)
+      .get(`${API_BASE_URL}/properties/${property}`,{withCredentials:true})
 
       .then(async (response) => {
         console.log(response);

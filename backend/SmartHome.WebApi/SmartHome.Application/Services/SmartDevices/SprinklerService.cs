@@ -55,6 +55,7 @@ namespace SmartHome.Application.Services.SmartDevices
             SmartDevice device = await base.Connect(id);
             Console.WriteLine("U CarGate");
             Sprinkler sprinkler;
+            string schedulesString;
             using (var scope = _scopeFactory.CreateScope())
             {
                 var serviceProvider = scope.ServiceProvider;
@@ -62,8 +63,10 @@ namespace SmartHome.Application.Services.SmartDevices
                 var repository = serviceProvider.GetRequiredService<ISprinklerRepository>();
 
                 sprinkler = await repository.GetByIdAsync(device.Id);
+
+                schedulesString = string.Join(",", (await repository.GetSprinklerSchedulesAsync(sprinkler.Id)).Select(s => $"{s.Id}:-:{s.StartTime}:-:{s.DurationMinutes}"));
             }
-            string schedulesString = string.Join(",", (await _sprinklerRepository.GetSprinklerSchedulesAsync(sprinkler.Id)).Select(s => $"{s.Id}:-:{s.StartTime}:-:{s.DurationMinutes}"));
+
             await _mqttClientService.PublishMessageAsync(device.Connection + "/info", $"{sprinkler.Power},{sprinkler.EnergySpending},{schedulesString}");
             var client = await _mqttClientService.SubscribeAsync(device.Connection + "/powerStatus");
             client.ApplicationMessageReceivedAsync += async e =>
@@ -145,7 +148,7 @@ namespace SmartHome.Application.Services.SmartDevices
 
             var scheduleClearClient = await _mqttClientService.SubscribeAsync(device.Connection + "/clearSchedule");
 
-            actionClient.ApplicationMessageReceivedAsync += async e =>
+            scheduleClearClient.ApplicationMessageReceivedAsync += async e =>
             {
                 string receivedTopic = e.ApplicationMessage.Topic;
                 if (receivedTopic == device.Connection + "/clearSchedule")

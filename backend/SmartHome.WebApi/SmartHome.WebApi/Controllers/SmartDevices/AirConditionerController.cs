@@ -6,6 +6,7 @@ using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.DataTransferObjects.Responses;
 using SmartHome.Application.Services.SmartDevices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -25,6 +26,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddAirConditioner([FromForm] CreateAirConditionerDTO airConditioner)
         {
             AirConditioner response = _mapper.Map<AirConditioner>(airConditioner);
@@ -39,6 +41,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("{airConditionId}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetACById(Guid airConditionId)
         {
             AirConditioner ac = await _airConditionerService.GetById(airConditionId);
@@ -48,6 +51,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
         }
         [HttpPost("turnOn")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOn([FromBody] TurnOnOffAcDTO turnOnDTO)
         {
             await _airConditionerService.TurnOn(turnOnDTO.acId);
@@ -55,6 +59,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("turnOff")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOff([FromBody] TurnOnOffAcDTO turnOffDTO)
         {
             await _airConditionerService.TurnOff(turnOffDTO.acId);
@@ -63,6 +68,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
 
         [HttpPost("changeMode")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> ChangeMode([FromBody] ChangeAcModeDTO changeModeDTO)
         {
             AirConditioner ac = await _airConditionerService.GetById(changeModeDTO.Id);
@@ -73,6 +79,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPut("addScheduled/{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddScheduledMode(Guid id, [FromBody] CreateACScheduledModeRequestDTO acScheduledModeRequestDTO)
         {
             ACScheduledMode acScheduledMode = _mapper.Map<ACScheduledMode>(acScheduledModeRequestDTO);
@@ -82,6 +89,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("{id}/history")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetACActions(Guid id, DateTime? startDate = null, DateTime? endDate = null)
         {
             if (!startDate.HasValue)
