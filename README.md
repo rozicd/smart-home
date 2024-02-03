@@ -45,4 +45,3 @@ ConnectionStrings__DefaultConnection: Set this variable to your database connect
 ### Notes
 
 InfluxDB can be insatiated using scripts in /scripts
-

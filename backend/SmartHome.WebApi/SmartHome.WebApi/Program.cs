@@ -88,6 +88,11 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod()
                   .AllowAnyHeader()
                   .AllowCredentials();
+
+        builder.WithOrigins("http://localhost:8080")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
     });
 });
 
@@ -177,17 +182,17 @@ using (var scope = app.Services.CreateScope())
     await userService.GenerateSuperAdmin();
 }
 
-app.MapHub<LampHub>("/lampHub");
+app.MapHub<LampHub>("/api/lampHub");
 
-app.MapHub<ECSHub>("/ECSHub");
-app.MapHub<ACHub>("/ACHub");
-app.MapHub<WMHub>("/WMHub");
-app.MapHub<CarGateHub>("/carGateHub");
-app.MapHub<SolarPanelSystemHub>("/panelHub");
-app.MapHub<HomeBatteryHub>("/batteryHub");
-app.MapHub<PropertyHub>("/propertyHub");
-app.MapHub<CarChargerHub>("/carChargerHub");
-app.MapHub<SprinklerHub>("/sprinklerHub");
+app.MapHub<ECSHub>("/api/ECSHub");
+app.MapHub<ACHub>("/api/ACHub");
+app.MapHub<WMHub>("/api/WMHub");
+app.MapHub<CarGateHub>("/api/carGateHub");
+app.MapHub<SolarPanelSystemHub>("/api/panelHub");
+app.MapHub<HomeBatteryHub>("/api/batteryHub");
+app.MapHub<PropertyHub>("/api/propertyHub");
+app.MapHub<CarChargerHub>("/api/carChargerHub");
+app.MapHub<SprinklerHub>("/api/sprinklerHub");
 
 
 app.Run();

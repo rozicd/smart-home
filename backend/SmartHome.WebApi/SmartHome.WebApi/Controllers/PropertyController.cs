@@ -11,7 +11,7 @@ using SmartHome.Domain.Services;
 using SmartHome.WebApi.Controllers;
 
 [ApiController]
-[Route("properties")]
+[Route("api/properties")]
 public class PropertyController : BaseController
 {
     private readonly IPropertyService _propertyService;
