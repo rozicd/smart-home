@@ -11,6 +11,7 @@ namespace SmartHome.Domain.Models.SmartDevices
         public virtual List<WashingMachineMode> Modes { get; set; } = new List<WashingMachineMode>();
         public WashingMachineMode? CurrentMode { get; set; }
         public DateTime StartTime { get; set; }
+        public List<WMScheduledMode> ScheduledModes { get; set; } = new List<WMScheduledMode> { };
 
         public WashingMachine()
         {

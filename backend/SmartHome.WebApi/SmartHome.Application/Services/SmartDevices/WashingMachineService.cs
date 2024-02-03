@@ -15,6 +15,7 @@ using InfluxDB.Client.Writes;
 using Microsoft.AspNetCore.SignalR;
 using SmartHome.Application.Hubs;
 using InfluxDB.Client.Core.Flux.Domain;
+using Newtonsoft.Json;
 
 namespace SmartHome.Application.Services.SmartDevices
 {
@@ -146,6 +147,14 @@ namespace SmartHome.Application.Services.SmartDevices
             return result;
         }
 
+        public async Task<WashingMachine> AddScheduledMode(Guid id, WMScheduledMode wmScheduledMode, LoggedUser loggedUser)
+        {
+            WashingMachine wm = await _washingMachineRepository.AddScheduledMode(id, wmScheduledMode);
+            var serializedScheduledModes = JsonConvert.SerializeObject(wm.ScheduledModes);
+            await _mqttClientService.PublishMessageAsync(wm.Connection = "/schedule", $"{serializedScheduledModes}");
+            await SendInfluxDataAsync(wm, wmScheduledMode + "(Scheduled)", loggedUser);
+            return wm;
+        }
     }
 
 }

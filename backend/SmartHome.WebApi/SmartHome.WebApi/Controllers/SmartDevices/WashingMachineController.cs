@@ -78,6 +78,15 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok();
         }
 
+        [HttpPut("addScheduled/{id}")]
+        public async Task<IActionResult> addScheduledMode(Guid id, [FromBody] CreateWMScheduledModeRequestDTO createWMScheduledModeRequestDTO)
+        {
+            WMScheduledMode wMScheduledMode = _mapper.Map<WMScheduledMode>(createWMScheduledModeRequestDTO);
+            WashingMachine wm = await _washingMachineService.AddScheduledMode(id, wMScheduledMode, _user);
+            return Ok(_mapper.Map<WashingMachineModesResponseDTO>(wm));
+        }
+
+
         [HttpGet("history/{id}")]
         public async Task<IActionResult> getWMActions(Guid id, DateTime? startDate = null, DateTime? endDate = null)
         {
@@ -98,8 +107,6 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
                 int i = 0;
                 foreach (var fluxRecord in fluxTable.Records)
                 {
-                    Console.WriteLine("KURCINA: "+ fluxRecord.Values["mode"]);
-                    Console.WriteLine(fluxRecord.Values);
                     var data = new WMActionsDTO
                     {
                         Mode = fluxRecord.Values["mode"] == null?"": fluxRecord.Values["mode"].ToString(),

@@ -12,6 +12,7 @@ namespace SmartHome.Domain.Repositories.SmartDevices
         Task Add(WashingMachine sensor);
         Task<List<WashingMachineMode>> GetWashingMachineModes();
         Task<WashingMachine> getById(Guid id);
+        Task<WashingMachine> AddScheduledMode(Guid id,  WMScheduledMode mode);
 
 
     }

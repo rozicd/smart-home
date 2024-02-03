@@ -57,12 +57,16 @@ public class MappingProfiles : Profile
         CreateMap<WashingMachineModeDTO, WashingMachineMode>();
         CreateMap<WashingMachineResponseDTO, WashingMachine>();
         CreateMap<WashingMachine, WashingMachineResponseDTO>();
+        CreateMap<WMScheduledMode, WMScheduledModeEntity>();
+        CreateMap<WMScheduledModeEntity, WMScheduledMode>();
+        CreateMap<CreateWMScheduledModeRequestDTO, WMScheduledMode>();
+        CreateMap<WMScheduledMode, CreateWMScheduledModeRequestDTO>();
+        CreateMap<WMScheduledMode, WMScheduledModeResponseDTO>();
+        CreateMap<WMScheduledModeResponseDTO, WMScheduledMode>();
         CreateMap<SprinklerSchedule, SprinklerScheduleEntity>();
         CreateMap<SprinklerScheduleEntity, SprinklerSchedule>();
-
         CreateMap<CountriesAndCities, CountriesAndCitiesDTO>();
         CreateMap<CountriesAndCitiesDTO, CountriesAndCities>();
-
         CreateMap<EnvironmentalConditionsSensorEntity, EnvironmentalConditionsSensor>();
         CreateMap<Property, PropertyEntity>();
         CreateMap<PropertyEntity, Property>();
