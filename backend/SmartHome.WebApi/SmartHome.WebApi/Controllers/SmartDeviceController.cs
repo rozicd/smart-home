@@ -1,5 +1,6 @@
 using AutoMapper;
 using InfluxDB.Client.Core.Flux.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Application.Services;
 using SmartHome.DataTransferObjects.Requests;
@@ -38,6 +39,7 @@ namespace SmartHome.WebApi.Controllers
         }
 
         [HttpGet("property")]
+
         public async Task<IActionResult> GetAll([FromQuery] PropertySmartDeviceRequestDTO request)
         {
             var devices = await _smartDeviceService.GetAllFromProperty(request.Page, request.PropertyId,_user);
@@ -47,6 +49,7 @@ namespace SmartHome.WebApi.Controllers
 
 
         [HttpPost("on")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> PowerOn([FromForm] DevicePowerDTO dp)
         {
             ISmartDeviceActionsService actionsService = await _smartDeviceServiceFactory.GetServiceAsync(dp.Id);
@@ -56,6 +59,7 @@ namespace SmartHome.WebApi.Controllers
         }
 
         [HttpPost("off")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> PowerOff([FromForm] DevicePowerDTO dp)
         {
             ISmartDeviceActionsService actionsService = await _smartDeviceServiceFactory.GetServiceAsync(dp.Id);
@@ -65,6 +69,7 @@ namespace SmartHome.WebApi.Controllers
         }
 
         [HttpPost("data")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetAvailabilityInLastHour([FromBody] DeviceHistoryRequestDTO bh)
         {
             List<FluxTable> fluxTables = await _smartDeviceService.GetInfluxDataAsync(bh.Id.ToString(), bh.Hours);
@@ -92,6 +97,7 @@ namespace SmartHome.WebApi.Controllers
         }
 
         [HttpPost("data/date")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetAvailabilityDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
         {
             TimeSpan dateRange = bh.EndDate - bh.StartDate;
@@ -132,12 +138,14 @@ namespace SmartHome.WebApi.Controllers
             return Ok(influxData);
         }
         [HttpPut("addPermission/{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddUserPermission(Guid id, [FromBody]AddUserPermissionRequestDTO dto)
         {
             User user = await _smartDeviceService.addUserPermission(id, dto.Email);
             return Ok(user);
         }
         [HttpPut("removePermission/{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> RemoveUserPermission(Guid id, [FromBody] AddUserPermissionRequestDTO dto)
         {
             User user = await _smartDeviceService.RemoveUserPermission(id, dto.Email);
@@ -145,6 +153,7 @@ namespace SmartHome.WebApi.Controllers
         }
 
         [HttpGet("getPermissions/{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> getPermisions(Guid id)
         {
             PermissionsResponseDTO permissionsResponseDTO = new PermissionsResponseDTO();

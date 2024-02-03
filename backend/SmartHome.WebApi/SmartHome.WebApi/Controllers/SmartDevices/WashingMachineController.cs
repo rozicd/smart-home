@@ -6,6 +6,7 @@ using SmartHome.Domain.Services.SmartDevices;
 using SmartHome.Domain.Services;
 using SmartHome.DataTransferObjects.Responses;
 using SmartHome.Application.Services.SmartDevices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -25,6 +26,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddWashingMachine([FromForm] CreateWashingMachineDTO washingMachine)
         {
             WashingMachine response = _mapper.Map<WashingMachine>(washingMachine);
@@ -38,6 +40,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetById(Guid id)
         {
             WashingMachine washingMachine = await  _washingMachineService.GetById(id);
@@ -47,6 +50,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("modes")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetWashingMachineModes()
         {
             List<WashingMachineMode> modes = await _washingMachineService.GetWashingMachineModes();
@@ -58,6 +62,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return Ok(response);
         }
         [HttpGet("turnOn/{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOn(Guid id)
         {
             await _washingMachineService.TurnOn(id);
@@ -65,12 +70,14 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("turnOff/{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOff(Guid id)
         {
             await _washingMachineService.TurnOff(id);
             return Ok();
         }
         [HttpPost("changeMode")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> ChangeMode([FromBody]ChangeWMModeRequestDTO changeWMModeRequestDTO)
         {
             WashingMachine washingMachine = await _washingMachineService.GetById(changeWMModeRequestDTO.Id);
@@ -88,6 +95,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
 
 
         [HttpGet("history/{id}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> getWMActions(Guid id, DateTime? startDate = null, DateTime? endDate = null)
         {
             if (!startDate.HasValue)

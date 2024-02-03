@@ -13,6 +13,7 @@ using System.Text;
 using SmartHome.Application.Services;
 using InfluxDB.Client.Core.Flux.Domain;
 using NodaTime;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -34,6 +35,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddCarGate([FromForm] CreateCarGateDTO carGate)
         {
             CarGate response = _mapper.Map<CarGate>(carGate);
@@ -47,6 +49,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("{carGateId}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetCarGateById(Guid carGateId)
         {
             CarGate carGate = await _carGateService.GetById(carGateId);
@@ -57,6 +60,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPut("{carGateId}/open")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> OpenGate(Guid carGateId)
         {
             var userEmail = GetUserEmailFromCookie(); 
@@ -65,6 +69,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPut("{carGateId}/close")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> CloseGate(Guid carGateId)
         {
             var userEmail = GetUserEmailFromCookie();
@@ -73,6 +78,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPut("{carGateId}/changemode")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> ChangeMode(Guid carGateId, [FromBody] ChangeModeDTO changeModeDTO)
         {
             await _carGateService.ChangeMode(carGateId, changeModeDTO.NewMode);
@@ -80,13 +86,15 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("{carGateId}/addlicenseplate")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddLicensePlate(Guid carGateId, [FromBody] AddRemoveLicensePlateDTO addLicensePlateDTO)
         {
             await _carGateService.AddLicensePlate(carGateId, addLicensePlateDTO.LicensePlate);
             return Ok();
         }
 
-        [HttpDelete("{carGateId}/removelicenseplate")]
+        [HttpPut("{carGateId}/removelicenseplate")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> RemoveLicensePlate(Guid carGateId, [FromBody] AddRemoveLicensePlateDTO removeLicensePlateDTO)
         {
             await _carGateService.RemoveLicensePlate(carGateId, removeLicensePlateDTO.LicensePlate);
@@ -121,6 +129,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("{carGateId}/history")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetCarActions(Guid carGateId, DateTime? startDate = null, DateTime? endDate = null)
         {
             try

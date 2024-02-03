@@ -7,6 +7,7 @@ using SmartHome.DataTransferObjects.Requests;
 using SmartHome.DataTransferObjects.Responses;
 using InfluxDB.Client.Core.Flux.Domain;
 using SmartHome.Application.Services.SmartDevices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
@@ -26,6 +27,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> AddLamp([FromForm] CreateLampDTO lamp)
         {
             Lamp response = _mapper.Map<Lamp>(lamp);
@@ -39,6 +41,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpGet("{lampId}")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetLampById(Guid lampId)
         {
             Lamp lamp = await _lampService.GetById(lampId);
@@ -49,6 +52,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("turnOn")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOn([FromBody] TurnOnOffDTO turnOnDTO)
         {
             await _lampService.TurnOn(turnOnDTO.LampId);
@@ -56,6 +60,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("turnOff")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> TurnOff([FromBody] TurnOnOffDTO turnOffDTO)
         {
             await _lampService.TurnOff(turnOffDTO.LampId);
@@ -63,6 +68,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("changeThreshold")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> ChangeThreshold([FromBody] ChangeThresholdDTO changeThresholdDTO)
         {
             await _lampService.ChangeThreshold(changeThresholdDTO.LampId, changeThresholdDTO.NewThreshold);
@@ -70,6 +76,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("changeMode")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> ChangeMode([FromBody] ChangeLampModeDTO changeModeDTO)
         {
             await _lampService.ChangeMode(changeModeDTO.LampId, changeModeDTO.Mode);
@@ -77,6 +84,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
         }
 
         [HttpPost("data")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetPowerInLastHour([FromBody] DeviceHistoryRequestDTO bh)
         {
             List<FluxTable> fluxTables = await _lampService.GetInfluxDataAsync(bh.Id.ToString(), bh.Hours);
@@ -118,6 +126,7 @@ namespace SmartHome.WebApi.Controllers.SmartDevices
             return "0";
         }
         [HttpPost("data/date")]
+        [Authorize(Roles = "USER")]
         public async Task<IActionResult> GetPowerDateRange([FromBody] DeviceHistoryDateRequestDTO bh)
         {
             TimeSpan dateRange = bh.EndDate - bh.StartDate;
