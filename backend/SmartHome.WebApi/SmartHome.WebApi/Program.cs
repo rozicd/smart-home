@@ -50,7 +50,7 @@ builder.Services.AddScoped<IAirConditionerService, AirConditionerService>();
 builder.Services.AddScoped<IAirConditionerRepository, AirConditionerRepository>();
 builder.Services.AddScoped<ILampRepository, LampRepository>();
 builder.Services.AddScoped<ILampService, LampService>();
-builder.Services.AddScoped<IMqttClientService, MqttClientService>();
+builder.Services.AddSingleton<IMqttClientService, MqttClientService>();
 
 builder.Services.AddScoped<ICarGateRepository, CarGateRepository>();
 builder.Services.AddScoped<ICarGateService, CarGateService>();

@@ -9,7 +9,7 @@ namespace SmartHome.Domain.Services
 {
     public interface IMqttClientService
     {
-        Task<IMqttClient> ConnectAsync();
+        Task ConnectAsync();
         Task<MqttClientPublishResult> PublishMessageAsync(string topic, string payload);
         Task<IMqttClient> SubscribeAsync(string topic);
         Task UnubscribeAsync(string topic);

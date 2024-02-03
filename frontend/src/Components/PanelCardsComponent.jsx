@@ -21,7 +21,8 @@ import EventLogCard from "./BasicComponents/EventLogCard";
 import { panelHubConnection } from "./Sockets/LightSocketService";
 import { getPanelActions, turnOff, turnOn } from "./Services/PanelService";
 import LoadingComponent from "./BasicComponents/LoadingComponent";
-
+import axios from "axios";
+import { API_BASE_URL } from "../App";
 const PanelCardsComponent = ({ deviceInfo }) => {
   const [power, setPower] = useState(0);
   const [panelStatus, setPanelStatus] = useState(true);
@@ -29,6 +30,24 @@ const PanelCardsComponent = ({ deviceInfo }) => {
   const [toDate, setToDate] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [connecting, setConnecting] = useState(true);
+  const getLastData = () => {
+    axios
+      .get(`${API_BASE_URL}/smart-device/lastdata/${deviceInfo.id}`, {
+
+        withCredentials: true,
+      })
+      .then((response) => {
+        setPower(response.data);
+        setConnecting(false)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getLastData();
+  }, []);
 
   const handleSwitchChange = async () => {
     const newPowerState = panelStatus ? 0 : 1;
@@ -130,7 +149,6 @@ const PanelCardsComponent = ({ deviceInfo }) => {
                     onChange={handleSwitchChange}
                     size="medium"
                     disabled={connecting}
-
                   />
                 }
                 label={panelStatus ? "ON" : "OFF"}

@@ -38,23 +38,16 @@ namespace SmartHome.Application.Services
 
         public async Task AddProperty(Property property)
         {
-            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
-            redis.DeleteAllUserProperty(property.UserId.ToString());
+         
             await _propertyRepository.Add(property);
         }
 
         public async Task<PaginationReturnObject<Property>> GetPropertiesByUserId(Guid userId, Pagination pagination)
         {
-            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
-            PaginationReturnObject<Property> res;
-            res = redis.Get($"property/{userId.ToString()}/{pagination.PageNumber}/{pagination.PageSize}");
-            if (res == null)
-            {
-                res = await _propertyRepository.GetPropertiesByUserId(userId, pagination);
-                redis.DeleteAllUserProperty(userId.ToString());
-                redis.Add($"property/{userId.ToString()}/{pagination.PageNumber}/{pagination.PageSize}", res);
-            }
-
+   
+            
+            var res = await _propertyRepository.GetPropertiesByUserId(userId, pagination);
+             
             return res;
         }
 
@@ -265,15 +258,13 @@ namespace SmartHome.Application.Services
 
         public async Task AddUserPermision(Guid propertyId, User user)
         {
-            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
-            redis.DeleteAllUserProperty(user.Id.ToString());
+       
             await _propertyRepository.AddUserPermision(propertyId, user);
         }
 
         public async Task RemoveUserPermision(Guid propertyId, User user)
         {
-            RedisRepository<PaginationReturnObject<Property>> redis = new RedisRepository<PaginationReturnObject<Property>>();
-            redis.DeleteAllUserProperty(user.Id.ToString());
+        
             await _propertyRepository.RemoveUserPermision(propertyId, user);
         }
     }

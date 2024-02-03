@@ -166,6 +166,7 @@ const SmartDevicesPage = ({}) => {
       data.append("batterySize", form.batterySize);
     }
     if (selectedDevice == 9) {
+      data.append("energySpending", 0);
       data.append("chargingPower", form.chargingPower);
       data.append("connectorNumber", form.connectorNumber);
     }
@@ -290,12 +291,6 @@ const SmartDevicesPage = ({}) => {
     },
   ];
   let cc = [
-    {
-      item: "BasicInput",
-      label: "Energy Spending",
-      type: "number",
-      itemValue: "energySpending",
-    },
     {
       item: "BasicInput",
       label: "Charging Power",
