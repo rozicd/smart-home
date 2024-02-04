@@ -6,7 +6,7 @@ import random
 BATCH_SIZE = 100  # Set the desired batch size
 
 def send_power_influx_data_batch(points):
-    token = "ZqgHocXYE-wlr76ucjWaUpjF0qKVmbeWjGme9s-h5zzDdol4qTNCl9tbANULxmKdLKbv5D-SqNwkXHaCBH93Bw=="
+    token = "PgC_zfSJkeAmIuec-lb1FXnGYa-nTeF7srFcbjpMk4JxiZQ3hZnGYI_auLX0Mexm7NQ5fgGAIgB1uwoiewDzkg=="
     org = "organization"
     url = "http://localhost:8086"
     bucket = "bucket"
@@ -17,8 +17,8 @@ def send_power_influx_data_batch(points):
 
 
 def generate_data(start_date, end_date):
-    id = "31ad426b-ce19-4d78-9bfd-13a70b59096d"
-    device_id = "216c9d5b-321c-456f-8911-ae295cc0bc0c"
+    id = "3fa75e01-4504-4225-b3ab-c2e25eff8632"
+    device_id = "0929e557-be0c-42e7-a027-8949722ac2ac"
     
     current_date = start_date
     points = []

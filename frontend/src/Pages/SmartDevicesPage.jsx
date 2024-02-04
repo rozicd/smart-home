@@ -80,7 +80,7 @@ const SmartDevicesPage = ({}) => {
       console.log("data");
 
       try {
-        let search = { id: propertyId, hours: "6h" };
+        let search = { id: propertyId, hours: "5m" };
         console.log("SEARCH!!", search);
         let data = await GetPropertyPowerGraphData(search);
         console.log("data");
@@ -422,10 +422,10 @@ const SmartDevicesPage = ({}) => {
           </Grid>
         </Grid>
       </Grid>
-      <AddButton
+      {property.owner && <AddButton
         className="add-property-button"
         onClick={() => setOpenModal(true)}
-      />
+      />}
       {property.owner && <Button  style={{ position: 'fixed', bottom: 16, right: 40, fontSize:"xx-large"}} onClick={handleShareClick}><ShareIcon></ShareIcon></Button>}
       <PermisionDialog open={dialogOpen} onClose={handleCloseDialog} property = {property} updatePermissions = {updatePermissions} />
       <Dialog

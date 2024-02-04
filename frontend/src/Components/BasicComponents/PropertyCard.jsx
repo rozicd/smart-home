@@ -7,7 +7,7 @@ import { themeOptions } from '../../themeOptions';
 import "./propertyCard.css"
 import PermisionDialog from '../Dialogs/PermisionDialog';
 
-const PropertyCard = ({ property, callback }) => {
+const PropertyCard = ({ property, callback ,admin = false }) => {
   const [imageData, setImageData] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,7 +38,9 @@ const PropertyCard = ({ property, callback }) => {
       <Box style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <CardContent style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '20px', backgroundColor: '#ffffff', color: '#000000' }}>
           <Typography variant="h5" style={{ flex: '40%' }}>{property.propertyName}</Typography>
-          <Chip label={getStatusText(property.status)} style={{  marginBottom: '10px',width: '100px', height: '50px' }} color={getStatusChipColor(property.status)} />
+          { (admin|| property.owner) && <Chip label={getStatusText(property.status)} style={{  marginBottom: '10px',width: '100px', height: '50px' }} color={getStatusChipColor(property.status)} />}
+          {!admin && !property.owner && <Chip label={"Shared"} style={{  marginBottom: '10px',width: '100px', height: '50px' }} color="warning" />}
+
           <Typography variant="body2" color="textSecondary" style={{marginTop: '10px', }}>Address: {property.address}</Typography>
           <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: '100%' }}>
             <Box style={{ display: 'flex', flexDirection: 'column'}}>
