@@ -143,6 +143,7 @@ class SmartHome:
                     self.client.subscribe(device_key+'/spending')
                 elif command[1] == 'EnvironmentalConditionsSensor':
                     smart_device = EnvironmentalConditionsSensor(device_key)
+                    self.client.subscribe(device_key + '/spending')
                 elif command[1] == 'AirConditioner':
                     smart_device = AirConditioner(device_key)
                 elif command[1] == 'CarCharger':
@@ -154,6 +155,7 @@ class SmartHome:
                     self.client.subscribe(device_key+'/spending')
                 elif command[1] == 'WashingMachine':
                     smart_device = WashingMachine(device_key)
+                    self.client.subscribe(device_key + '/spending')
                 else:
                     smart_device = SmartDevice(device_key)
 

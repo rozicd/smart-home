@@ -30,6 +30,8 @@ class AirConditioner(SmartDevice):
         self.send_ac_tick_thread = None
         self.is_send_ac_thread_running = False
         self.send_ac_energy_thread = None
+        self.send_sensor_energy_thread = None
+
         self.is_send_ac_energy_running = False
         self.check_scheduled_modes_thread = None
         self.topic_ac = name + "/ac"
@@ -77,13 +79,19 @@ class AirConditioner(SmartDevice):
             self.send_ac_tick_thread.start()
             self.check_scheduled_modes_thread = threading.Thread(target=self.check_for_scheduled_mode)
             self.check_scheduled_modes_thread.start()
+            self.send_sensor_energy_thread = threading.Thread(target=self.sendEnergySpending)
+            self.send_sensor_energy_thread.start()
 
     def send_ac_info(self):
         while self.is_send_ac_thread_running:
             print(self.topic_ac)
             self.client.publish(self.topic_ac, f"{self.ac_current_temperature}, {self.powerState}, {self.ac_mode}")
-            time.sleep(30)
+            time.sleep(5)
 
+    def sendEnergySpending(self):
+        while self.is_send_ac_thread_running:
+            self.client.publish(self.name +"/spending", f"{self.energy_spending}")
+            time.sleep(60)
     def check_for_scheduled_mode(self):
         while self.is_send_ac_thread_running:
             print("Krenula provera")
