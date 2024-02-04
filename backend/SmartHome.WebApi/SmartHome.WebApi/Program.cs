@@ -133,7 +133,7 @@ builder.Services.AddLogging(builder =>
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"));
+    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__TestConnection"));
     options.EnableSensitiveDataLogging(false);
     options.LogTo(Console.WriteLine, LogLevel.None); 
 
