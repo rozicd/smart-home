@@ -24,30 +24,28 @@ const NavbarComponent = ({ loggedUser }) => {
             </Link>
             {loggedUser.role == 1 && (
               <>
-            <Link className="nav-link nav-btn" to={"energy"}>
-              <div>Energy</div>
-            </Link>
-            </>
+                <Link className="nav-link nav-btn" to={"energy"}>
+                  <div>Energy</div>
+                </Link>
+              </>
             )}
-           
+
             {loggedUser.role == 2 && (
               <>
-              <Link className="nav-link nav-btn" to={"admins"}>
-              <div>Admins</div>
-            </Link>
-           
-            </>
+                <Link className="nav-link nav-btn" to={"admins"}>
+                  <div>Admins</div>
+                </Link>
+              </>
             )}
           </>
         )}
       </div>
+
       <div className="menu-container">
         {loggedUser != null ? (
           <>
-            <p
-            className="logout nav-btn"
-              onClick={handleLogout}
-            >
+            <p className="user-name nav-btn">{loggedUser.name} {loggedUser.surname}</p>
+            <p className="logout nav-btn" onClick={handleLogout}>
               Logout
             </p>
           </>

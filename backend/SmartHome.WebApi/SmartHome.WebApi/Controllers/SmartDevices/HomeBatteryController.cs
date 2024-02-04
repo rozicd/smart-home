@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("homebattery")]
+    [Route("api/homebattery")]
     public class HomeBatteryController : BaseController
     {
         private readonly IHomeBatteryService _homeBatteryService;

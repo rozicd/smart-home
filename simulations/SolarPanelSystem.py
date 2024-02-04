@@ -25,10 +25,10 @@ class SolarPanelSystem(SmartDevice):
             super().on_message(client, userdata, msg)
 
         if msg.topic == self.on_topic :
-            print("KARA")
+            print("ON")
             self.sps_status = True
         if msg.topic == self.off_topic :
-            print("KARA")
+            print("OFF")
 
             self.sps_status = False
 

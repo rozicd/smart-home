@@ -19,7 +19,7 @@ const AdminEnergyPage = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [properties, setProperties] = useState([]);
-  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 4 });
+  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 3 });
   const [totalItems, setTotalItems] = useState(0);
   const [stepperOpen, setStepperOpen] = useState(false);
   const navigate = useNavigate();
@@ -101,6 +101,7 @@ const AdminEnergyPage = ({ user }) => {
               key={property.id}
               property={property}
               callback={property.status == 1 ? ClickedProperty : NotAccepted}
+              admin = {true}
             />
           ))}
         </Grid>

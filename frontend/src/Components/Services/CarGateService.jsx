@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/cargate';
+const API_BASE_URL = 'http://localhost:8080/api/cargate';
 
 export const openGate = async (carGateId) => {
   await axios.put(`${API_BASE_URL}/${carGateId}/open`,{},{withCredentials: true,});

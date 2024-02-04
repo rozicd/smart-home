@@ -15,7 +15,7 @@ using System.Text;
 namespace SmartHome.WebApi.Controllers
 {
     [ApiController]
-    [Route("users")]
+    [Route("api/users")]
     public class UserController : BaseController
     {
         private readonly IUserService _userService;

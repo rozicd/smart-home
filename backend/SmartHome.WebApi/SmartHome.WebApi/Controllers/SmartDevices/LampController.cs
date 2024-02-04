@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace SmartHome.WebApi.Controllers.SmartDevices
 {
     [ApiController]
-    [Route("lamp")]
+    [Route("api/lamp")]
     public class LampController : BaseController
     {
         private readonly ILampService _lampService;
