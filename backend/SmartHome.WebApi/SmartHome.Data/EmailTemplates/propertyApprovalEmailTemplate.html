@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Approved</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-container {
+            background-color: #00AEAE;
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .ii a[href] {
+            color: white;
+        }
+
+        h1 {
+            color: #ffffff;
+        }
+
+        p {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .placeholder {
+            color: #ffffff;
+            font-style: italic;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        a{
+            color:white;
+        }
+
+        .button {
+            background-color: #ffffff;
+            color: #00AEAE;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+            text-decoration: none;
+        }
+
+            .button:hover {
+                background-color: #e5e5e5;
+                color: #00AEAE;
+            }
+    </style>
+</head>
+<body>
+    <div class="notification-container">
+        <h1>Property Approved</h1>
+        <p>Congratulations!</p>
+        <p>Your property in {{City}}, {{Country}} with address {{Address}} has been approved.</p>
+        <p>Thank you for using our service.</p>
+        <p>Sincerely,<br>Smart Home Team</p>
+        <div class="button-container">
+            <a href="http://localhost:3000/properties" class="button">View Properties</a>
+        </div>
+    </div>
+</body>
+</html>

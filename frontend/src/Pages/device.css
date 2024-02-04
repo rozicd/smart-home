@@ -1,0 +1,21 @@
+
+.device-dialog
+{
+    padding :100px
+}
+
+.smart-device-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 95vw;
+    margin: 0 auto;
+  }
+  
+  .device-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 60px;
+  }
+  

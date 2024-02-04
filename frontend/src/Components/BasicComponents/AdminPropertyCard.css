@@ -1,0 +1,5 @@
+@media (max-width: 1200px) {
+    .admin-property-card {
+      width: 80vw !important;
+    }
+  }
