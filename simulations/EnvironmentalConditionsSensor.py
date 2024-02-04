@@ -14,7 +14,9 @@ class EnvironmentalConditionsSensor(SmartDevice):
         self.room_temperature = 0
         self.topic_sensor = name + "/environmentalConditionsSensor"
         self.send_sensor_tick_thread = None
+        self.send_sensor_energy_thread = None
         self.is_send_sensor_thread_running = False
+        self.energy_spending = 0
 
     def on_message(self, client, userdata, msg):
         if msg.topic == self.name + "/recive":
@@ -23,6 +25,7 @@ class EnvironmentalConditionsSensor(SmartDevice):
         if msg.topic == self.name + "/info":
             sensorInfo = msg.payload.decode('utf-8')
             power_consumption, room_temperature, air_humidity = sensorInfo.split(',')
+            self.energy_spending = float(power_consumption)/60000
             print(f"Power consumption: {power_consumption}")
             print(f"Room temperature: {room_temperature}")
             print(f"Air humidity: {air_humidity}")
@@ -34,7 +37,13 @@ class EnvironmentalConditionsSensor(SmartDevice):
             self.is_send_sensor_thread_running = True
             self.send_sensor_tick_thread = threading.Thread(target=self.send_sensor_info)
             self.send_sensor_tick_thread.start()
+            self.send_sensor_energy_thread = threading.Thread(target=self.sendEnergySpending)
+            self.send_sensor_energy_thread.start()
 
+    def sendEnergySpending(self):
+        while self.is_send_sensor_thread_running:
+            self.client.publish(self.name +"/spending", f"{self.energy_spending}")
+            time.sleep(60)
     def on_connect(self, client, userdata, flags, rc):
         super().on_connect(client, userdata, flags, rc)
         print("ECS subscribed")

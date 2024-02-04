@@ -19,6 +19,7 @@ class WashingMachine(SmartDevice):
         self.send_wm_tick_thread = None
         self.is_wm_thread_running = False
         self.check_scheduled_modes_thread = None
+        self.send_sensor_energy_thread = None
         self.mode = ""
         self.wm_topic = name + "/wm"
         self.sch_modes = []
@@ -56,8 +57,13 @@ class WashingMachine(SmartDevice):
             self.send_wm_tick_thread.start()
             self.check_scheduled_modes_thread = threading.Thread(target=self.check_for_scheduled_mode)
             self.check_scheduled_modes_thread.start()
+            self.send_sensor_energy_thread = threading.Thread(target=self.sendEnergySpending)
+            self.send_sensor_energy_thread.start()
 
-    from datetime import datetime, timedelta
+    def sendEnergySpending(self):
+        while self.is_wm_thread_running:
+            self.client.publish(self.name +"/spending", f"{self.energy_spending}")
+            time.sleep(60)
 
     def check_for_scheduled_mode(self):
         while self.is_wm_thread_running:
