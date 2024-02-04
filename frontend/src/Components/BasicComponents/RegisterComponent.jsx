@@ -61,8 +61,7 @@ const RegisterComponent = ({headerName = "REGISTER"}) => {
       const handleSubmit = async (state) =>{
         console.log(state)
         const userDTO = {
-            Name: state['name'],
-            Surname: state['surname'],
+            Name: state['name'] + " " + state['surname'],
             Email: state['email'],
             ImageFile: profilePicture,
             Password: state['password'],
