@@ -1,0 +1,27 @@
+.user-properties-container {
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.property-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90vw;
+}
+
+.property-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 60px;
+}
+
+@media (max-width: 1200px) {
+  .property-list {
+    width: 60vw;
+    justify-content: center;
+  }
+}
